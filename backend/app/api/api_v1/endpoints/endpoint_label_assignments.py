@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status, Query
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from app import crud, models, schemas, query
@@ -13,12 +13,10 @@ router = APIRouter()
 def add_label_assignments(
     *,
     db: Session = Depends(deps.get_db),
-    image_instance_ids: list[int] = Query(),
-    label_to_add_id: int,
+    update_data: schemas.LabelAssignmentsAddApiIn,
     current_user: models.User = Depends(
         deps.get_current_user_with_role(
             [
-                schemas.RoleType.annotator,
                 schemas.RoleType.data_admin,
                 schemas.RoleType.task_admin,
             ]
@@ -26,16 +24,16 @@ def add_label_assignments(
     ),
 ) -> list[models.LabelAssignment]:
 
-    label_to_create = crud.label.get(db, label_to_add_id)
+    label_to_create = crud.label.get(db, update_data.label_to_add_id)
 
     if label_to_create is None:
         raise HTTPException(
             status_code=status.HTTP_406_NOT_ACCEPTABLE,
-            detail=f"There is no label with id={label_to_add_id}",
+            detail=f"There is no label with id={update_data.label_to_add_id}",
         )
 
     label_assignments_out: list[models.LabelAssignment] = []
-    for image_instance_id in image_instance_ids:
+    for image_instance_id in update_data.image_instance_ids:
         image_instance = crud.image_instance.get(db, id=image_instance_id)
 
         if image_instance is None:

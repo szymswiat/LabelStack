@@ -19,7 +19,7 @@ const PrivateWrapper: React.FC<PrivateWrapperProps> = ({ children, roles }) => {
     } else if (roles.length > 0) {
       const userRoles = user.roles.map((role) => role.type);
 
-      return userRoles.containsAny(userRoles);
+      return roles.containsAny(userRoles) || userRoles.includes(RoleType.superuser);
     }
 
     return false;

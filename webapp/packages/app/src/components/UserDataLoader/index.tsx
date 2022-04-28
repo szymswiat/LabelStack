@@ -21,6 +21,9 @@ const UserDataLoader: React.FC<UserDataLoaderProps> = ({}) => {
       } else {
         setUser(null);
       }
+    }).catch(() => {
+      setUser(null);
+    }).finally(() => {
       updatingUser.current = false;
     });
   }, [token]);

@@ -1,11 +1,11 @@
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { User, UserCreate, UserUpdate } from '../schemas/user';
 import { Dicom } from '../schemas/dicom';
 import { Label, LabelCreateApiIn, LabelType } from '../schemas/label';
 import { ImageInstance } from '../schemas/imageInstance';
 import { AvailableStatusesForTaskApiOut, Task } from '../schemas/task';
 import { Annotation, AnnotationType } from '../schemas/annotation';
-import { LabelAssignment, LabelAssignmentsModifyApiIn } from '../schemas/labelAssignment';
+import { AddLabelsAssignmentsApiIn, LabelAssignment, LabelAssignmentsModifyApiIn } from '../schemas/labelAssignment';
 
 import { api as dicomWebApi } from 'dicomweb-client';
 import { AnnotationReview, AnnotationReviewResult } from '../schemas/annotationReview';
@@ -21,6 +21,14 @@ export const apiV1 = '/api/v1';
 export const requestErrorMessageKey = 'detail';
 
 const wadoClient = new dicomWebApi.DICOMwebClient({ url: `${protocol}://${process.env.DICOMWEB_ORIGIN}` });
+
+export function showAxiosError(showNotification, error: any) {
+  if (axios.isAxiosError(error)) {
+    const axiosError: AxiosError = error;
+    showNotification(undefined, axiosError.response ? axiosError.response.data[requestErrorMessageKey] : '');
+    return false;
+  }
+}
 
 function authHeaders(token: string) {
   return {
@@ -162,6 +170,18 @@ export const api = {
       parent_task_id: task.id
     };
     return axios.post(`${apiUrl}${apiV1}/label_assignments/for_image_instance`, labelAssignmentsIn, authHeaders(token));
+  },
+
+  async addLabelAssignments(token: string, labelId: number, imageInstanceIds: number[]) {
+    const addLabelsAssignmentsApiIn: AddLabelsAssignmentsApiIn = {
+      label_to_add_id: labelId,
+      image_instance_ids: imageInstanceIds
+    };
+    return axios.post(
+      `${apiUrl}${apiV1}/label_assignments/add_to_instances`,
+      addLabelsAssignmentsApiIn,
+      authHeaders(token)
+    );
   },
 
   async getAnnotations(

@@ -10,11 +10,12 @@
     "@emotion/styled": "^11.8.1",
     "ag-grid-community": "^27.1.0",
     "ag-grid-react": "^27.1.0",
-    "react-notifications-component": "^3.4.1"
+    "react-notifications-component": "^3.4.1",
+    "uuid": "^8.3.2"
   },
   "peerDependencies": {
-    "itk-wasm": "1.0.0-b.8",
-    "itk-image-io": "1.0.0-b.8"
+    "itk-image-io": "1.0.0-b.8",
+    "itk-wasm": "1.0.0-b.8"
   },
   "scripts": {
     "app:dev": "yarn run app:dev-server",

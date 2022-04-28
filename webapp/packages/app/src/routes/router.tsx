@@ -25,6 +25,7 @@ const AllImages = Loader(lazy(() => import('../content/pages/images/AllImages'))
 
 // Labels
 const AllLabels = Loader(lazy(() => import('../content/pages/labels/AllLabels')));
+const AssignLabels = Loader(lazy(() => import('../content/pages/labels/AssignLabels')));
 
 // Tasks
 const UnassignedTasks = Loader(lazy(() => import('../content/pages/tasks/UnassignedTasks')));
@@ -48,7 +49,7 @@ const routes: RouteObject[] = [
     children: [
       {
         path: '',
-        element: <Navigate to="images/to-label" />
+        element: <Navigate to="images/all" />
       },
       {
         path: 'login',
@@ -98,7 +99,7 @@ const routes: RouteObject[] = [
       {
         path: 'to-label',
         element: (
-          <PrivateWrapper roles={[RoleType.superuser, RoleType.taskAdmin]}>
+          <PrivateWrapper roles={[RoleType.taskAdmin]}>
             <ImagesToLabel />
           </PrivateWrapper>
         )
@@ -106,7 +107,7 @@ const routes: RouteObject[] = [
       {
         path: 'to-annotate',
         element: (
-          <PrivateWrapper roles={[RoleType.superuser, RoleType.taskAdmin]}>
+          <PrivateWrapper roles={[RoleType.taskAdmin]}>
             <ImagesToAnnotate />
           </PrivateWrapper>
         )
@@ -114,7 +115,7 @@ const routes: RouteObject[] = [
       {
         path: 'to-review',
         element: (
-          <PrivateWrapper roles={[RoleType.superuser, RoleType.taskAdmin]}>
+          <PrivateWrapper roles={[RoleType.taskAdmin]}>
             <ImagesToReview />
           </PrivateWrapper>
         )
@@ -122,7 +123,7 @@ const routes: RouteObject[] = [
       {
         path: 'all',
         element: (
-          <PrivateWrapper roles={[RoleType.superuser, RoleType.taskAdmin, RoleType.dataAdmin]}>
+          <PrivateWrapper roles={[RoleType.taskAdmin, RoleType.dataAdmin]}>
             <AllImages />
           </PrivateWrapper>
         )
@@ -144,8 +145,16 @@ const routes: RouteObject[] = [
       {
         path: 'all',
         element: (
-          <PrivateWrapper roles={[RoleType.superuser, RoleType.taskAdmin, RoleType.dataAdmin]}>
+          <PrivateWrapper roles={[RoleType.taskAdmin, RoleType.dataAdmin]}>
             <AllLabels />
+          </PrivateWrapper>
+        )
+      },
+      {
+        path: 'assign',
+        element: (
+          <PrivateWrapper roles={[RoleType.taskAdmin, RoleType.dataAdmin]}>
+            <AssignLabels />
           </PrivateWrapper>
         )
       }
@@ -208,7 +217,7 @@ const routes: RouteObject[] = [
       {
         path: 'edit',
         element: (
-          <PrivateWrapper roles={[RoleType.superuser, RoleType.dataAdmin, RoleType.taskAdmin, RoleType.annotator]}>
+          <PrivateWrapper roles={[RoleType.dataAdmin, RoleType.taskAdmin, RoleType.annotator]}>
             <EditUser />
           </PrivateWrapper>
         )

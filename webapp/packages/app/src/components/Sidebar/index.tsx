@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { IconType } from 'react-icons';
-import getMenuItems, { MenuSection } from './items';
+import getMenuItemsForUser, { MenuSection } from './items';
 import { useUserDataContext } from '../../contexts/UserDataContext';
 import classNames from 'classnames';
 import { useEffectNonNull } from '../../utils/hooks';
@@ -14,7 +14,7 @@ function Sidebar() {
 
   useEffectNonNull(
     () => {
-      setMenuSections(getMenuItems(user.roles));
+      setMenuSections(getMenuItemsForUser(user));
     },
     [],
     [user]
@@ -48,7 +48,7 @@ function Sidebar() {
               onClick={() => navigate(item.link)}
             >
               <span className="text-xl text-dark-accent">{renderIcon(item.icon)}</span>
-              <span className={classNames('ml-3', { 'pl-2': location.pathname === item.link })}>{item.name}</span>
+              <span className={classNames('ml-3 select-none', { 'pl-2': location.pathname === item.link })}>{item.name}</span>
             </div>
           ))}
         </div>

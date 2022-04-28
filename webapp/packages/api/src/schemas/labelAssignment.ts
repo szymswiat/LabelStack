@@ -20,4 +20,9 @@ export interface LabelAssignmentsModifyApiIn {
   parent_task_id: number;
 }
 
+export interface AddLabelsAssignmentsApiIn {
+  label_to_add_id: number;
+  image_instance_ids: number[];
+}
+
 export type LabelAssignmentsObject = Record<number, LabelAssignment>;

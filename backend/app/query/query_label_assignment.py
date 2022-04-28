@@ -1,3 +1,4 @@
+from sqlalchemy import or_
 from sqlalchemy.orm import Session, Query
 
 from app import models, schemas
@@ -62,9 +63,13 @@ class QueryLabelAssignment(QueryBase[models.LabelAssignment]):
             .filter(models.Task.status.in_([schemas.TaskStatus.done]))
         ).subquery()
 
+        all_label_assignments_with_no_parent_task = self.query(db).filter(
+            models.LabelAssignment.parent_task_id.is_(None)
+        )
+
         return self.query(db, query_in).filter(
             models.LabelAssignment.parent_task_id == finished_tasks.c.id
-        )
+        ).union(all_label_assignments_with_no_parent_task)
 
 
 label_assignment = QueryLabelAssignment(models.LabelAssignment)

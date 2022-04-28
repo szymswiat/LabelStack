@@ -1,4 +1,4 @@
-import { api, requestErrorMessageKey } from './api/api';
+import { api, showAxiosError, requestErrorMessageKey } from './api/api';
 
 import {
   AnnotationReview,
@@ -37,7 +37,8 @@ export {
   taskPriorityRepresentation,
   taskStatusRepresentation,
   taskTypeRepresentation,
-  userRoleRepresentation
+  userRoleRepresentation,
+  showAxiosError
 };
 
 export type {

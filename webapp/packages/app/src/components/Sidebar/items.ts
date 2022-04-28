@@ -1,4 +1,4 @@
-import { Role, RoleType } from '@labelstack/api';
+import { Role, RoleType, User } from '@labelstack/api';
 import { IconType } from 'react-icons';
 import {
   MdAssignment,
@@ -38,152 +38,157 @@ export interface MenuItem {
   badge?: string;
   items?: MenuItem[];
   name: string;
-  role?: RoleType[];
+  roles?: RoleType[];
 }
 
 export interface MenuSection {
   items: MenuItem[];
   heading: string;
-  role: RoleType[];
+  roles: RoleType[];
 }
 
 const menuItems: MenuSection[] = [
   {
     heading: 'Users',
-    role: [RoleType.superuser, RoleType.dataAdmin, RoleType.taskAdmin, RoleType.annotator],
+    roles: [RoleType.dataAdmin, RoleType.taskAdmin, RoleType.annotator],
     items: [
       {
         name: 'All Users',
         link: '/users/all',
         icon: FaUsers,
-        role: [RoleType.superuser]
+        roles: [RoleType.superuser]
       },
       {
         name: 'Create User',
         link: '/users/create',
         icon: FaUserPlus,
-        role: [RoleType.superuser]
+        roles: [RoleType.superuser]
       },
       {
         name: 'Edit Profile',
         link: '/users/edit',
         icon: FaUserEdit,
-        role: [RoleType.superuser, RoleType.dataAdmin, RoleType.taskAdmin, RoleType.annotator]
+        roles: [RoleType.dataAdmin, RoleType.taskAdmin, RoleType.annotator]
       }
     ]
   },
   {
     heading: 'Images',
-    role: [RoleType.superuser, RoleType.dataAdmin, RoleType.taskAdmin],
+    roles: [RoleType.dataAdmin, RoleType.taskAdmin],
     items: [
       {
         name: 'All Images',
         link: '/images/all',
         icon: MdBurstMode,
-        role: [RoleType.superuser, RoleType.dataAdmin, RoleType.taskAdmin]
+        roles: [RoleType.dataAdmin, RoleType.taskAdmin]
       },
       {
         name: 'To Label',
         link: '/images/to-label',
         icon: MdPhotoAlbum,
-        role: [RoleType.superuser, RoleType.dataAdmin, RoleType.taskAdmin]
+        roles: [RoleType.dataAdmin, RoleType.taskAdmin]
       },
       {
         name: 'To Annotate',
         link: '/images/to-annotate',
         icon: MdBrush,
-        role: [RoleType.superuser, RoleType.dataAdmin, RoleType.taskAdmin]
+        roles: [RoleType.dataAdmin, RoleType.taskAdmin]
       },
       {
         name: 'To Review',
         link: '/images/to-review',
         icon: MdCompare,
-        role: [RoleType.superuser, RoleType.dataAdmin, RoleType.taskAdmin]
+        roles: [RoleType.dataAdmin, RoleType.taskAdmin]
       }
     ]
   },
   {
     heading: 'Labels',
-    role: [RoleType.superuser, RoleType.dataAdmin, RoleType.taskAdmin],
+    roles: [RoleType.dataAdmin, RoleType.taskAdmin],
     items: [
       {
         name: 'All Labels',
         link: '/labels/all',
         icon: MdCollectionsBookmark,
-        role: [RoleType.superuser, RoleType.dataAdmin, RoleType.taskAdmin]
+        roles: [RoleType.dataAdmin, RoleType.taskAdmin]
+      },
+      {
+        name: 'Assign Labels',
+        link: '/labels/assign',
+        icon: MdCollectionsBookmark,
+        roles: [RoleType.dataAdmin, RoleType.taskAdmin]
       }
     ]
   },
   {
     heading: 'Tasks',
-    role: [RoleType.superuser, RoleType.dataAdmin, RoleType.taskAdmin, RoleType.annotator],
+    roles: [RoleType.dataAdmin, RoleType.taskAdmin, RoleType.annotator],
     items: [
       {
         name: 'Unassigned',
         link: '/tasks/unassigned',
         icon: MdAddTask,
-        role: [RoleType.superuser, RoleType.dataAdmin, RoleType.taskAdmin, RoleType.annotator]
+        roles: [RoleType.dataAdmin, RoleType.taskAdmin, RoleType.annotator]
       },
       {
         name: 'All',
         link: '/tasks/all',
         icon: FaTasks,
-        role: [RoleType.superuser, RoleType.dataAdmin, RoleType.taskAdmin]
+        roles: [RoleType.dataAdmin, RoleType.taskAdmin]
       },
       {
         name: 'To Label',
         link: '/tasks/to-label',
         icon: MdNewLabel,
-        role: [RoleType.superuser, RoleType.dataAdmin, RoleType.taskAdmin, RoleType.annotator]
+        roles: [RoleType.dataAdmin, RoleType.taskAdmin, RoleType.annotator]
       },
       {
         name: 'To Annotate',
         link: '/tasks/to-annotate',
         icon: MdAssignment,
-        role: [RoleType.superuser, RoleType.dataAdmin, RoleType.taskAdmin, RoleType.annotator]
+        roles: [RoleType.dataAdmin, RoleType.taskAdmin, RoleType.annotator]
       },
       {
         name: 'To Review',
         link: '/tasks/to-review',
         icon: MdRateReview,
-        role: [RoleType.superuser, RoleType.dataAdmin, RoleType.taskAdmin, RoleType.annotator]
+        roles: [RoleType.dataAdmin, RoleType.taskAdmin, RoleType.annotator]
       }
     ]
   }
 ];
 
-const getNestedElements = (array: MenuItem[], roles: string[]) => {
+const getNestedElements = (array: MenuItem[], userRoles: RoleType[]) => {
   let items: MenuItem[] = [];
 
   items = array.filter((item) => {
-    if (item.role) {
-      const itemRoles = item.role.map((role) => role.toString());
-      return itemRoles.containsAny(roles);
+    if (item.roles) {
+      return item.roles.containsAny(userRoles) || userRoles.includes(RoleType.superuser);
     } else {
       return true;
     }
   });
 
   items.forEach((item) => {
-    if (item.items) item.items = getNestedElements(item.items, roles);
+    if (item.items) item.items = getNestedElements(item.items, userRoles);
   });
 
   return items;
 };
 
-const getMenuItems = (roles: Role[]) => {
+const getMenuItems = (user: User | null) => {
   const items: MenuSection[] = [];
-  const roleNames = roles ? roles.map((role) => role.type) : [];
+  const userRoles = user ? user.roles.map((role) => role.type) : [];
 
   menuItems.forEach((item) => {
-    const itemRoles = item.role.map((role) => role.toString());
-    if (itemRoles.containsAny(roleNames)) {
+    const itemRoles = item.roles.map((role) => role.toString());
+    if (itemRoles.containsAny(userRoles) || userRoles.includes(RoleType.superuser)) {
       items.push(item);
     }
   });
 
   items.forEach((item) => {
-    if (item.items) item.items = getNestedElements(item.items, roleNames);
+    if (item.items) item.items = getNestedElements(item.items, userRoles);
   });
 
   return items;

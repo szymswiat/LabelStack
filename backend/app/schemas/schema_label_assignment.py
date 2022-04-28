@@ -11,6 +11,11 @@ class LabelAssignmentsModifyApiIn(BaseModel):
     parent_task_id: int | None = None
 
 
+class LabelAssignmentsAddApiIn(BaseModel):
+    image_instance_ids: list[int]
+    label_to_add_id: int
+
+
 class LabelAssignmentCreateCrud(BaseModel):
     label_id: int
     image_instance_id: int
