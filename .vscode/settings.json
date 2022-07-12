@@ -3,7 +3,18 @@
         "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
     "python.languageServer": "Pylance",
-    "python.analysis.typeCheckingMode": "off",
+    "python.analysis.typeCheckingMode": "strict",
     "files.trimTrailingWhitespace": true,
-    "python.formatting.provider": "black"
+    "python.formatting.provider": "black",
+    "python.linting.enabled": true,
+    "python.linting.flake8Enabled": true,
+    "python.linting.flake8Args": [
+        "--config",
+        "${workspaceFolder}/backend/.flake8"
+    ],
+    "python.linting.pylintEnabled": true,
+    "python.linting.pylintArgs": [
+        "--rcfile",
+        "${workspaceFolder}/backend/pyproject.toml"
+    ]
 }
