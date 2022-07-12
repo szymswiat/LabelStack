@@ -4,7 +4,7 @@ import ImageInstanceLoader from '@labelstack/viewer/src/components/ImageInstance
 import AnnotatorDataLoader from '../AnnotatorDataLoader';
 import { useDocumentTitle, useQuery } from '@labelstack/app/src/utils/hooks';
 import { Navigate } from 'react-router-dom';
-import AnnotatorUiTaskMode from '../AnnotatorUiTaskMode';
+import AnnotatorUi from '../AnnotatorUi';
 import AnnotatorImageInstanceDownloader from '../AnnotatorImageInstanceDownloader';
 import ServerConnectionChecker from '@labelstack/viewer/src/components/ServerConnectionChecker';
 
@@ -25,9 +25,9 @@ const AnnotatorApp: React.FC = () => {
       <AnnotatorDataLoader taskId={taskId} imageInstanceId={imageInstanceId} />
       <AnnotatorImageInstanceDownloader taskId={taskId} />
       <ServerConnectionChecker />
-      <AnnotatorUiTaskMode>
+      <AnnotatorUi>
         <ImageInstanceLoader />
-      </AnnotatorUiTaskMode>
+      </AnnotatorUi>
     </>
   );
 };

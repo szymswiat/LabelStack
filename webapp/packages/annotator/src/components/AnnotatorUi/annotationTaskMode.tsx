@@ -6,13 +6,17 @@ import React from 'react';
 import { ToolBarElementData } from '@labelstack/viewer/src/ui/components/ToolBar';
 import ViewModeSelector from '@labelstack/viewer/src/ui/panel_sections/ViewModeSelector';
 import ImagePropertiesOptions from '@labelstack/viewer/src/ui/panel_sections/ImagePropertiesOptions';
-import AssignLabelsPanel from '../../../ui/panel_sections/AssignLabelsPanel';
-import TaskStatusControl from '../../../ui/panel_sections/TaskStatusControl';
+import { PaintToolOptions } from '../../ui/panel_sections/PaintToolOptions';
+import TaskStatusControl from '../../ui/panel_sections/TaskStatusControl';
+import { AnnotationTaskLabelMapList } from '../../ui/panel_sections/AnnotatorLabelMapList';
+import { LabelMapsDisplayMode } from '../../ui/panel_sections/AnnotatorLabelMapList/AnnotationTaskLabelMapList';
 import ImageInfo from '@labelstack/viewer/src/ui/panel_sections/ImageInfo';
+import UiMode from '@labelstack/viewer/src/components/ViewerUi/uiMode';
 
 const toolBarElements: ToolBarElementData[] = [
   { element: <ViewModeSelector /> },
-  { element: <ImagePropertiesOptions /> }
+  { element: <ImagePropertiesOptions /> },
+  { element: <PaintToolOptions layoutOrientation={'horizontal'} /> }
 ];
 
 const leftPanels: TabbedPanelElement[] = [
@@ -49,18 +53,24 @@ const leftPanels: TabbedPanelElement[] = [
 const rightPanels: TabbedPanelElement[] = [
   {
     icon: BsBriefcase,
-    name: 'Label Task Panel',
+    name: 'Annotation Task Panel',
     sections: [
       {
-        name: 'Image Labels',
-        element: <AssignLabelsPanel />
+        name: 'Annotations To Create',
+        element: <AnnotationTaskLabelMapList labelMapsDisplayMode={LabelMapsDisplayMode.toCreate} />
+      },
+      {
+        name: 'Readonly Annotations',
+        element: <AnnotationTaskLabelMapList labelMapsDisplayMode={LabelMapsDisplayMode.readonly} />
       }
     ]
   }
 ];
 
-export default {
+const uiModeAnnotationTask: UiMode = {
   toolBarElements,
   leftPanels,
   rightPanels
 };
+
+export default uiModeAnnotationTask;

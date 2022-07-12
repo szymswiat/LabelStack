@@ -5,18 +5,15 @@ import UserInfo from '@labelstack/viewer/src/ui/panel_sections/UserInfo';
 import React from 'react';
 import { ToolBarElementData } from '@labelstack/viewer/src/ui/components/ToolBar';
 import ViewModeSelector from '@labelstack/viewer/src/ui/panel_sections/ViewModeSelector';
-import ImagePropertiesOptions from '@labelstack/viewer/src/ui/panel_sections/ViewModeSelector';
-import { PaintToolOptions } from '../../../ui/panel_sections/PaintToolOptions';
-import TaskStatusControl from '../../../ui/panel_sections/TaskStatusControl';
-import ReviewPanel from '../../../ui/panel_sections/ReviewPanel';
-import { AnnotationReviewTaskLabelMapList } from '../../../ui/panel_sections/AnnotatorLabelMapList';
-import { LabelMapsDisplayMode } from '../../../ui/panel_sections/AnnotatorLabelMapList/AnnotationReviewTaskLabelMapList';
+import ImagePropertiesOptions from '@labelstack/viewer/src/ui/panel_sections/ImagePropertiesOptions';
+import AssignLabelsPanel from '../../ui/panel_sections/AssignLabelsPanel';
+import TaskStatusControl from '../../ui/panel_sections/TaskStatusControl';
 import ImageInfo from '@labelstack/viewer/src/ui/panel_sections/ImageInfo';
+import UiMode from '@labelstack/viewer/src/components/ViewerUi/uiMode';
 
 const toolBarElements: ToolBarElementData[] = [
   { element: <ViewModeSelector /> },
-  { element: <ImagePropertiesOptions /> },
-  { element: <PaintToolOptions layoutOrientation={'horizontal'} /> }
+  { element: <ImagePropertiesOptions /> }
 ];
 
 const leftPanels: TabbedPanelElement[] = [
@@ -53,30 +50,20 @@ const leftPanels: TabbedPanelElement[] = [
 const rightPanels: TabbedPanelElement[] = [
   {
     icon: BsBriefcase,
-    name: 'Annotation Review Task Panel',
+    name: 'Label Task Panel',
     sections: [
       {
-        name: 'Review Options',
-        element: <ReviewPanel />
-      },
-      {
-        name: 'Annotations To Correct',
-        element: <AnnotationReviewTaskLabelMapList labelMapsDisplayMode={LabelMapsDisplayMode.toCorrect} />
-      },
-      {
-        name: 'Annotations To Review',
-        element: <AnnotationReviewTaskLabelMapList labelMapsDisplayMode={LabelMapsDisplayMode.toReview} />
-      },
-      {
-        name: 'Readonly Annotations',
-        element: <AnnotationReviewTaskLabelMapList labelMapsDisplayMode={LabelMapsDisplayMode.readonly} />
+        name: 'Image Labels',
+        element: <AssignLabelsPanel />
       }
     ]
   }
 ];
 
-export default {
+const uiModeLabelTask: UiMode = {
   toolBarElements,
   leftPanels,
   rightPanels
 };
+
+export default uiModeLabelTask;

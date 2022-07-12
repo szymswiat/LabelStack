@@ -9,6 +9,7 @@ import ViewerImageList from '../../ui/panel_sections/ImageList/ViewerImageList';
 import { ViewerLabelMapList } from '../../ui/panel_sections/LabelMapList/ViewerLabelMapList';
 import ImageInfo from '../../ui/panel_sections/ImageInfo';
 import ImagePropertiesOptions from '../../ui/panel_sections/ImagePropertiesOptions';
+import UiMode from './uiMode';
 
 const toolBarElements: ToolBarElementData[] = [
   { element: <ViewModeSelector /> },
@@ -55,8 +56,10 @@ const rightPanels: TabbedPanelElement[] = [
   }
 ];
 
-export default {
+const uiModeMain: UiMode = {
   toolBarElements,
   leftPanels,
   rightPanels
 };
+
+export default uiModeMain;

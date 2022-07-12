@@ -2,7 +2,9 @@ import React, { ReactNode } from 'react';
 import { useAnnotatorDataContext } from '@labelstack/annotator/src/contexts/AnnotatorDataContext';
 import ViewerLayout from '@labelstack/viewer/src/ui/layouts/ViewerLayout';
 import { TaskType } from '@labelstack/api';
-import { uiModeAnnotationReviewTask, uiModeAnnotationTask, uiModeLabelTask } from './modes';
+import uiModeLabelTask from './labelTaskMode';
+import uiModeAnnotationTask from './annotationTaskMode';
+import uiModeAnnotationReviewTask from './annotationReviewTaskMode';
 import Viewport from '@labelstack/viewer/src/ui/components/Viewport';
 import EditableSliceView from '../../vtk/EditableSliceView';
 
@@ -12,7 +14,7 @@ const taskModeMappings = {
   [TaskType.annotationReview]: uiModeAnnotationReviewTask
 };
 
-const AnnotatorUiTaskMode: React.FC<{ children?: ReactNode }> = ({ children }) => {
+const AnnotatorUi: React.FC<{ children?: ReactNode }> = ({ children }) => {
   const [{ task }] = useAnnotatorDataContext();
 
   if (!task || !(task.task_type in taskModeMappings)) {
@@ -27,4 +29,4 @@ const AnnotatorUiTaskMode: React.FC<{ children?: ReactNode }> = ({ children }) =
   );
 };
 
-export default AnnotatorUiTaskMode;
+export default AnnotatorUi;
