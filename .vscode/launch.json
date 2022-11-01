@@ -14,7 +14,7 @@
             "env": {
                 "PYTHONPATH": "${workspaceFolder}/backend/app",
                 "POSTGRES_SERVER": "localhost",
-                "DICOMWEB_URL": "http://localhost:8042/dicom-web"
+                "DICOMWEB_ORIGIN": "localhost:8042/dicom-web"
             }
         }
     ]

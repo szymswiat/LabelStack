@@ -16,7 +16,8 @@ interface Configuration extends WebpackConfiguration {
 
 const envVars = {
   ENV: undefined,
-  API_HOST_ORIGIN: undefined
+  API_HOST_ORIGIN: undefined,
+  DICOMWEB_ORIGIN: undefined
 };
 
 const config: Configuration = {

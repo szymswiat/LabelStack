@@ -20,7 +20,7 @@ export const apiV1 = '/api/v1';
 
 export const requestErrorMessageKey = 'detail';
 
-const wadoClient = new dicomWebApi.DICOMwebClient({ url: `${apiUrl}${apiV1}/dicoms/wado` });
+const wadoClient = new dicomWebApi.DICOMwebClient({ url: `${protocol}://${process.env.DICOMWEB_ORIGIN}` });
 
 function authHeaders(token: string) {
   return {

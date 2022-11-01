@@ -40,7 +40,7 @@
   // in the storage (a value of "0" indicates no limit on the number
   // of patients)
   "MaximumPatientCount" : 0,
-  
+
   // List of paths to the custom Lua scripts that are to be loaded
   // into this instance of Orthanc
   "LuaScripts" : [
@@ -95,7 +95,7 @@
   // Enable the DICOM server. If this parameter is set to "false",
   // Orthanc acts as a pure REST server. It will not be possible to
   // receive files or to do query/retrieve through the DICOM protocol.
-  "DicomServerEnabled" : true,
+  "DicomServerEnabled" : false,
 
   // The DICOM Application Entity Title
   "DicomAet" : "ORTHANC",
@@ -184,7 +184,7 @@
      * A fourth parameter is available to enable patches for
      * specific PACS manufacturers. The allowed values are currently:
      * - "Generic" (default value),
-     * - "GenericNoWildcardInDates" (to replace "*" by "" in date fields 
+     * - "GenericNoWildcardInDates" (to replace "*" by "" in date fields
      *   in outgoing C-Find requests originating from Orthanc),
      * - "GenericNoUniversalWildcard" (to replace "*" by "" in all fields
      *   in outgoing C-Find SCU requests originating from Orthanc),
@@ -421,7 +421,7 @@
        "Verbose" : true
      }
    **/
-  
+
   // If set to "false", Orthanc will not load its default dictionary
   // of private tags. This might be necessary if you cannot import a
   // DICOM file encoded using the Implicit VR Endian transfer syntax,
@@ -520,15 +520,15 @@
   "HttpRequestTimeout" : 30,
 
   "DicomWeb" : {
-    "Enable" : true,            // Whether DICOMweb support is enabled
-    "Root" : "/dicom-web/",     // Root URI of the DICOMweb API (for QIDO-RS, STOW-RS and WADO-RS)
-    "EnableWado" : true,        // Whether WADO-URI (previously known as WADO) support is enabled
-    "WadoRoot" : "/wado",       // Root URI of the WADO-URI (aka. WADO) API
-    "Ssl" : false,              // Whether HTTPS should be used for subsequent WADO-RS requests
-    "QidoCaseSensitive" : true, // For QIDO-RS server, whether search is case sensitive (since release 0.5)
-    // "Host" : "localhost",       // Hard-codes the name of the host for subsequent WADO-RS requests (deprecated)
-    "StudiesMetadata" : "Full", // How study-level metadata is retrieved (since release 1.1, cf. section below)
-    "SeriesMetadata" : "Full"   // How series-level metadata is retrieved (since release 1.1, cf. section below)
+    "Enable" : true,             // Whether DICOMweb support is enabled
+    "Root" : "/dicom-web/", // Root URI of the DICOMweb API (for QIDO-RS, STOW-RS and WADO-RS)
+    "EnableWado" : false,         // Whether WADO-URI (previously known as WADO) support is enabled
+    "WadoRoot" : "/wado",   // Root URI of the WADO-URI (aka. WADO) API
+    "Ssl" : false,               // Whether HTTPS should be used for subsequent WADO-RS requests
+    "QidoCaseSensitive" : true,  // For QIDO-RS server, whether search is case sensitive (since release 0.5)
+    // "Host" : "localhost",     // Hard-codes the name of the host for subsequent WADO-RS requests (deprecated)
+    "StudiesMetadata" : "Full",  // How study-level metadata is retrieved (since release 1.1, cf. section below)
+    "SeriesMetadata" : "Full"    // How series-level metadata is retrieved (since release 1.1, cf. section below)
   },
 
   "PostgreSQL": {

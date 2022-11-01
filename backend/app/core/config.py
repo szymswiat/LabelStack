@@ -59,7 +59,7 @@ class Settings(BaseSettings):
     FIRST_SUPERUSER_PASSWORD: str
     USERS_OPEN_REGISTRATION: bool = False
 
-    DICOMWEB_URL: AnyHttpUrl
+    DICOMWEB_ORIGIN: str
 
     class Config:
         case_sensitive = True

@@ -13,6 +13,7 @@
 				"cwd": "${workspaceFolder}/webapp/packages/app",
 				"env": {
 					"API_HOST_ORIGIN": "localhost:8000",
+					"DICOMWEB_ORIGIN": "localhost/pacs/dicom-web",
 					"ENV": "dev"
 				}
 			}
@@ -31,7 +32,7 @@
 				"env": {
 					"PYTHONPATH": "${workspaceFolder}/backend",
 					"POSTGRES_SERVER": "localhost",
-					"DICOMWEB_URL": "http://localhost:8042/dicom-web",
+					"DICOMWEB_ORIGIN": "localhost/pacs/dicom-web",
 					"ENV": "dev"
 				}
 			}
@@ -39,7 +40,7 @@
 		{
 			"label": "[DEV] Pacs with db",
 			"type": "shell",
-			"command": "docker compose up db orthanc"
+			"command": "docker compose up db orthanc traefik"
 		},
 		{
 			"label": "[DEV] Run dev setup",
@@ -80,7 +81,7 @@
 					"PYTHONPATH": "${workspaceFolder}/backend",
 					"POSTGRES_SERVER": "localhost",
 					"ENV": "dev",
-					"DICOMWEB_URL": "http://localhost:8042/dicom-web",
+					"DICOMWEB_ORIGIN": "localhost/pacs/dicom-web",
 				}
 			}
 		},

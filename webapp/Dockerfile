@@ -15,6 +15,7 @@ RUN --mount=type=cache,target=/root/.cache/yarn/v6 \
     yarn install --frozen-lockfile
 
 ARG API_HOST_ORIGIN
+ARG DICOMWEB_ORIGIN
 
 COPY packages /code/packages
 COPY tsconfig.json /code/

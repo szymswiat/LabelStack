@@ -16,5 +16,6 @@
     "python.linting.pylintArgs": [
         "--rcfile",
         "${workspaceFolder}/backend/pyproject.toml"
-    ]
+    ],
+    "python.defaultInterpreterPath": "${workspaceFolder}/backend/.venv/bin/python"
 }

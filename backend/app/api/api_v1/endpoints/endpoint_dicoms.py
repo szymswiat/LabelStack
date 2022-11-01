@@ -93,7 +93,7 @@ def sync_dicomweb(
     """
     Sync internal backend database with attached pacs using dicomweb.
     """
-    client = DICOMwebClient(url=settings.DICOMWEB_URL)
+    client = DICOMwebClient(url=f"http://{settings.DICOMWEB_ORIGIN}")
 
     tags = crud.tag.get_multi(db, limit=100000)
     tags_by_keyword: Dict[str, models.Tag] = {tag.keyword: tag for tag in tags}
@@ -122,29 +122,29 @@ def sync_dicomweb(
     return synced_dicoms
 
 
-# TODO: remove this endpoint
-@router.get("/wado/studies/{study_id}/series/{series_id}/instances/{instance_id}")
-async def dicomweb_wado(
-    *,
-    db: Session = Depends(deps.get_db),
-    request: Request,
-    study_id: str,
-    series_id: str,
-    instance_id: str,
-    current_user: models.User = Depends(
-        deps.get_current_user_with_role([schemas.RoleType.annotator])
-    ),
-):
-    headers = {k.decode(): v.decode() for k, v in request.headers.raw}
-    pacs_response = requests.get(
-        f"{settings.DICOMWEB_URL}/studies/{study_id}/"
-        f"series/{series_id}/instances/{instance_id}",
-        headers=headers,
-        stream=True,
-    )
-    # TODO: restrict access
-    return Response(
-        content=pacs_response.raw.data,
-        headers=pacs_response.headers,
-        status_code=pacs_response.status_code,
-    )
+# # TODO: remove this endpoint
+# @router.get("/wado/studies/{study_id}/series/{series_id}/instances/{instance_id}")
+# async def dicomweb_wado(
+#     *,
+#     db: Session = Depends(deps.get_db),
+#     request: Request,
+#     study_id: str,
+#     series_id: str,
+#     instance_id: str,
+#     current_user: models.User = Depends(
+#         deps.get_current_user_with_role([schemas.RoleType.annotator])
+#     ),
+# ):
+#     headers = {k.decode(): v.decode() for k, v in request.headers.raw}
+#     pacs_response = requests.get(
+#         f"{settings.DICOMWEB_ORIGIN}/studies/{study_id}/"
+#         f"series/{series_id}/instances/{instance_id}",
+#         headers=headers,
+#         stream=True,
+#     )
+#     # TODO: restrict access
+#     return Response(
+#         content=pacs_response.raw.data,
+#         headers=pacs_response.headers,
+#         status_code=pacs_response.status_code,
+#     )

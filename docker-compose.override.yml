@@ -4,6 +4,7 @@ services:
   traefik:
     ports:
       - "8080:8080"
+      - "80:80"
     command:
       - --api
       - --api.insecure=true
@@ -13,7 +14,6 @@ services:
       - --accesslog
       - --log
       - --entrypoints.web.address=:80
-      - --entrypoints.web-secure.address=:443
 
   pgadmin:
     ports:
@@ -22,6 +22,9 @@ services:
       - "5050"
 
   db:
+    volumes:
+      - app-db-data-dev:${PGDATA}
+      - ./database/pg-init-scripts:/docker-entrypoint-initdb.d
     ports:
       - "5432:5432"
 
@@ -41,6 +44,29 @@ services:
       - "80"
 
   orthanc:
-    ports:
-      - "8042:8042"
-      - "4242:4242"
+    expose:
+      - "8042"
+    volumes:
+      # configuration file
+      - ${ORTHANC_CONFIG}:${ORTHANC_CONFIG_INTERNAL}:ro
+      # storage volume for raw dicoms
+      - ${ORTHANC_DICOM_DATA}:${ORTHANC_DICOM_DATA_INTERNAL}
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.orthanc.entrypoints=web
+      - traefik.http.routers.orthanc.rule=PathPrefix(`/pacs`)
+      - traefik.http.routers.orthanc.priority=10
+      - traefik.http.routers.orthanc.tls=false
+
+      - traefik.http.middlewares.cors-allow.headers.accesscontrolallowmethods=*
+      - traefik.http.middlewares.cors-allow.headers.accesscontrolalloworiginlist=*
+      - traefik.http.middlewares.cors-allow.headers.accesscontrolallowheaders=*
+      - traefik.http.middlewares.cors-allow.headers.accesscontrolmaxage=100
+      - traefik.http.middlewares.cors-allow.headers.addvaryheader=true
+
+      - traefik.http.middlewares.strip-prefix.stripprefix.prefixes=/pacs
+
+      - traefik.http.routers.orthanc.middlewares=cors-allow,strip-prefix
+
+volumes:
+  app-db-data-dev:

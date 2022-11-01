@@ -6,8 +6,8 @@ services:
     image: traefik:v2.8
     container_name: traefik
     ports:
-      - "80:80"
       - "443:443"
+      - "8080:8080"
     env_file:
       - .env
     volumes:
@@ -18,7 +18,7 @@ services:
       - --accesslog
       - --log
       - --api
-      - --entrypoints.web.address=:80
+      # - --api.insecure=true
       - --entrypoints.web-secure.address=:443
     labels:
       - traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https
@@ -78,8 +78,11 @@ services:
       dockerfile: Dockerfile
     depends_on:
       - db
+      - traefik
     env_file:
       - .env
+    environment:
+      - DICOMWEB_ORIGIN=orthanc:8042/dicom-web
     expose:
       - "8000"
     labels:
@@ -95,6 +98,9 @@ services:
       dockerfile: Dockerfile
       args:
         - API_HOST_ORIGIN=${API_HOST_ORIGIN}
+        - DICOMWEB_ORIGIN=${DICOMWEB_ORIGIN}
+    depends_on:
+      - traefik
     env_file:
       - .env
     expose:
@@ -110,11 +116,12 @@ services:
     image: osimis/orthanc:20.4.2
     depends_on:
       - db
+      - traefik
     volumes:
       # configuration file
       - ${ORTHANC_CONFIG}:${ORTHANC_CONFIG_INTERNAL}:ro
       # storage volume for raw dicoms
-      - ${ORTHANC_DICOM_DATA}:${ORTHANC_DICOM_DATA_INTERNAL}
+      - pacs-data:${ORTHANC_DICOM_DATA_INTERNAL}
     environment:
       - POSTGRES_DB=${POSTGRES_ORTHANC_DB}
       # DICOMWeb Plugin
@@ -122,14 +129,25 @@ services:
       # Postgres Plugin
       - POSTGRESQL_PLUGIN_ENABLED=true
     command: ${ORTHANC_CONFIG_INTERNAL}
-    # expose:
-    #   - "8042:8042"
-    # labels:
-    #     - traefik.enable=true
-    #     - traefik.http.routers.backend.entrypoints=web-secure
-    #     - traefik.http.routers.backend.rule=PathPrefix(`/dicom-web/wado`)
-    #     - traefik.http.routers.backend.priority=10
-    #     - traefik.http.routers.backend.tls=true
+    expose:
+      - "8042"
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.orthanc.entrypoints=web-secure
+      - traefik.http.routers.orthanc.rule=PathPrefix(`/pacs`)
+      - traefik.http.routers.orthanc.priority=10
+      - traefik.http.routers.orthanc.tls=true
+
+      - traefik.http.middlewares.cors-allow.headers.accesscontrolallowmethods=*
+      - traefik.http.middlewares.cors-allow.headers.accesscontrolalloworiginlist=http://localhost:3000,https://localhost
+      - traefik.http.middlewares.cors-allow.headers.accesscontrolallowheaders=*
+      - traefik.http.middlewares.cors-allow.headers.accesscontrolmaxage=100
+      - traefik.http.middlewares.cors-allow.headers.addvaryheader=true
+
+      - traefik.http.middlewares.strip-prefix.stripprefix.prefixes=/pacs
+
+      - traefik.http.routers.orthanc.middlewares=cors-allow,strip-prefix
 
 volumes:
   app-db-data:
+  pacs-data:

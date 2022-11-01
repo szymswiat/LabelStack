@@ -11,7 +11,8 @@ const itkConfig = path.resolve(__dirname, 'itk.config.ts');
 
 const envVars = {
   ENV: undefined,
-  API_HOST_ORIGIN: undefined
+  API_HOST_ORIGIN: undefined,
+  DICOMWEB_ORIGIN: undefined
 };
 
 const config: Configuration = {
