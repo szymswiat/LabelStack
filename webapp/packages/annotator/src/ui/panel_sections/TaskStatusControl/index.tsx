@@ -28,18 +28,22 @@ const TaskStatusControl: React.FC<TaskStatusControlProps> = () => {
       <div>
         Current status: <span className={'font-bold'}>{taskStatusRepresentation[task.status]}</span>
       </div>
-      <div>Change status to:</div>
-      <div className={'flex flex-row w-full h-12 gap-x-2'}>
-        {availableTaskStatuses?.map((status) => (
-          <div key={status} className={'h-10'}>
-            <PanelButton
-              name={taskStatusRepresentation[status]}
-              isActive={false}
-              onClick={() => changeTaskStatus(status)}
-            />
+      {availableTaskStatuses.length > 0 && (
+        <>
+          <div>Change status to:</div>
+          <div className={'flex flex-row w-full h-12 gap-x-2'}>
+            {availableTaskStatuses?.map((status) => (
+              <div key={status} className={'h-10'}>
+                <PanelButton
+                  name={taskStatusRepresentation[status]}
+                  isActive={false}
+                  onClick={() => changeTaskStatus(status)}
+                />
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
+        </>
+      )}
     </div>
   );
 };

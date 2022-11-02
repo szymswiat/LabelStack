@@ -1,10 +1,10 @@
 import React from 'react';
-import { useEffectNonNull } from '@labelstack/app/src/utils/hooks';
+import { useEffectDebug, useEffectNonNull } from '@labelstack/app/src/utils/hooks';
 import { LabelMap, useAnnotationDataContext } from '@labelstack/viewer/src/contexts/AnnotationDataContext';
 import { useEditedAnnotationDataContext } from '../../contexts/EditedAnnotationDataContext';
 import { AnnotationsObject, api } from '@labelstack/api';
 import { encodeLabelMap } from '@labelstack/viewer/src/utils/labelMapUtils';
-import { showInfoNotification } from '@labelstack/app/src/utils';
+import { showDangerNotification, showInfoNotification } from '@labelstack/app/src/utils';
 import { useUserDataContext } from '@labelstack/app/src/contexts/UserDataContext';
 
 export interface AnnotationUploaderProps {
@@ -25,14 +25,19 @@ const AnnotationUploader: React.FC<AnnotationUploaderProps> = ({ annotations }) 
       await api.createAnnotationData(token, annotationToUpdate, compressedData.buffer);
       updateLabelMap({ ...labelMap, isModified: false });
     } catch (reason) {
+      if (!reason.response) {
+        throw reason;
+      }
       if (reason.response.status === 409) {
         showInfoNotification('No update', reason.response.data.detail);
-        updateLabelMap({ ...labelMap, isModified: false });
+      }
+      else {
+        showDangerNotification('Error', reason.response.data.detail);
       }
     }
   }
 
-  useEffectNonNull(
+  useEffectDebug(
     () => {
       const [callback] = uploadAnnotationsTrigger;
       Promise.all(
@@ -41,8 +46,9 @@ const AnnotationUploader: React.FC<AnnotationUploaderProps> = ({ annotations }) 
           .map(uploadLabelMap)
       ).then(callback);
     },
-    [],
-    [uploadAnnotationsTrigger]
+    [uploadAnnotationsTrigger],
+    "uploader",
+    ["upload list trigger"]
   );
 
   return <></>;

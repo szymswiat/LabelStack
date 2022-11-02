@@ -9,6 +9,8 @@ import { useNavigate } from 'react-router';
 import AnnotationReviewTaskDataLoader from './AnnotationReviewTaskDataLoader';
 import LabelAssignmentTaskDataLoader from './LabelAssignmentTaskDataLoader';
 import { ImageInstancesObject } from '@labelstack/api';
+import { useAnnotatorLayoutContext } from '../../contexts/AnnotatorLayoutContext';
+import { useEditedAnnotationDataContext } from '../../contexts/EditedAnnotationDataContext';
 
 interface AnnotatorDataLoaderProps {
   taskId: number;
@@ -18,6 +20,8 @@ interface AnnotatorDataLoaderProps {
 const AnnotatorDataLoader: React.FC<AnnotatorDataLoaderProps> = ({ taskId, imageInstanceId }) => {
   const navigate = useNavigate();
   const [{ token }] = useUserDataContext();
+  const [, { setEditModeLocked }] = useAnnotatorLayoutContext();
+  const [, { setEditedLabelMapId }] = useEditedAnnotationDataContext();
 
   const [
     {
@@ -47,10 +51,11 @@ const AnnotatorDataLoader: React.FC<AnnotatorDataLoaderProps> = ({ taskId, image
       .getTasks(token, taskId)
       .then((response) => {
         const task = response.data[0];
-        if (task.status === TaskStatus.done || task.status === TaskStatus.cancelled) {
-          navigate('/error', { state: { message: 'Task is already completed.' } });
-          return;
+        setEditModeLocked(task.status !== TaskStatus.inProgress);
+        if (task.status !== TaskStatus.inProgress) {
+          setEditedLabelMapId(null);
         }
+
         api.getAvailableStatusesForTask(token, task).then((response) => {
           setTask(task);
           setAvailableTaskStatuses(response.data.statuses);

@@ -11,6 +11,7 @@ import { ImageDataContextProvider } from '@labelstack/viewer/src/contexts/ImageD
 import { ImagePropertiesContextProvider } from '@labelstack/viewer/src/contexts/ImagePropertiesContext';
 import { AnnotatorDataContextProvider } from '@labelstack/annotator/src/contexts/AnnotatorDataContext';
 import { AnnotatorToolsContextProvider } from '@labelstack/annotator/src/contexts/AnnotatorToolsContext';
+import { AnnotatorLayoutContextProvider } from '@labelstack/annotator/src/contexts/AnnotatorLayoutContext';
 import { HotkeysControllerContextProvider } from '@labelstack/viewer/src/contexts/HotkeysControllerContext';
 import { ViewerDataContextProvider } from '@labelstack/viewer/src/contexts/ViewerDataContext';
 import { EditedAnnotationDataContextProvider } from '@labelstack/annotator/src/contexts/EditedAnnotationDataContext';
@@ -26,7 +27,8 @@ const annotatorProviders = [
   ImagePropertiesContextProvider,
   AnnotatorDataContextProvider,
   AnnotatorToolsContextProvider,
-  ViewerDataContextProvider
+  ViewerDataContextProvider,
+  AnnotatorLayoutContextProvider
 ];
 
 const CombinedProviders: React.FC<{ children?: ReactNode; components: React.Component[] }> = ({

@@ -15,6 +15,7 @@ import { useAnnotatorToolsContext } from '../../../contexts/AnnotatorToolsContex
 import classNames from 'classnames';
 import { useHotkeysControllerContext } from '@labelstack/viewer/src/contexts/HotkeysControllerContext';
 import { AnnotatorWidgetTool, DrawerMode, DrawMode } from '../../../contexts/AnnotatorToolsContext';
+import { useAnnotatorLayoutContext } from '../../../contexts/AnnotatorLayoutContext';
 
 interface PaintToolOptionsProps {
   layoutOrientation: 'horizontal' | 'vertical';
@@ -41,6 +42,7 @@ export const PaintToolOptions: React.FC<PaintToolOptionsProps> = ({ layoutOrient
     { drawMode, activeTool, canUndo, canRedo, drawerMode },
     { setActiveTool, triggerUndo, triggerRedo, setDrawMode, setDrawerMode }
   ] = useAnnotatorToolsContext();
+  const [{ editModeLocked }] = useAnnotatorLayoutContext();
 
   const [
     {
@@ -85,6 +87,7 @@ export const PaintToolOptions: React.FC<PaintToolOptionsProps> = ({ layoutOrient
               onClick={() => setActiveTool(tool as AnnotatorWidgetTool)}
               icon={toolIcons[tool]}
               iconProps={{ size: 20 }}
+              disabled={editModeLocked}
             />
           );
         })}
@@ -97,6 +100,7 @@ export const PaintToolOptions: React.FC<PaintToolOptionsProps> = ({ layoutOrient
           onClick={() => setDrawMode(DrawMode.DRAW)}
           icon={drawEraseIcons[DrawMode.DRAW]}
           iconProps={{ size: 20 }}
+          disabled={editModeLocked}
         />
         <PanelButton
           name={'Erase'}
@@ -105,6 +109,7 @@ export const PaintToolOptions: React.FC<PaintToolOptionsProps> = ({ layoutOrient
           onClick={() => setDrawMode(DrawMode.ERASE)}
           icon={drawEraseIcons[DrawMode.ERASE]}
           iconProps={{ size: 20 }}
+          disabled={editModeLocked}
         />
         <PanelButton
           name={'3D'}
@@ -113,6 +118,7 @@ export const PaintToolOptions: React.FC<PaintToolOptionsProps> = ({ layoutOrient
           iconClassName={'font-bold'}
           isActive={drawerMode === DrawerMode.VOLUME}
           onClick={() => setDrawerMode(drawerMode === DrawerMode.SLICE ? DrawerMode.VOLUME : DrawerMode.SLICE)}
+          disabled={editModeLocked}
         />
       </div>
       <div className={'flex flex-row gap-x-2'}>
@@ -120,7 +126,7 @@ export const PaintToolOptions: React.FC<PaintToolOptionsProps> = ({ layoutOrient
           name={'Undo'}
           containerClassName={'w-10 h-10'}
           isActive={false}
-          disabled={!canUndo}
+          disabled={!canUndo || editModeLocked}
           onClick={triggerUndo}
           icon={undoRedoIcons.undo}
           iconProps={{ size: 20 }}
@@ -129,7 +135,7 @@ export const PaintToolOptions: React.FC<PaintToolOptionsProps> = ({ layoutOrient
           name={'Redo'}
           containerClassName={'w-10 h-10'}
           isActive={false}
-          disabled={!canRedo}
+          disabled={!canRedo || editModeLocked}
           onClick={triggerRedo}
           icon={undoRedoIcons.redo}
           iconProps={{ size: 20 }}

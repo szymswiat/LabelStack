@@ -8,6 +8,7 @@ from app import crud, models, schemas
 from app.api import deps
 from app.api.api_v1 import helpers
 from app.core import logic
+from app.schemas.schema_task import TaskStatus
 
 router = APIRouter()
 
@@ -36,6 +37,14 @@ def create_annotation_data(
 
     existing_annotation = crud.annotation.get(db, id=annotation_id)
     helpers.validate_access_to_annotation(existing_annotation, current_user)
+
+    task = crud.task.get(db, id=existing_annotation.parent_task_id)
+
+    if task.status != TaskStatus.in_progress:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail=f"Cannot update annotation when parent task is not in progress.",
+        )
 
     annotation_has_data = len(existing_annotation.data_list) > 0
     new_sequence = (

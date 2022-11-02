@@ -10,7 +10,6 @@ import { NoLabelMapsToShowAlert } from './Alerts';
 import { LabelMapsObject } from '../../../contexts/AnnotationDataContext';
 import { CirclePicker, ColorResult } from 'react-color';
 import ContentChangedIndicator from '@labelstack/viewer/src/ui/components/ContentChangedIndicator';
-import { useEditedAnnotationDataContext } from '@labelstack/annotator/src/contexts/EditedAnnotationDataContext';
 import { useViewerLayoutContext } from '../../../contexts/ViewerLayoutContext';
 import FloatingWindow from '../../components/FloatingWindow';
 
@@ -18,16 +17,21 @@ interface LabelMapListProps {
   editable: boolean;
   labelMaps: LabelMapsObject;
   editedLabelMapId?: string;
+  setEditedLabelMapId?: (id: string) => void;
   onLabelMapSaved?: () => void;
+  triggerAnnotationsUpload?: (callback: () => void) => void;
+  disableTools?: boolean;
 }
 
 export const LabelMapList: React.FC<LabelMapListProps> = ({
   editable,
   labelMaps,
   editedLabelMapId,
-  onLabelMapSaved
+  setEditedLabelMapId,
+  triggerAnnotationsUpload,
+  onLabelMapSaved,
+  disableTools = false
 }) => {
-  const [, { setEditedLabelMapId, triggerAnnotationsUpload }] = useEditedAnnotationDataContext();
   const [, { updateLabelMap }] = useAnnotationDataContext();
   const [, { showFloatingWindow, hideFloatingWindow }] = useViewerLayoutContext();
   const [{ saveHotkeys }] = useHotkeysControllerContext();
@@ -70,7 +74,13 @@ export const LabelMapList: React.FC<LabelMapListProps> = ({
 
   function renderPaintToolsBrush(labelMap: LabelMap) {
     const BrushComponent = editedLabelMapId === labelMap.id.uniqueId ? BsBrushFill : BsBrush;
-    return <BrushComponent size={20} onClick={changeActiveLabelMap(labelMap)} />;
+    return (
+      <BrushComponent
+        className={classNames({ 'opacity-40': disableTools })}
+        size={20}
+        onClick={disableTools ? undefined : changeActiveLabelMap(labelMap)}
+      />
+    );
   }
 
   function onHotkeySave() {

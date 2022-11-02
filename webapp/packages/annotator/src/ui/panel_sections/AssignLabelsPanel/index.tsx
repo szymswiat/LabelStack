@@ -5,9 +5,11 @@ import { api, Label } from '@labelstack/api';
 import classNames from 'classnames';
 import { useImageDataContext } from '@labelstack/viewer/src/contexts/ImageDataContext';
 import { useUserDataContext } from '@labelstack/app/src/contexts/UserDataContext';
-import PanelButton from '@labelstack/viewer/src/ui/components/PanelButton';
 import { normalizeStr, showDangerNotification } from '@labelstack/app/src/utils';
 import ContentChangedIndicator from '@labelstack/viewer/src/ui/components/ContentChangedIndicator';
+import { useAnnotatorLayoutContext } from '../../../contexts/AnnotatorLayoutContext';
+import { useHotkeysControllerContext } from '@labelstack/viewer/src/contexts/HotkeysControllerContext';
+import { useHotkeys } from 'react-hotkeys-hook';
 
 interface AssignLabelsPanelProps {}
 
@@ -15,6 +17,8 @@ const AssignLabelsPanel: React.FC<AssignLabelsPanelProps> = () => {
   const [{ allLabels, task }, { refreshTaskObjects }] = useAnnotatorDataContext();
   const [{ imageInstance }] = useImageDataContext();
   const [{ token }] = useUserDataContext();
+  const [{ editModeLocked }] = useAnnotatorLayoutContext();
+  const [{ saveHotkeys }] = useHotkeysControllerContext();
 
   const [contentModified, setContentModified] = useState<boolean>(false);
   const [searchText, setSearchText] = useState<string>('');
@@ -37,6 +41,8 @@ const AssignLabelsPanel: React.FC<AssignLabelsPanelProps> = () => {
     setCheckboxesState({ ...checkboxesState });
     setContentModified(false);
   }, [imageInstance?.id]);
+
+  useHotkeys(saveHotkeys.join(','), uploadCheckedAssignments, [uploadCheckedAssignments]);
 
   function uploadCheckedAssignments() {
     const labelIdsToCreate = Object.entries(checkboxesState)
@@ -62,11 +68,16 @@ const AssignLabelsPanel: React.FC<AssignLabelsPanelProps> = () => {
     const CircleComponent = active ? BsCheck : BsCircle;
     return (
       <CircleComponent
-        className={classNames('cursor-pointer rounded-full', {
-          'bg-primary-light text-primary-dark': active
+        className={classNames('rounded-full', {
+          'bg-primary-light text-primary-dark': active,
+          'opacity-40': editModeLocked,
+          'cursor-pointer': !editModeLocked
         })}
         size={20}
         onClick={() => {
+          if (editModeLocked) {
+            return;
+          }
           checkboxesState[label.id] = !checkboxesState[label.id];
           setContentModified(true);
           setCheckboxesState({ ...checkboxesState });
@@ -109,18 +120,7 @@ const AssignLabelsPanel: React.FC<AssignLabelsPanelProps> = () => {
             onChange={(event) => setSearchText(event.target.value)}
           />
         </div>
-        {contentModified && (
-          <div className={'w-10 h-10 place-self-center'}>
-            <PanelButton
-              name={'Save changes'}
-              isActive={false}
-              onClick={() => uploadCheckedAssignments()}
-              icon={BsSdCardFill}
-              iconProps={{ size: 30 }}
-            />
-          </div>
-        )}
-        <ContentChangedIndicator modified={contentModified} className={'w-10 h-10'} />
+        <ContentChangedIndicator modified={contentModified} className={'w-14 h-10'} />
       </div>
       <div className={'flex-grow h-100 overflow-auto no-scrollbar'}>
         <div className={'grid grid-cols-12 gap-y-4'}>

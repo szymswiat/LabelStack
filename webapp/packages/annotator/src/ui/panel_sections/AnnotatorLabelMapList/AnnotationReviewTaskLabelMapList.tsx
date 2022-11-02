@@ -1,4 +1,4 @@
-import React, { ReactNode, useCallback } from 'react';
+import React, { useCallback } from 'react';
 import { useAnnotationDataContext } from '@labelstack/viewer/src/contexts/AnnotationDataContext';
 import { LabelMapsObject } from '@labelstack/viewer/src/contexts/AnnotationDataContext/LabelMap';
 import { useImageDataContext } from '@labelstack/viewer/src/contexts/ImageDataContext';
@@ -35,7 +35,7 @@ const AnnotationReviewTaskLabelMapList: React.FC<AnnotationReviewTaskLabelMapLis
     { refreshTaskObjects }
   ] = useAnnotatorDataContext();
   const [{ labelMaps }] = useAnnotationDataContext();
-  const [{ editedLabelMapId }] = useEditedAnnotationDataContext();
+  const [{ editedLabelMapId }, { setEditedLabelMapId, triggerAnnotationsUpload }] = useEditedAnnotationDataContext();
 
   const getDisplayDataForMode: () => [AnnotationsObject, LabelMapsObject] = useCallback(() => {
     const annotationIdsInTask = Object.values(taskAnnotations).map((annotation) => annotation.id);
@@ -93,6 +93,8 @@ const AnnotationReviewTaskLabelMapList: React.FC<AnnotationReviewTaskLabelMapLis
             editable={true}
             editedLabelMapId={editedLabelMapId}
             labelMaps={displayModeLabelMaps}
+            setEditedLabelMapId={setEditedLabelMapId}
+            triggerAnnotationsUpload={triggerAnnotationsUpload}
             onLabelMapSaved={refreshTaskObjects}
           />
         );

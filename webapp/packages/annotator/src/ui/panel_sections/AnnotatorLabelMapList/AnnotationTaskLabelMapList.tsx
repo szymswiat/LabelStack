@@ -13,6 +13,7 @@ import { getAnnotationsFromImageInstance } from '../../../utils';
 import LabelMapList from '@labelstack/viewer/src/ui/panel_sections/LabelMapList';
 import { useEditedAnnotationDataContext } from '../../../contexts/EditedAnnotationDataContext';
 import AnnotationUploader from '../../../components/AnnotationUploader';
+import { useAnnotatorLayoutContext } from '../../../contexts/AnnotatorLayoutContext';
 
 export enum LabelMapsDisplayMode {
   readonly,
@@ -26,7 +27,8 @@ interface AnnotationTaskLabelMapListProps {
 const AnnotationTaskLabelMapList: React.FC<AnnotationTaskLabelMapListProps> = ({ labelMapsDisplayMode }) => {
   const [{ imageInstance }] = useImageDataContext();
   const [{ labelMaps }] = useAnnotationDataContext();
-  const [{ editedLabelMapId }] = useEditedAnnotationDataContext();
+  const [{ editedLabelMapId }, { setEditedLabelMapId, triggerAnnotationsUpload }] = useEditedAnnotationDataContext();
+  const [{ editModeLocked }] = useAnnotatorLayoutContext();
   const [
     {
       task,
@@ -91,6 +93,9 @@ const AnnotationTaskLabelMapList: React.FC<AnnotationTaskLabelMapListProps> = ({
             labelMaps={displayModeLabelMaps}
             editedLabelMapId={editedLabelMapId}
             onLabelMapSaved={refreshTaskObjects}
+            setEditedLabelMapId={setEditedLabelMapId}
+            triggerAnnotationsUpload={triggerAnnotationsUpload}
+            disableTools={editModeLocked}
           />
         );
       case LabelMapsDisplayMode.readonly:
@@ -100,7 +105,9 @@ const AnnotationTaskLabelMapList: React.FC<AnnotationTaskLabelMapListProps> = ({
 
   return (
     <>
-      <AnnotationUploader annotations={displayModeAnnotations} />
+      {labelMapsDisplayMode == LabelMapsDisplayMode.toCreate && (
+        <AnnotationUploader annotations={displayModeAnnotations} />
+      )}
       {getLabelMapListComponent()}
     </>
   );
