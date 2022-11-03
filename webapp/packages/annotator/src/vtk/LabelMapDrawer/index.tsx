@@ -85,7 +85,7 @@ const LabelMapDrawer: React.FC<LabelMapDrawerProps> = (props) => {
         if (isActiveRef.current) {
           setCanUndo(hookCompanion.canUndo());
           setCanRedo(hookCompanion.canRedo());
-          updateLabelMap({ ...editedLabelMap, isModified: true });
+          updateLabelMap({ ...editedLabelMap, modificationTime: Date.now() });
         }
       }
     },
@@ -100,7 +100,7 @@ const LabelMapDrawer: React.FC<LabelMapDrawerProps> = (props) => {
         if (isActiveRef.current) {
           setCanUndo(hookCompanion.canUndo());
           setCanRedo(hookCompanion.canRedo());
-          updateLabelMap({ ...editedLabelMap, isModified: true });
+          updateLabelMap({ ...editedLabelMap, modificationTime: Date.now() });
         }
       }
     },
@@ -143,7 +143,11 @@ const LabelMapDrawer: React.FC<LabelMapDrawerProps> = (props) => {
 
   function onInteractionEnd() {
     syncDrawersData(hookCompanion);
-    updateLabelMap({ ...editedLabelMap, isModified: true, data: hookCompanion.paintFilter.getOutputData() });
+    updateLabelMap({
+      ...editedLabelMap,
+      modificationTime: Date.now(),
+      data: hookCompanion.paintFilter.getOutputData()
+    });
     setCanUndo(hookCompanion.canUndo());
     setCanRedo(hookCompanion.canRedo());
   }

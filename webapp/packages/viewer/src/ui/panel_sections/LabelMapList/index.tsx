@@ -1,6 +1,6 @@
 import React from 'react';
 import { LabelMap, useAnnotationDataContext } from '../../../contexts/AnnotationDataContext';
-import { useHotkeysControllerContext } from '../../../contexts/HotkeysControllerContext';
+import { useViewerSettingsContext } from '../../../contexts/ViewerSettingsContext';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { NoLabelMapsToShowAlert } from './Alerts';
 import { LabelMapsObject } from '../../../contexts/AnnotationDataContext';
@@ -21,12 +21,11 @@ export const LabelMapList: React.FC<LabelMapListProps> = ({
   labelMaps,
   editedLabelMapId,
   setEditedLabelMapId,
-  triggerAnnotationsUpload,
   onLabelMapSaved,
   disableTools = false
 }) => {
   const [, { updateLabelMap }] = useAnnotationDataContext();
-  const [{ saveHotkeys }] = useHotkeysControllerContext();
+  const [{ saveHotkeys }] = useViewerSettingsContext();
 
   const labelMapsToDisplay = Object.values(labelMaps).filter((labelMap) => labelMap.editable === editable);
 
@@ -57,7 +56,7 @@ export const LabelMapList: React.FC<LabelMapListProps> = ({
     if (!editable) {
       return;
     }
-    triggerAnnotationsUpload(onLabelMapSaved);
+    onLabelMapSaved();
   }
 
   useHotkeys(saveHotkeys.join(','), onHotkeySave, [onHotkeySave]);

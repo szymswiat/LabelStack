@@ -1,11 +1,13 @@
-import React from 'react';
-import { useEffectDebug, useEffectNonNull } from '@labelstack/app/src/utils/hooks';
+import React, { useEffect, useRef } from 'react';
+import { useEffectNonNull } from '@labelstack/app/src/utils/hooks';
 import { LabelMap, useAnnotationDataContext } from '@labelstack/viewer/src/contexts/AnnotationDataContext';
 import { useEditedAnnotationDataContext } from '../../contexts/EditedAnnotationDataContext';
 import { AnnotationsObject, api } from '@labelstack/api';
 import { encodeLabelMap } from '@labelstack/viewer/src/utils/labelMapUtils';
 import { showDangerNotification, showInfoNotification } from '@labelstack/app/src/utils';
 import { useUserDataContext } from '@labelstack/app/src/contexts/UserDataContext';
+import { useViewerSettingsContext } from '@labelstack/viewer/src/contexts/ViewerSettingsContext';
+import { useAnnotatorDataContext } from '../../contexts/AnnotatorDataContext';
 
 export interface AnnotationUploaderProps {
   annotations: AnnotationsObject;
@@ -15,6 +17,14 @@ const AnnotationUploader: React.FC<AnnotationUploaderProps> = ({ annotations }) 
   const [{ uploadAnnotationsTrigger }] = useEditedAnnotationDataContext();
   const [{ labelMaps }, { updateLabelMap }] = useAnnotationDataContext();
   const [{ token }] = useUserDataContext();
+  const [{ autoSaveInterval }] = useViewerSettingsContext();
+  const [, { refreshTaskObjects }] = useAnnotatorDataContext();
+
+  const uploadAllEligibleLabelMapsRef = useRef(uploadAllEligibleLabelMaps);
+  const refreshTaskObjectsRef = useRef(refreshTaskObjects);
+
+  uploadAllEligibleLabelMapsRef.current = uploadAllEligibleLabelMaps;
+  refreshTaskObjectsRef.current = refreshTaskObjects;
 
   async function uploadLabelMap(labelMap: LabelMap) {
     const annotationToUpdate = annotations[labelMap.id.annotationId];
@@ -22,34 +32,60 @@ const AnnotationUploader: React.FC<AnnotationUploaderProps> = ({ annotations }) 
     const compressedData = await encodeLabelMap(labelMap.data);
 
     try {
+      console.log(`Uploading label map ${labelMap.name}`);
       await api.createAnnotationData(token, annotationToUpdate, compressedData.buffer);
-      updateLabelMap({ ...labelMap, isModified: false });
+      updateLabelMap({ ...labelMap, modificationTime: 0 });
     } catch (reason) {
       if (!reason.response) {
         throw reason;
       }
       if (reason.response.status === 409) {
         showInfoNotification('No update', reason.response.data.detail);
-      }
-      else {
+      } else {
         showDangerNotification('Error', reason.response.data.detail);
       }
     }
   }
 
-  useEffectDebug(
+  async function uploadAllEditableLabelMaps() {
+    const filteredLabelMaps = Object.values(labelMaps).filter(
+      (labelMap) => labelMap.editable && labelMap.modificationTime
+    );
+    await Promise.all(filteredLabelMaps.map(uploadLabelMap));
+    return filteredLabelMaps;
+  }
+
+  async function uploadAllEligibleLabelMaps() {
+    const filteredLabelMaps = Object.values(labelMaps).filter((labelMap) => {
+      const delayPassed = Date.now() - labelMap.modificationTime > autoSaveInterval * 1000;
+      return labelMap.editable && labelMap.modificationTime && delayPassed;
+    });
+    await Promise.all(filteredLabelMaps.map(uploadLabelMap));
+    return filteredLabelMaps;
+  }
+
+  useEffectNonNull(
     () => {
-      const [callback] = uploadAnnotationsTrigger;
-      Promise.all(
-        Object.values(labelMaps)
-          .filter((labelMap) => labelMap.editable && labelMap.isModified)
-          .map(uploadLabelMap)
-      ).then(callback);
+      uploadAllEditableLabelMaps().then((labelMaps: LabelMap[]) => {
+        if (labelMaps.length > 0) {
+          refreshTaskObjects();
+        }
+      });
     },
-    [uploadAnnotationsTrigger],
-    "uploader",
-    ["upload list trigger"]
+    [],
+    [uploadAnnotationsTrigger]
   );
+
+  useEffect(() => {
+    console.log('Starting uploader');
+    setInterval(() => {
+      uploadAllEligibleLabelMapsRef.current().then((labelMaps: LabelMap[]) => {
+        if (labelMaps.length > 0) {
+          refreshTaskObjectsRef.current();
+        }
+      });
+    }, 1000);
+  }, []);
 
   return <></>;
 };

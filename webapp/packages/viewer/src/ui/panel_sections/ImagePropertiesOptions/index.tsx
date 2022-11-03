@@ -2,14 +2,14 @@ import React from 'react';
 import PanelButton from '../../components/PanelButton';
 import { useImagePropertiesContext } from '../../../contexts/ImagePropertiesContext';
 import { BsCircleHalf } from 'react-icons/bs';
-import { useHotkeysControllerContext } from '../../../contexts/HotkeysControllerContext';
+import { useViewerSettingsContext } from '../../../contexts/ViewerSettingsContext';
 import { useHotkeys } from 'react-hotkeys-hook';
 
 interface ImagePropertiesOptionsProps {}
 
 const ImagePropertiesOptions: React.FC<ImagePropertiesOptionsProps> = () => {
   const [{ invertColors }, { setInvertColors }] = useImagePropertiesContext();
-  const [{ invertColorsHotkeys }] = useHotkeysControllerContext();
+  const [{ invertColorsHotkeys }] = useViewerSettingsContext();
 
   useHotkeys(invertColorsHotkeys.join(','), () => setInvertColors(!invertColors), [invertColors]);
 

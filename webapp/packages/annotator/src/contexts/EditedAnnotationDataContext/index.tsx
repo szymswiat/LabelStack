@@ -2,12 +2,12 @@ import React, { createContext, ReactNode, useContext, useState } from 'react';
 
 export interface EditedAnnotationDataState {
   editedLabelMapId: string | null;
-  uploadAnnotationsTrigger: [() => void];
+  uploadAnnotationsTrigger: number;
 }
 
 export interface EditedAnnotationDataApi {
   setEditedLabelMapId: (editedLabelMapId: string | null) => void;
-  triggerAnnotationsUpload: (onUploadCallback: () => void) => void;
+  triggerAnnotationsUpload: () => void;
 }
 
 export type EditedAnnotationDataContextType = [EditedAnnotationDataState, EditedAnnotationDataApi];
@@ -18,10 +18,10 @@ export const useEditedAnnotationDataContext = () => useContext(EditedAnnotationD
 
 export const EditedAnnotationDataContextProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [editedLabelMapId, setEditedLabelMapId] = useState<string | null>(null);
-  const [uploadAnnotationsTrigger, setUploadAnnotationsTrigger] = useState<[() => void]>([null]);
+  const [uploadAnnotationsTrigger, setUploadAnnotationsTrigger] = useState<number>(0);
 
-  function triggerAnnotationsUpload(onUploadCallback: () => void) {
-    setUploadAnnotationsTrigger([onUploadCallback]);
+  function triggerAnnotationsUpload() {
+    setUploadAnnotationsTrigger(Date.now());
   }
 
   const state: EditedAnnotationDataState = {

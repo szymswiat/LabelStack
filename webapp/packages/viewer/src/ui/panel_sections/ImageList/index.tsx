@@ -3,7 +3,7 @@ import { useImageDataContext } from '../../../contexts/ImageDataContext';
 import classNames from 'classnames';
 import { ImageInstance, ImageInstancesObject } from '@labelstack/api';
 import { useHotkeys } from 'react-hotkeys-hook';
-import { useHotkeysControllerContext } from '../../../contexts/HotkeysControllerContext';
+import { useViewerSettingsContext } from '../../../contexts/ViewerSettingsContext';
 import { BsExclamationLg, BsServer } from 'react-icons/bs';
 import PanelButton from '../../components/PanelButton';
 import { CircularProgressbar } from 'react-circular-progressbar';
@@ -16,7 +16,7 @@ interface ImageListProps {
 
 const ImageList: React.FC<ImageListProps> = ({ imageInstances, onImageInstanceChange }) => {
   const [{ imageInstance }, { downloaderApi }] = useImageDataContext();
-  const [{ prevImageHotkeys, nextImageHotkeys }] = useHotkeysControllerContext();
+  const [{ prevImageHotkeys, nextImageHotkeys }] = useViewerSettingsContext();
 
   const imageInstanceList = Object.values(imageInstances);
 

@@ -37,7 +37,7 @@ const LabelMapSliceRepresentation: React.FC<LabelMapSliceRepresentationProps> = 
 
   useEffectNonNull(
     () => {
-      if (!inputLabelMap.isModified) {
+      if (!inputLabelMap.modificationTime) {
         hookCompanion.setLabelMapData(inputLabelMap.data);
       }
       view.renderView();

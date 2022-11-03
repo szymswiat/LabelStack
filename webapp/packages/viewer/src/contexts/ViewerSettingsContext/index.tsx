@@ -1,6 +1,6 @@
 import React, { createContext, ReactNode, useContext, useState } from 'react';
 
-export interface HotkeysControllerState {
+export interface ViewerSettingsState {
   undoHotkeys: string[];
   redoHotkeys: string[];
   increaseToolSizeHotkeys: string[];
@@ -14,9 +14,11 @@ export interface HotkeysControllerState {
   activatePaintToolHotkeys: string[];
   activatePolygonToolHotkeys: string[];
   activateSplineToolHotkeys: string[];
+
+  autoSaveInterval: number;
 }
 
-export interface HotkeysControllerApi {
+export interface ViewerSettingsApi {
   setUndoHotkeys: (hotkeys: string[]) => void;
   setRedoHotkeys: (hotkeys: string[]) => void;
   setIncreaseToolSizeHotkeys: (hotkeys: string[]) => void;
@@ -30,15 +32,17 @@ export interface HotkeysControllerApi {
   setActivatePaintToolHotkeys: (hotkeys: string[]) => void;
   setActivatePolygonToolHotkeys: (hotkeys: string[]) => void;
   setActivateSplineToolHotkeys: (hotkeys: string[]) => void;
+
+  setAutoSaveInterval: (interval: number) => void;
 }
 
-export type HotkeysControllerContextType = [HotkeysControllerState, HotkeysControllerApi];
+export type ViewerSettingsContextType = [ViewerSettingsState, ViewerSettingsApi];
 
-export const HotkeysControllerContext = createContext<HotkeysControllerContextType>(null);
+export const ViewerSettingsContext = createContext<ViewerSettingsContextType>(null);
 
-export const useHotkeysControllerContext = () => useContext(HotkeysControllerContext);
+export const useViewerSettingsContext = () => useContext(ViewerSettingsContext);
 
-export const HotkeysControllerContextProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+export const ViewerSettingsContextProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [undoHotkeys, setUndoHotkeys] = useState<string[]>(['ctrl+z']);
   const [redoHotkeys, setRedoHotkeys] = useState<string[]>(['ctrl+y,ctrl+shift+z']);
   const [increaseToolSizeHotkeys, setIncreaseToolSizeHotkeys] = useState<string[]>(['alt+=']);
@@ -54,7 +58,9 @@ export const HotkeysControllerContextProvider: React.FC<{ children: ReactNode }>
   const [activatePolygonToolHotkeys, setActivatePolygonToolHotkeys] = useState<string[]>(['p']);
   const [activateSplineToolHotkeys, setActivateSplineToolHotkeys] = useState<string[]>(['s']);
 
-  const state: HotkeysControllerState = {
+  const [autoSaveInterval, setAutoSaveInterval] = useState<number>(15)
+
+  const state: ViewerSettingsState = {
     undoHotkeys,
     redoHotkeys,
     increaseToolSizeHotkeys,
@@ -67,10 +73,12 @@ export const HotkeysControllerContextProvider: React.FC<{ children: ReactNode }>
 
     activatePaintToolHotkeys,
     activatePolygonToolHotkeys,
-    activateSplineToolHotkeys
+    activateSplineToolHotkeys,
+
+    autoSaveInterval
   };
 
-  const api: HotkeysControllerApi = {
+  const api: ViewerSettingsApi = {
     setUndoHotkeys,
     setRedoHotkeys,
     setIncreaseToolSizeHotkeys,
@@ -83,8 +91,10 @@ export const HotkeysControllerContextProvider: React.FC<{ children: ReactNode }>
 
     setActivatePaintToolHotkeys,
     setActivatePolygonToolHotkeys,
-    setActivateSplineToolHotkeys
+    setActivateSplineToolHotkeys,
+
+    setAutoSaveInterval
   };
 
-  return <HotkeysControllerContext.Provider value={[state, api]}>{children}</HotkeysControllerContext.Provider>;
+  return <ViewerSettingsContext.Provider value={[state, api]}>{children}</ViewerSettingsContext.Provider>;
 };

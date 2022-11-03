@@ -47,5 +47,5 @@ export interface LabelMap {
   color: RGBColor;
   visibility: boolean;
   editable: boolean;
-  isModified: boolean;
+  modificationTime: number;
 }

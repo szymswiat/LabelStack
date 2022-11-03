@@ -33,8 +33,7 @@ const AnnotationTaskLabelMapList: React.FC<AnnotationTaskLabelMapListProps> = ({
     {
       task,
       taskObjects: { taskLabelAssignments, taskAnnotations }
-    },
-    { refreshTaskObjects }
+    }
   ] = useAnnotatorDataContext();
 
   const getDisplayDataForMode: () => [AnnotationsObject, LabelMapsObject] = useCallback(() => {
@@ -92,9 +91,8 @@ const AnnotationTaskLabelMapList: React.FC<AnnotationTaskLabelMapListProps> = ({
             editable={true}
             labelMaps={displayModeLabelMaps}
             editedLabelMapId={editedLabelMapId}
-            onLabelMapSaved={refreshTaskObjects}
+            onLabelMapSaved={triggerAnnotationsUpload}
             setEditedLabelMapId={setEditedLabelMapId}
-            triggerAnnotationsUpload={triggerAnnotationsUpload}
             disableTools={editModeLocked}
           />
         );

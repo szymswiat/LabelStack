@@ -89,9 +89,9 @@ const LabelMapListRow: React.FC<LabelMapListRowProps> = ({
         onClick={() => setColorPickerVisible(true)}
       />
       <div className={'col-start-4 col-span-6'}>{capitalize(labelMap.name)}</div>
-      {editable && labelMap.isModified && (
+      {editable && labelMap.modificationTime > 0 &&
         <ContentChangedIndicator className={'col-start-12 col-span-1 p-[0.1rem] w-5 h-5'} />
-      )}
+      }
     </>
   );
 };

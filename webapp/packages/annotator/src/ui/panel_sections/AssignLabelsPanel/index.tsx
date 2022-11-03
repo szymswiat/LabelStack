@@ -8,7 +8,7 @@ import { useUserDataContext } from '@labelstack/app/src/contexts/UserDataContext
 import { normalizeStr, showDangerNotification } from '@labelstack/app/src/utils';
 import ContentChangedIndicator from '@labelstack/viewer/src/ui/components/ContentChangedIndicator';
 import { useAnnotatorLayoutContext } from '../../../contexts/AnnotatorLayoutContext';
-import { useHotkeysControllerContext } from '@labelstack/viewer/src/contexts/HotkeysControllerContext';
+import { useViewerSettingsContext } from '@labelstack/viewer/src/contexts/ViewerSettingsContext';
 import { useHotkeys } from 'react-hotkeys-hook';
 
 interface AssignLabelsPanelProps {}
@@ -18,7 +18,7 @@ const AssignLabelsPanel: React.FC<AssignLabelsPanelProps> = () => {
   const [{ imageInstance }] = useImageDataContext();
   const [{ token }] = useUserDataContext();
   const [{ editModeLocked }] = useAnnotatorLayoutContext();
-  const [{ saveHotkeys }] = useHotkeysControllerContext();
+  const [{ saveHotkeys }] = useViewerSettingsContext();
 
   const [contentModified, setContentModified] = useState<boolean>(false);
   const [searchText, setSearchText] = useState<string>('');

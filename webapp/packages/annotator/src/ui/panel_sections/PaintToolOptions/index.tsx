@@ -13,7 +13,7 @@ import PanelButton from '@labelstack/viewer/src/ui/components/PanelButton';
 import { capitalize } from '@labelstack/viewer/src/utils';
 import { useAnnotatorToolsContext } from '../../../contexts/AnnotatorToolsContext';
 import classNames from 'classnames';
-import { useHotkeysControllerContext } from '@labelstack/viewer/src/contexts/HotkeysControllerContext';
+import { useViewerSettingsContext } from '@labelstack/viewer/src/contexts/ViewerSettingsContext';
 import { AnnotatorWidgetTool, DrawerMode, DrawMode } from '../../../contexts/AnnotatorToolsContext';
 import { useAnnotatorLayoutContext } from '../../../contexts/AnnotatorLayoutContext';
 
@@ -54,7 +54,7 @@ export const PaintToolOptions: React.FC<PaintToolOptionsProps> = ({ layoutOrient
       activatePolygonToolHotkeys,
       activateSplineToolHotkeys
     }
-  ] = useHotkeysControllerContext();
+  ] = useViewerSettingsContext();
 
   // TODO: move to separate component, enabled globally
   useHotkeys(undoHotkeys.join(','), triggerUndo, [triggerUndo]);
