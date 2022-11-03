@@ -1,8 +1,9 @@
-import React, { ReactNode, useEffect, useState } from 'react';
+import React, { ReactNode, useEffect, useRef } from 'react';
 import { Rnd, RndResizeCallback } from 'react-rnd';
 import { DraggableData, DraggableEvent } from 'react-draggable';
 import CloseableWindow from '../CloseableWindow';
-import { useLocalStorage } from '@labelstack/app/src/utils/hooks';
+import { useEffectNonNull, useLocalStorage, usePrevious } from '@labelstack/app/src/utils/hooks';
+import { useViewerLayoutContext } from '../../../contexts/ViewerLayoutContext';
 
 interface WindowCacheProps {
   x: number;
@@ -13,14 +14,19 @@ interface WindowCacheProps {
 
 interface FloatingWindowProps {
   name: string;
+  windowKey: string;
   onClose: () => void;
   children?: ReactNode;
 }
 
-const FloatingWindow: React.FC<FloatingWindowProps> = ({ name, onClose, children }) => {
+const FloatingWindow: React.FC<FloatingWindowProps> = ({ name, windowKey, onClose, children }) => {
   const cacheKey = `${name.replace(' ', '')}WindowProps`;
 
+  const [, { hideFloatingWindow }] = useViewerLayoutContext();
   const [windowProps, setWindowProps] = useLocalStorage<WindowCacheProps>(cacheKey, getDefaultWindowProps());
+  const previousOnClose = usePrevious<() => void | undefined>(onClose, undefined);
+
+  useEffectNonNull(previousOnClose, [], [previousOnClose]);
 
   function getDefaultWindowProps(): WindowCacheProps {
     let { innerWidth: screenW, innerHeight: screenH } = window;
@@ -51,9 +57,18 @@ const FloatingWindow: React.FC<FloatingWindowProps> = ({ name, onClose, children
     return <div className={'flex-grow place-self-center font-bold'}>{name}</div>;
   }
 
+  function onCloseInternal() {
+    hideFloatingWindow(windowKey);
+    onClose();
+  }
+
   return (
     <Rnd bounds={'window'} default={windowProps} onDragStop={onWindowDragStop} onResizeStop={onWindowResizeStop}>
-      <CloseableWindow className={'w-full h-full cursor-default'} headerComponent={renderHeader()} onClose={onClose}>
+      <CloseableWindow
+        className={'w-full h-full cursor-default'}
+        headerComponent={renderHeader()}
+        onClose={onCloseInternal}
+      >
         {children}
       </CloseableWindow>
     </Rnd>

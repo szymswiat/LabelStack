@@ -7,13 +7,13 @@ function useQuery() {
   return React.useMemo(() => new URLSearchParams(search), [search]);
 }
 
-const usePrevious = (value: any, initialValue: any) => {
-  const ref = useRef(initialValue);
+function usePrevious<T>(value: T, initialValue: T): T {
+  const ref = useRef<T>(initialValue);
   useEffect(() => {
     ref.current = value;
   });
   return ref.current;
-};
+}
 
 const useEffectDebug = (
   effectHook: EffectCallback,

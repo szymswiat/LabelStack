@@ -18,6 +18,7 @@ const ImageInfo: React.FC = () => {
         IMAGE_DESCRIPTION_WINDOW_KEY,
         <FloatingWindow
           name={'Image Description'}
+          windowKey={IMAGE_DESCRIPTION_WINDOW_KEY}
           key={IMAGE_DESCRIPTION_WINDOW_KEY}
           onClose={() => setShowDescriptionWindow(false)}
         >
