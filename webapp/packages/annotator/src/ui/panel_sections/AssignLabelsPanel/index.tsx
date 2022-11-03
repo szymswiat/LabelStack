@@ -120,7 +120,7 @@ const AssignLabelsPanel: React.FC<AssignLabelsPanelProps> = () => {
             onChange={(event) => setSearchText(event.target.value)}
           />
         </div>
-        <ContentChangedIndicator modified={contentModified} className={'w-14 h-10'} />
+        {contentModified && <ContentChangedIndicator className={'w-6 h-10 py-2'} />}
       </div>
       <div className={'flex-grow h-100 overflow-auto no-scrollbar'}>
         <div className={'grid grid-cols-12 gap-y-4'}>

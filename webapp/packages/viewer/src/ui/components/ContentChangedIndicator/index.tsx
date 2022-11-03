@@ -1,16 +1,16 @@
 import React from 'react';
 import classNames from 'classnames';
+import { BsAsterisk } from 'react-icons/bs';
 
 interface ContentChangedIndicatorProps {
-  modified: boolean;
   className?: string;
 }
 
-const ContentChangedIndicator: React.FC<ContentChangedIndicatorProps> = ({ modified, className }) => {
+const ContentChangedIndicator: React.FC<ContentChangedIndicatorProps> = ({ className }) => {
   return (
-    <div
-      className={classNames(className, 'rounded-full place-self-center', modified ? 'bg-red-700' : 'bg-green-700')}
-    />
+    <div className={classNames(className, 'place-self-center grid place-items-center')}>
+      <BsAsterisk className="w-full h-full text-red-700" />
+    </div>
   );
 };
 
