@@ -50,7 +50,7 @@ services:
       # configuration file
       - ${ORTHANC_CONFIG}:${ORTHANC_CONFIG_INTERNAL}:ro
       # storage volume for raw dicoms
-      - ${ORTHANC_DICOM_DATA}:${ORTHANC_DICOM_DATA_INTERNAL}
+      - pacs-data-dev:${ORTHANC_DICOM_DATA_INTERNAL}
     labels:
       - traefik.enable=true
       - traefik.http.routers.orthanc.entrypoints=web
@@ -70,3 +70,4 @@ services:
 
 volumes:
   app-db-data-dev:
+  pacs-data-dev:

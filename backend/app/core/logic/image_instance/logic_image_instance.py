@@ -1,9 +1,12 @@
 from itertools import groupby
-from typing import List, Dict
+from typing import Dict, List
 
 from sqlalchemy.orm import Session
 
-from app import models, query, schemas, crud, core
+from app import models, query, schemas, crud, core, utils
+from app.resources.modalities import IMAGING_MODALITIES
+from app.utils import DicomWebQidoInstance, DicomTags
+from app import resources
 
 
 def has_labels(
@@ -24,11 +27,13 @@ def clear_labels(image_instance: models.ImageInstance, label_ids: List[int]):
         image_instance.label_assignments.remove(label_assignment)
 
 
-def sync_series_with_image_instances(
+def sync_pacs_with_image_instances(
     db: Session,
-    series_list: List[Dict[str, Dict]],
-    tags_by_keyword: Dict[str, models.Tag],
-    commit=False,
+    series_list: List[DicomWebQidoInstance],
+    instances: List[DicomWebQidoInstance],
+    tags: DicomTags,
+    *,
+    commit: bool = False,
 ) -> List[models.ImageInstance]:
     tag_keywords_for_image_instance = [
         "PatientID",
@@ -36,13 +41,24 @@ def sync_series_with_image_instances(
         "BodyPartExamined",
     ]
 
+    grouped_instances = group_instances_by_series(instances)
+
     synced_image_instances: List[models.ImageInstance] = []
 
     for series in series_list:
-        tag = tags_by_keyword["SeriesInstanceUID"]
-        id_ref = core.logic.dicom.dicomweb_get_tag_value_from_instance(series, tag)
+        id_ref = series.get_tag_by_keyword("SeriesInstanceUID")
+        modality = series.get_tag_by_keyword("Modality")
+
         image_instance = query.image_instance.query_by_id_ref(db, id_ref=id_ref).first()
-        if image_instance is not None:
+
+        bound_dicom_instances = grouped_instances[id_ref]
+
+        if (
+            image_instance is not None
+            or modality not in IMAGING_MODALITIES
+            or not check_support_for_series(bound_dicom_instances)
+        ):
+            print(f"dropping {id_ref}")
             # TODO: what about updates?
             continue
 
@@ -52,10 +68,8 @@ def sync_series_with_image_instances(
         )
 
         for tag_keyword in tag_keywords_for_image_instance:
-            tag = tags_by_keyword[tag_keyword]
-            tag_value = core.logic.dicom.dicomweb_get_tag_value_from_instance(
-                series, tag, allow_empty=True
-            )
+            tag = tags.get_by_keyword(tag_keyword)
+            tag_value = series.get_tag_value(tag, allow_empty=True)
 
             image_instance.tags.append(
                 models.ImageInstanceTagValue(
@@ -92,3 +106,36 @@ def get_all_image_instances_from_task(task: models.Task) -> List[models.ImageIns
         raise ValueError("Invalid task type.")
 
     return image_instances
+
+
+def group_instances_by_series(
+    instances: List[DicomWebQidoInstance],
+) -> Dict[str, List[DicomWebQidoInstance]]:
+
+    instances_by_series = [
+        (instance.get_tag_by_keyword("SeriesInstanceUID"), instance)
+        for instance in instances
+    ]
+
+    return utils.build_grouped_dict(instances_by_series)
+
+
+def check_support_for_series(
+    bound_instances: List[DicomWebQidoInstance],
+) -> bool:
+
+    for instance in bound_instances:
+        sop_class = instance.get_tag_by_keyword("SOPClassUID")
+        scan_options = (
+            instance.get_tag_by_keyword("ScanOptions")
+            if instance.has_tag_by_keyword("ScanOptions")
+            else ""
+        )
+
+        if (
+            sop_class not in resources.IMAGING_SOP_CLASSES
+            or scan_options in resources.UNSUPPORTED_SCAN_OPTIONS
+        ):
+            return False
+
+    return True

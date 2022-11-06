@@ -1,8 +1,7 @@
 from typing import List, Dict, Optional
 
-import requests
 from dicomweb_client import DICOMwebClient
-from fastapi import APIRouter, Depends, HTTPException, status, Request, Response
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from app import crud, models, schemas, query
@@ -10,6 +9,7 @@ from app.api import deps
 from app.api.api_v1 import helpers
 from app.core import logic
 from app.core.config import settings
+from app import utils
 
 router = APIRouter()
 
@@ -63,7 +63,7 @@ def read_dicoms_for_image_instance(
         if image_instance_id not in {ii.id for ii in image_instances}:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
-                detail=f"User does not have access to requested image instance.",
+                detail="User does not have access to requested image instance.",
             )
 
     else:
@@ -95,20 +95,23 @@ def sync_dicomweb(
     """
     client = DICOMwebClient(url=f"http://{settings.DICOMWEB_ORIGIN}")
 
-    tags = crud.tag.get_multi(db, limit=100000)
-    tags_by_keyword: Dict[str, models.Tag] = {tag.keyword: tag for tag in tags}
-    # tags_by_ge - tags by group and element
-    tags_by_ge: Dict[str, models.Tag] = {tag.group_element_id: tag for tag in tags}
+    tags = utils.DicomTags.build(db)
+    utils.DicomWebQidoInstance.bind_tags(tags)
 
-    series_list = client.search_for_series()
-    synced_image_instances = logic.image_instance.sync_series_with_image_instances(
-        db, series_list, tags_by_keyword, commit=False
-    )
+    instances = [
+        utils.DicomWebQidoInstance(instance)
+        for instance in client.search_for_instances(
+            fields=utils.ADDITIONAL_TAGS_TO_FETCH
+        )
+    ]
+    series_list = [
+        utils.DicomWebQidoInstance(series_item)
+        for series_item in client.search_for_series()
+    ]
 
-    instances = client.search_for_instances()
-
-    synced_dicoms = logic.dicom.sync_instances_with_dicoms(
-        db, instances, tags_by_keyword, tags_by_ge, commit=False
+    synced_dicoms = logic.dicom.sync_pacs_with_dicoms(db, instances, tags, commit=False)
+    synced_image_instances = logic.image_instance.sync_pacs_with_image_instances(
+        db, series_list, instances, tags, commit=False
     )
 
     db.commit()
@@ -120,31 +123,3 @@ def sync_dicomweb(
         db.refresh(dicom)
 
     return synced_dicoms
-
-
-# # TODO: remove this endpoint
-# @router.get("/wado/studies/{study_id}/series/{series_id}/instances/{instance_id}")
-# async def dicomweb_wado(
-#     *,
-#     db: Session = Depends(deps.get_db),
-#     request: Request,
-#     study_id: str,
-#     series_id: str,
-#     instance_id: str,
-#     current_user: models.User = Depends(
-#         deps.get_current_user_with_role([schemas.RoleType.annotator])
-#     ),
-# ):
-#     headers = {k.decode(): v.decode() for k, v in request.headers.raw}
-#     pacs_response = requests.get(
-#         f"{settings.DICOMWEB_ORIGIN}/studies/{study_id}/"
-#         f"series/{series_id}/instances/{instance_id}",
-#         headers=headers,
-#         stream=True,
-#     )
-#     # TODO: restrict access
-#     return Response(
-#         content=pacs_response.raw.data,
-#         headers=pacs_response.headers,
-#         status_code=pacs_response.status_code,
-#     )

@@ -2,6 +2,22 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Reload database initial data",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/backend/app/initial_data.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "envFile": "${workspaceFolder}/.env",
+            "cwd": "${workspaceFolder}/backend/app",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/backend",
+                "POSTGRES_SERVER": "localhost",
+                "ENV": "dev",
+                "DICOMWEB_ORIGIN": "localhost/pacs/dicom-web",
+            }
+        },
+        {
             "name": "Backend dev server",
             "type": "python",
             "request": "launch",
@@ -12,9 +28,10 @@
             ],
             "envFile": "${workspaceFolder}/.env",
             "env": {
-                "PYTHONPATH": "${workspaceFolder}/backend/app",
+                "PYTHONPATH": "${workspaceFolder}/backend",
                 "POSTGRES_SERVER": "localhost",
-                "DICOMWEB_ORIGIN": "localhost:8042/dicom-web"
+                "DICOMWEB_ORIGIN": "localhost/pacs/dicom-web",
+                "ENV": "dev"
             }
         }
     ]
