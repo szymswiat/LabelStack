@@ -10,6 +10,8 @@ def create_annotation_task(
     task_in: schemas.TaskCreateApiIn,
     current_user: models.User,
 ) -> models.Task:
+
+    assert task_in.label_assignment_ids
     # check if there are no active tasks with assigned dicom and label
     conflicting_task_count = query.task.query_tasks_with_label_assignments(
         db, task_in.label_assignment_ids, schemas.TaskStatus.active_statuses()

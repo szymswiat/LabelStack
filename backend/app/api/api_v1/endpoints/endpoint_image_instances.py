@@ -1,6 +1,6 @@
 from typing import List, Optional
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.orm import Session
 
 from app import crud, models, schemas, query
@@ -89,3 +89,30 @@ def read_image_instances_for_task(
     helpers.validate_access_to_task(task, current_user)
 
     return logic.image_instance.get_all_image_instances_from_task(task)
+
+
+@router.post("/mark_as_labeled", response_model=List[schemas.ImageInstance])
+def mark_image_instances_as_labeled(
+    *,
+    db: Session = Depends(deps.get_db),
+    image_instance_ids: List[int] = Query(),
+    current_user: models.User = Depends(
+        deps.get_current_user_with_role(
+            [
+                schemas.RoleType.data_admin,
+                schemas.RoleType.task_admin,
+            ]
+        )
+    ),
+) -> List[models.ImageInstance]:
+
+    image_instances = crud.image_instance.get_multi_by_ids(
+        db, ids=image_instance_ids
+    )
+
+    for image_instance in image_instances:
+        image_instance.is_labeled = True
+
+    db.commit()
+
+    return image_instances

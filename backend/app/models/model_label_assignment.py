@@ -17,7 +17,7 @@ class LabelAssignment(Base):
     )
 
     author_id = sa.Column(sa.Integer, sa.ForeignKey("user.id"), nullable=False)
-    parent_task_id = sa.Column(sa.Integer, sa.ForeignKey("task.id"), nullable=False)
+    parent_task_id = sa.Column(sa.Integer, sa.ForeignKey("task.id"), nullable=True)
 
     is_annotated = sa.Column(sa.Boolean, default=False, nullable=False)
 

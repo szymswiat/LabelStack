@@ -123,7 +123,7 @@ def setup_tables():
         sa.Column("label_id", sa.Integer, nullable=False),
         sa.Column("image_instance_id", sa.Integer, nullable=False),
         sa.Column("author_id", sa.Integer, nullable=False),
-        sa.Column("parent_task_id", sa.Integer, nullable=False),
+        sa.Column("parent_task_id", sa.Integer, nullable=True),
         sa.Column("is_annotated", sa.Boolean, default=False, nullable=False),
         sa.PrimaryKeyConstraint("id"),
         sa.UniqueConstraint("label_id", "image_instance_id"),

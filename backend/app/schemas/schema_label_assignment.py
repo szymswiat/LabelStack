@@ -9,14 +9,14 @@ class LabelAssignmentsModifyApiIn(BaseModel):
     label_ids_to_remove: List[int]
     image_instance_id: int
 
-    parent_task_id: int
+    parent_task_id: int | None = None
 
 
 class LabelAssignmentCreateCrud(BaseModel):
     label_id: int
     image_instance_id: int
 
-    parent_task_id: int
+    parent_task_id: int | None = None
     author_id: int
 
 
@@ -35,7 +35,7 @@ class LabelAssignment(BaseModel):
     image_instance_id: int
 
     author_id: int
-    parent_task_id: int
+    parent_task_id: int | None = None
 
     annotations: List[Annotation]
 
@@ -50,7 +50,7 @@ class LabelAssignmentApiOut(BaseModel):
     image_instance_id: int
 
     author_id: int
-    parent_task_id: int
+    parent_task_id: int | None = None
 
     annotations: List[AnnotationApiOut]
 

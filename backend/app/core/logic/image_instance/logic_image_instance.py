@@ -58,7 +58,6 @@ def sync_pacs_with_image_instances(
             or modality not in IMAGING_MODALITIES
             or not check_support_for_series(bound_dicom_instances)
         ):
-            print(f"dropping {id_ref}")
             # TODO: what about updates?
             continue
 
