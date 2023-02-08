@@ -3,7 +3,7 @@
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
-!.vscode/taskHelpers
+!.vscode/run_with_dotenv
 !.vscode/*.code-snippets
 
 # Local History for Visual Studio Code

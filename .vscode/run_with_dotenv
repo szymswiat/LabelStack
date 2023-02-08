@@ -1,0 +1,23 @@
+# !python
+
+import os
+import sys
+import re
+import subprocess
+
+
+def main(args: list[str]):
+
+    with open(args[0], "r") as envFile:
+        for line in envFile:
+            match = re.search("^(?![#\r\n ]).*", line)
+            if match:
+                envVar, value = line.rstrip().split("=")
+                if os.environ.get(envVar) is None:
+                    os.environ[envVar] = value
+
+    subprocess.check_call(args[1:])
+
+
+if __name__ == "__main__":
+    main(sys.argv[1:])

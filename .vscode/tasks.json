@@ -5,8 +5,7 @@
 			"label": "[DEV] Frontend server",
 			"type": "shell",
 			"command": [
-				"source ${workspaceFolder}/.vscode/taskHelpers &&",
-				"loadDotEnv ${workspaceFolder}/.env &&",
+				"python ${workspaceFolder}/.vscode/run_with_dotenv ${workspaceFolder}/.env ",
 				"yarn app:dev"
 			],
 			"options": {
@@ -22,8 +21,7 @@
 			"label": "[DEV] Backend server",
 			"type": "shell",
 			"command": [
-				"source ${workspaceFolder}/.vscode/taskHelpers &&",
-				"loadDotEnv ${workspaceFolder}/.env &&",
+				"python ${workspaceFolder}/.vscode/run_with_dotenv ${workspaceFolder}/.env ",
 				"${command:python.interpreterPath} -m uvicorn app.main:app ",
 				"--reload --reload-delay 1 --reload-dir ${workspaceFolder}/backend/app"
 			],
@@ -54,8 +52,7 @@
 			"label": "[DEV] Run database migrations",
 			"type": "shell",
 			"command": [
-				"source ${workspaceFolder}/.vscode/taskHelpers &&",
-				"loadDotEnv ${workspaceFolder}/.env &&",
+				"python ${workspaceFolder}/.vscode/run_with_dotenv ${workspaceFolder}/.env ",
 				"${command:python.interpreterPath} -m alembic upgrade head"
 			],
 			"options": {
@@ -71,8 +68,7 @@
 			"label": "[DEV] Reload database initial data",
 			"type": "shell",
 			"command": [
-				"source ${workspaceFolder}/.vscode/taskHelpers &&",
-				"loadDotEnv ${workspaceFolder}/.env &&",
+				"python ${workspaceFolder}/.vscode/run_with_dotenv ${workspaceFolder}/.env ",
 				"${command:python.interpreterPath} initial_data.py"
 			],
 			"options": {
@@ -89,8 +85,7 @@
 			"label": "[TEST] Run test scenarios",
 			"type": "shell",
 			"command": [
-				"source ${workspaceFolder}/.vscode/taskHelpers &&",
-				"loadDotEnv ${workspaceFolder}/.env &&",
+				"python ${workspaceFolder}/.vscode/run_with_dotenv ${workspaceFolder}/.env ",
 				"${command:python.interpreterPath} -m pytest ./app/tests/api/api_v1/scenarios"
 			],
 			"options": {
@@ -106,8 +101,7 @@
 			"label": "[PROD] Build frontend app",
 			"type": "shell",
 			"command": [
-				"source ${workspaceFolder}/.vscode/taskHelpers &&",
-				"loadDotEnv ${workspaceFolder}/.env &&",
+				"python ${workspaceFolder}/.vscode/run_with_dotenv ${workspaceFolder}/.env ",
 				"yarn build"
 			],
 			"options": {
