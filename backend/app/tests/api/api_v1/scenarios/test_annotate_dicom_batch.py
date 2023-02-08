@@ -28,7 +28,7 @@ def test_step0_create_annotation_task(client: TestClient, db: Session):
         f"{settings.API_V1_STR}/labels/?with_allowed_annotation_type_name=segment",
         headers=task_admin_0_headers,
     )
-    assert 200 <= r.status_code < 300
+    assert 200 <= r.status_code < 300, f"{r.status_code}: {r.content}"
     segmentable_labels: List[schemas.LabelApiOut] = [
         schemas.LabelApiOut.parse_obj(d) for d in r.json()
     ]
@@ -40,7 +40,7 @@ def test_step0_create_annotation_task(client: TestClient, db: Session):
         f"without_active_task=true",
         headers=task_admin_0_headers,
     )
-    assert 200 <= r.status_code < 300
+    assert 200 <= r.status_code < 300, f"{r.status_code}: {r.content}"
     labels_assignments_to_annotate: List[schemas.LabelAssignmentApiOut] = [
         schemas.LabelAssignmentApiOut.parse_obj(d) for d in r.json()
     ]
@@ -50,7 +50,7 @@ def test_step0_create_annotation_task(client: TestClient, db: Session):
         f"{settings.API_V1_STR}/annotation_types/",
         headers=task_admin_0_headers,
     )
-    assert 200 <= r.status_code < 300
+    assert 200 <= r.status_code < 300, f"{r.status_code}: {r.content}"
 
     # group label_assignments by label_id
     grouped_by_label = {}
@@ -79,7 +79,7 @@ def test_step0_create_annotation_task(client: TestClient, db: Session):
             headers=task_admin_0_headers,
             json=task_create.dict(),
         )
-        assert 200 <= r.status_code < 300
+        assert 200 <= r.status_code < 300, f"{r.status_code}: {r.content}"
 
 
 @pytest.mark.order(after="test_step0_create_annotation_task")
@@ -95,7 +95,7 @@ def test_step1_upload_data_for_annotations(client: TestClient, db: Session):
         f"task_type={schemas.TaskType.annotation.value}",
         headers=annotator_2_headers,
     )
-    assert 200 <= r.status_code < 300
+    assert 200 <= r.status_code < 300, f"{r.status_code}: {r.content}"
     annotator_tasks = [schemas.TaskApiOut.parse_obj(d) for d in r.json()]
 
     # pick first annotator task
@@ -107,14 +107,14 @@ def test_step1_upload_data_for_annotations(client: TestClient, db: Session):
         f"new_status={schemas.TaskStatus.in_progress.value}",
         headers=annotator_2_headers,
     )
-    assert 200 <= r.status_code < 300
+    assert 200 <= r.status_code < 300, f"{r.status_code}: {r.content}"
 
     # fetch annotations bound to task
     r = client.get(
         f"{settings.API_V1_STR}/annotations/?" f"by_task_id={annotation_task.id}",
         headers=annotator_2_headers,
     )
-    assert 200 <= r.status_code < 300
+    assert 200 <= r.status_code < 300, f"{r.status_code}: {r.content}"
     annotations_for_task = [schemas.AnnotationApiOut.parse_obj(d) for d in r.json()]
 
     for annotation in annotations_for_task:
@@ -127,14 +127,14 @@ def test_step1_upload_data_for_annotations(client: TestClient, db: Session):
                     "annotation_data": randbytes(random.randint(1024 * 50, 1024 * 100))
                 },
             )
-            assert 200 <= r.status_code < 300
+            assert 200 <= r.status_code < 300, f"{r.status_code}: {r.content}"
 
     # fetch annotations bound to task
     r = client.get(
         f"{settings.API_V1_STR}/annotations/?" f"by_task_id={annotation_task.id}",
         headers=annotator_2_headers,
     )
-    assert 200 <= r.status_code < 300
+    assert 200 <= r.status_code < 300, f"{r.status_code}: {r.content}"
     annotations_for_task = [schemas.AnnotationApiOut.parse_obj(d) for d in r.json()]
 
     random_segment_data = annotations_for_task[0].data_list[0]
@@ -146,7 +146,7 @@ def test_step1_upload_data_for_annotations(client: TestClient, db: Session):
         f"task_id={annotation_task.id}",
         headers=annotator_2_headers,
     )
-    assert 200 <= r.status_code < 300
+    assert 200 <= r.status_code < 300, f"{r.status_code}: {r.content}"
 
     TEST_OUTPUTS["step1"] = {"annotation_task": annotation_task}
 
@@ -164,4 +164,4 @@ def test_step2_close_annotation_task(client: TestClient, db: Session):
         f"new_status={schemas.TaskStatus.done.value}",
         headers=annotator_2_headers,
     )
-    assert 200 <= r.status_code < 300
+    assert 200 <= r.status_code < 300, f"{r.status_code}: {r.content}"

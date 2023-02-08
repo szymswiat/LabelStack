@@ -19,5 +19,10 @@
         "--rcfile",
         "${workspaceFolder}/backend/pyproject.toml"
     ],
-    "python.defaultInterpreterPath": "${workspaceFolder}/backend/.venv/bin/python"
+    "python.defaultInterpreterPath": "${workspaceFolder}/backend/.venv/bin/python",
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true,
+    "python.testing.cwd": "${workspaceFolder}/backend",
+    "python.envFile": "${workspaceFolder}/.env",
+    "python.testing.pytestArgs": ["-c", "${workspaceFolder}/backend/pytest.ini"]
 }

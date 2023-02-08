@@ -2,7 +2,7 @@
 	"version": "2.0.0",
 	"tasks": [
 		{
-			"label": "[DEV] Frontend server",
+			"label": "[DEV] Launch frontend server",
 			"type": "shell",
 			"command": [
 				"python ${workspaceFolder}/.vscode/run_with_dotenv ${workspaceFolder}/.env ",
@@ -18,7 +18,7 @@
 			}
 		},
 		{
-			"label": "[DEV] Backend server",
+			"label": "[DEV] Launch backend server",
 			"type": "shell",
 			"command": [
 				"python ${workspaceFolder}/.vscode/run_with_dotenv ${workspaceFolder}/.env ",
@@ -36,20 +36,20 @@
 			}
 		},
 		{
-			"label": "[DEV] Pacs with db",
+			"label": "[DEV] Launch dev containers (db, pacs, traefik)",
 			"type": "shell",
 			"command": "docker compose up db orthanc traefik"
 		},
 		{
-			"label": "[DEV] Run dev setup",
+			"label": "[DEV] Launch dev environment",
 			"dependsOn": [
-				"[DEV] Pacs with db",
-				"[DEV] Frontend server",
-				"[DEV] Backend server"
+				"[DEV] Launch dev containers (db, pacs, traefik)",
+				"[DEV] Launch frontend server",
+				"[DEV] Launch backend server"
 			]
 		},
 		{
-			"label": "[DEV] Run database migrations",
+			"label": "[DEV] Apply database migrations",
 			"type": "shell",
 			"command": [
 				"python ${workspaceFolder}/.vscode/run_with_dotenv ${workspaceFolder}/.env ",
@@ -65,7 +65,7 @@
 			}
 		},
 		{
-			"label": "[DEV] Reload database initial data",
+			"label": "[DEV] Wipe and init database",
 			"type": "shell",
 			"command": [
 				"python ${workspaceFolder}/.vscode/run_with_dotenv ${workspaceFolder}/.env ",
@@ -82,22 +82,6 @@
 			}
 		},
 		{
-			"label": "[TEST] Run test scenarios",
-			"type": "shell",
-			"command": [
-				"python ${workspaceFolder}/.vscode/run_with_dotenv ${workspaceFolder}/.env ",
-				"${command:python.interpreterPath} -m pytest ./app/tests/api/api_v1/scenarios"
-			],
-			"options": {
-				"cwd": "${workspaceFolder}/backend",
-				"env": {
-					"PYTHONPATH": "${workspaceFolder}/backend",
-					"ENV": "dev_tests",
-					"TEST_INIT_DATA_ROOT": "${workspaceFolder}/backend/app/db/init/resources"
-				}
-			}
-		},
-		{
 			"label": "[PROD] Build frontend app",
 			"type": "shell",
 			"command": [
@@ -109,7 +93,7 @@
 			}
 		},
 		{
-			"label": "[PROD] Run all containers",
+			"label": "[PROD] Launch production setup",
 			"type": "shell",
 			"command": "docker compose -f docker-compose.yml up"
 		},

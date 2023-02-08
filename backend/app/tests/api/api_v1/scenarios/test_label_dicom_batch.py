@@ -35,7 +35,7 @@ def test_step0_create_label_task(client: TestClient, db: Session):
         f"without_active_task=true",
         headers=task_admin_0_headers,
     )
-    assert 200 <= r.status_code < 300
+    assert 200 <= r.status_code < 300, f"{r.status_code}: {r.content}"
     image_instances = [schemas.ImageInstanceApiOut.parse_obj(d) for d in r.json()]
 
     task_create = schemas.TaskCreateApiIn(
@@ -55,7 +55,7 @@ def test_step0_create_label_task(client: TestClient, db: Session):
         headers=task_admin_0_headers,
         json=task_create.dict(),
     )
-    assert 200 <= r.status_code < 300
+    assert 200 <= r.status_code < 300, f"{r.status_code}: {r.content}"
 
     TEST_OUTPUTS["step0"] = {"image_instances": image_instances}
 
@@ -94,7 +94,7 @@ def test_step0_1_create_additional_label_task(client: TestClient, db: Session):
         headers=task_admin_0_headers,
         json=task_create.dict(),
     )
-    assert 200 <= r.status_code < 300
+    assert 200 <= r.status_code < 300, f"{r.status_code}: {r.content}"
 
 
 @pytest.mark.order(after="test_step0_create_label_task")
@@ -110,22 +110,24 @@ def test_step1_assign_labels(client: TestClient, db: Session):
         f"task_type={schemas.TaskType.label_assignment.value}",
         headers=annotator_0_headers,
     )
-    assert 200 <= r.status_code < 300
+    assert 200 <= r.status_code < 300, f"{r.status_code}: {r.content}"
     annotator_tasks = [schemas.TaskApiOut.parse_obj(d) for d in r.json()]
     # fetch label list
     r = client.get(f"{settings.API_V1_STR}/labels/", headers=annotator_0_headers)
-    assert 200 <= r.status_code < 300
+    assert 200 <= r.status_code < 300, f"{r.status_code}: {r.content}"
     all_labels = [schemas.LabelApiOut.parse_obj(d) for d in r.json()]
 
     label_task = annotator_tasks[0]
-    assert len(label_task.image_instances) == ANNOTATOR_0_LABEL_TASK_DICOM_COUNT
+    assert (
+        len(label_task.image_instances) == ANNOTATOR_0_LABEL_TASK_DICOM_COUNT
+    ), f"{r.status_code}: {r.content}"
 
     r = client.post(
         f"{settings.API_V1_STR}/tasks/change_status/{label_task.id}?"
         f"new_status={schemas.TaskStatus.in_progress.value}",
         headers=annotator_0_headers,
     )
-    assert 200 <= r.status_code < 300
+    assert 200 <= r.status_code < 300, f"{r.status_code}: {r.content}"
 
     # annotate images
     image_instances = label_task.image_instances
@@ -146,7 +148,7 @@ def test_step1_assign_labels(client: TestClient, db: Session):
             headers=annotator_0_headers,
             json=annotation.dict(),
         )
-        assert 200 <= r.status_code < 300
+        assert 200 <= r.status_code < 300, f"{r.status_code}: {r.content}"
 
     TEST_OUTPUTS["step1"] = {"label_task": label_task}
 
@@ -164,4 +166,4 @@ def test_step2_finish_label_task(client: TestClient, db: Session):
         f"new_status={schemas.TaskStatus.done.value}",
         headers=annotator_0_headers,
     )
-    assert 200 <= r.status_code < 300
+    assert 200 <= r.status_code < 300, f"{r.status_code}: {r.content}"
