@@ -29,7 +29,7 @@ const ServerConnectionChecker: React.FC<ServerConnectionCheckerProps> = () => {
     if (blockingWindowVisible) {
       showOverlayWindow(
         <Window className={'w-1/4 h-1/4 place-self-center grid'}>
-          <div className={'place-self-center text-3xl justify-center text-primary-light font-bold'}>
+          <div className={'place-self-center text-3xl justify-center text-dark-text font-bold'}>
             Connection lost. <br />
             Reconnecting ...
           </div>

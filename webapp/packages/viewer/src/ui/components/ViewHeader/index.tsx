@@ -47,7 +47,7 @@ const ViewHeader: React.FC<PaintViewHeaderProps> = ({ viewId }) => {
 
   return (
     <>
-      <div className={'h-full w-full flex flex-row p-2 text-primary-light font-bold'}>
+      <div className={'h-full w-full flex flex-row p-2 text-dark-text font-bold'}>
         <div className={'w-1/5'} />
         <div className={'w-3/5 flex flex-row place-content-center'}>
           <span>Slice:</span>
@@ -69,7 +69,7 @@ const ViewHeader: React.FC<PaintViewHeaderProps> = ({ viewId }) => {
             <PanelButton
               name={slicingModeNameMapping[slicingMode]}
               isActive={false}
-              containerClassName={'w-24 h-full bg-secondary-dark hover:bg-primary-dark rounded-md'}
+              containerClassName={'w-24 h-full bg-dark-card-bg hover:bg-dark-bg rounded-md'}
               iconClassName={'select-none'}
               onClick={changeSlicingMode}
               border={false}

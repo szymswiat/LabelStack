@@ -16,7 +16,7 @@ const LabelAssignmentList: React.FC<LabelAssignmentListProps> = ({ labelAssignme
   return (
     <div className={'flex flex-col gap-y-2'}>
       {labelAssignments.map((labelAssignment) => (
-        <div key={labelAssignment.id} className={'h-5 text-primary-light'}>
+        <div key={labelAssignment.id} className={'h-5 text-dark-text'}>
           {allLabels[labelAssignment.label_id].name}
         </div>
       ))}

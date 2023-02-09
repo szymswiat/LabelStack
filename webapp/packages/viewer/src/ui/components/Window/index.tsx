@@ -9,8 +9,8 @@ interface WindowProps {
 const Window: React.FC<WindowProps> = ({ className, children }) => {
   return (
     <div
-      className={classNames(className, 'rounded-lg border-primary-light border-2', {
-        'bg-primary-dark': className.search('bg-') === -1
+      className={classNames(className, 'rounded-lg', {
+        'bg-dark-bg': className.search('bg-') === -1
       })}
     >
       {children}

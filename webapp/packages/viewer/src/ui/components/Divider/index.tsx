@@ -14,7 +14,7 @@ const Divider: React.FC<DividerProps> = ({ orientation }) => {
       })}
     >
       <div
-        className={classNames('border-[1px] border-primary-light', {
+        className={classNames('border-[1px] border-dark-text', {
           'w-[1px] h-full': orientation === 'vertical',
           'h-[1px] w-full': orientation === 'horizontal'
         })}

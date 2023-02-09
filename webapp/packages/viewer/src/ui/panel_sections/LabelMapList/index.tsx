@@ -64,7 +64,7 @@ export const LabelMapList: React.FC<LabelMapListProps> = ({
   return (
     <>
       {labelMapsToDisplay.length === 0 && <NoLabelMapsToShowAlert />}
-      <div className={'grid grid-cols-12 gap-y-2 w-full'}>
+      <div className={'grid grid-cols-12 gap-y-2 gap-x-1 w-full'}>
         {labelMapsToDisplay.map((labelMap) => (
           <LabelMapListRow
             key={labelMap.id.uniqueId}

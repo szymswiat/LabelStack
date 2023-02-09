@@ -7,7 +7,7 @@ import { useViewerLayoutContext } from '../../../contexts/ViewerLayoutContext';
 
 const IMAGE_DESCRIPTION_WINDOW_KEY = 'ImageDescriptionWindow';
 
-const ImageInfo: React.FC = () => {
+const ImageMetadata: React.FC = () => {
   const [showDescriptionWindow, setShowDescriptionWindow] = useState<boolean>(false);
   const [{ imageInstance }] = useImageDataContext();
   const [, { showFloatingWindow, hideFloatingWindow }] = useViewerLayoutContext();
@@ -51,4 +51,4 @@ const ImageInfo: React.FC = () => {
   );
 };
 
-export default ImageInfo;
+export default ImageMetadata;

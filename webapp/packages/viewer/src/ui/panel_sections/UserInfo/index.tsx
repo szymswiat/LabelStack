@@ -17,7 +17,7 @@ const UserInfo: React.FC = () => {
   }
 
   return (
-    <div className={'h-full w-full flex flex-col text-primary-light'}>
+    <div className={'h-full w-full flex flex-col text-dark-text'}>
       <div className={'flex flex-row gap-x-2 h-8'}>
         <span className={'flex-grow place-self-center'}>Logged as {user?.email}</span>
         <PanelButton

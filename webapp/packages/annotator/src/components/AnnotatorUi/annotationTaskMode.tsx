@@ -10,7 +10,7 @@ import { PaintToolOptions } from '../../ui/panel_sections/PaintToolOptions';
 import TaskStatusControl from '../../ui/panel_sections/TaskStatusControl';
 import { AnnotationTaskLabelMapList } from '../../ui/panel_sections/AnnotatorLabelMapList';
 import { LabelMapsDisplayMode } from '../../ui/panel_sections/AnnotatorLabelMapList/AnnotationTaskLabelMapList';
-import ImageInfo from '@labelstack/viewer/src/ui/panel_sections/ImageInfo';
+import ImageMetadata from '@labelstack/viewer/src/ui/panel_sections/ImageMetadata';
 import UiMode from '@labelstack/viewer/src/components/ViewerUi/uiMode';
 
 const toolBarElements: ToolBarElementData[] = [
@@ -29,8 +29,8 @@ const leftPanels: TabbedPanelElement[] = [
         element: <TaskStatusControl />
       },
       {
-        name: 'Image Info',
-        element: <ImageInfo />
+        name: 'Image Metadata',
+        element: <ImageMetadata />
       },
       {
         name: 'Task Images',

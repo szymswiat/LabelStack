@@ -32,7 +32,8 @@ const ReviewPanel: React.FC<ReviewPanelProps> = () => {
     name: string,
     icon: IconType,
     review: AnnotationReview,
-    boundResult: AnnotationReviewResult
+    boundResult: AnnotationReviewResult,
+    colorClassName?: string,
   ) {
     function updateReviewResult() {
       api
@@ -51,7 +52,10 @@ const ReviewPanel: React.FC<ReviewPanelProps> = () => {
         isActive={review.result === boundResult}
         border={false}
         icon={icon}
-        iconProps={{ size: 17 }}
+        containerClassName={'w-5 h-5'}
+        iconClassName={'w-[0.9rem] h-[0.9rem]'}
+        activeClassName={`bg-${colorClassName} text-dark-dark-text`}
+        inactiveClassName={`text-${colorClassName}`}
         onClick={updateReviewResult}
       />
     );
@@ -63,21 +67,21 @@ const ReviewPanel: React.FC<ReviewPanelProps> = () => {
 
   return (
     <div className={'flex flex-col'}>
-      <div className={'grid grid-cols-12 gap-y-2'}>
+      <div className={'grid grid-cols-12 gap-y-2 gap-x-1'}>
         {Object.values(taskReviews).map((review) => {
           const labelId = review.annotation.labelAssignment.label_id;
           const label = allLabels[labelId];
 
           return (
             <React.Fragment key={review.id}>
-              <div className={'col-start-1 w-6 h-6 place-self-center'}>
-                {renderReviewActionButton('Accept', BsCheckLg, review, AnnotationReviewResult.accepted)}
+              <div className={'col-start-1 place-self-center'}>
+                {renderReviewActionButton('Accept', BsCheckLg, review, AnnotationReviewResult.accepted, 'green-700')}
               </div>
-              <div className={'col-start-2 w-6 h-6 place-self-center'}>
-                {renderReviewActionButton('Deny', BsXLg, review, AnnotationReviewResult.denied)}
+              <div className={'col-start-2 place-self-center'}>
+                {renderReviewActionButton('Deny', BsXLg, review, AnnotationReviewResult.denied, 'red-700')}
               </div>
-              <div className={'col-start-3 w-6 h-6 place-self-center'}>
-                {renderReviewActionButton('Deny and correct', BsBrush, review, AnnotationReviewResult.deniedCorrected)}
+              <div className={'col-start-3 place-self-center'}>
+                {renderReviewActionButton('Deny and correct', BsBrush, review, AnnotationReviewResult.deniedCorrected, null)}
               </div>
               <div className={'col-start-4 col-span-7'}>{label.name}</div>
             </React.Fragment>

@@ -2,9 +2,9 @@ import React from 'react';
 import { useViewerLayoutContext, ViewMode } from '../../../contexts/ViewerLayoutContext';
 import { IconType } from 'react-icons';
 import { BsApp, BsLayoutSplit, BsLayoutThreeColumns } from 'react-icons/bs';
-import PanelButton from '../../components/PanelButton';
 import { useImageDataContext } from '../../../contexts/ImageDataContext';
 import { useEffectNonNull, useLocalStorage } from '@labelstack/app/src/utils/hooks';
+import TopBarButton from '../../components/TopBarButton';
 
 interface ViewModeSelectorProps {}
 
@@ -49,14 +49,12 @@ const ViewModeSelector: React.FC<ViewModeSelectorProps> = () => {
       {Object.entries(viewModeData).map(([viewModeIter, [name, icon]]) => {
         const viewModeToRender = Number(viewModeIter);
         return (
-          <PanelButton
+          <TopBarButton
             key={viewModeIter}
             name={name}
-            containerClassName={'w-10 h-10'}
             isActive={viewModeToRender === viewMode}
             onClick={() => setViewMode(viewModeToRender)}
             icon={icon}
-            iconProps={{ size: 20 }}
             disabled={!imageData || (viewModeToRender !== ViewMode.ONE_SLICE && imageDimensions.at(-1) === 1)}
           />
         );

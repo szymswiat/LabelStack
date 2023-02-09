@@ -3,7 +3,7 @@ import { IconBaseProps, IconType } from 'react-icons';
 import classNames from 'classnames';
 import Tooltip from '../Tooltip';
 
-interface PanelButtonProps {
+export interface PanelButtonProps {
   name: string;
   description?: string;
   icon?: IconType;
@@ -12,6 +12,8 @@ interface PanelButtonProps {
   disabled?: boolean;
   border?: boolean;
   containerClassName?: string;
+  activeClassName?: string;
+  inactiveClassName?: string;
   iconClassName?: string;
   onClick?: () => void;
   disableTooltip?: boolean;
@@ -26,14 +28,24 @@ const PanelButton: React.FC<PanelButtonProps> = ({
   onClick,
   disabled = false,
   containerClassName,
+  activeClassName,
+  inactiveClassName,
   iconClassName,
   disableTooltip = false,
   border = true
 }) => {
+
+  if (activeClassName == null) {
+    activeClassName = 'bg-dark-text text-dark-dark-text'
+  }
+  if (inactiveClassName == null) {
+    inactiveClassName = 'text-dark-text'
+  }
+
   function renderButtonContent() {
     if (icon) {
       const Icon = icon;
-      return <Icon {...iconProps} />;
+      return <Icon className={iconClassName} {...iconProps} />;
     }
     return <div className={'pl-2 pr-2'}>{name}</div>;
   }
@@ -44,15 +56,14 @@ const PanelButton: React.FC<PanelButtonProps> = ({
         key={name}
         className={classNames(
           'h-full w-full',
-          'grid place-items-center border-primary-light rounded-lg text-sm',
+          'grid place-items-center border-dark-text rounded-lg text-sm',
           {
             'border-2': border,
-            'bg-primary-light text-primary-dark': isActive,
-            'text-primary-light': !isActive,
+            [activeClassName]: isActive,
+            [inactiveClassName]: !isActive,
             'opacity-40 cursor-default': disabled,
             'cursor-pointer ': !disabled
-          },
-          iconClassName
+          }
         )}
         onClick={disabled ? undefined : onClick}
       >

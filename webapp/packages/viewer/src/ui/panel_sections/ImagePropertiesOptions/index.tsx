@@ -1,9 +1,9 @@
 import React from 'react';
-import PanelButton from '../../components/PanelButton';
 import { useImagePropertiesContext } from '../../../contexts/ImagePropertiesContext';
 import { BsCircleHalf } from 'react-icons/bs';
 import { useViewerSettingsContext } from '../../../contexts/ViewerSettingsContext';
 import { useHotkeys } from 'react-hotkeys-hook';
+import TopBarButton from '../../components/TopBarButton';
 
 interface ImagePropertiesOptionsProps {}
 
@@ -15,9 +15,8 @@ const ImagePropertiesOptions: React.FC<ImagePropertiesOptionsProps> = () => {
 
   return (
     <div className={'flex flex-row gap-x-2'}>
-      <PanelButton
+      <TopBarButton
         name={'Invert colors'}
-        containerClassName={'w-10 h-10'}
         isActive={invertColors}
         onClick={() => setInvertColors(!invertColors)}
         icon={BsCircleHalf}

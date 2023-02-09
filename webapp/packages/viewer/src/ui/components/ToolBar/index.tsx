@@ -5,6 +5,8 @@ import { BsBoxArrowUpRight, BsGear } from 'react-icons/bs';
 import ViewerSettings from '../../../components/ViewerSettings';
 import { useViewerLayoutContext } from '../../../contexts/ViewerLayoutContext';
 import Divider from '../Divider';
+import LayoutCard from '../../../components/LayoutCard';
+import TopBarButton from '../TopBarButton';
 
 export interface ToolBarElementData {
   element: React.ReactElement;
@@ -15,11 +17,6 @@ interface ToolBarProps {
   elements: ToolBarElementData[];
 }
 
-const panelButtonStyles = {
-  className: classNames('place-self-center p-2 w-16 h-16'),
-  size: 30
-};
-
 const ToolBar: React.FC<ToolBarProps> = ({ onPopClick, elements }) => {
   const [, { showOverlayWindow, hideOverlayWindow }] = useViewerLayoutContext();
 
@@ -28,23 +25,21 @@ const ToolBar: React.FC<ToolBarProps> = ({ onPopClick, elements }) => {
   }
 
   return (
-    <div className={classNames('flex h-24 pr-4 pl-4 flex-row-reverse')}>
+    <LayoutCard className={classNames('flex px-4 gap-x-2 flex-row-reverse')}>
       {onPopClick && (
-        <PanelButton
+        <TopBarButton
           name={'Pop out all'}
           icon={BsBoxArrowUpRight}
-          iconProps={{ size: panelButtonStyles.size }}
-          containerClassName={panelButtonStyles.className}
+          containerClassName="place-self-center"
           isActive={false}
           onClick={() => onPopClick()}
         />
       )}
-      <PanelButton
+      <TopBarButton
         name={'Settings'}
         icon={BsGear}
-        iconProps={{ size: panelButtonStyles.size }}
+        containerClassName="place-self-center"
         isActive={false}
-        containerClassName={panelButtonStyles.className}
         onClick={showSettingsWindow}
       />
       <div className={'flex-grow flex flex-row place-self-center'}>
@@ -59,7 +54,7 @@ const ToolBar: React.FC<ToolBarProps> = ({ onPopClick, elements }) => {
           </React.Fragment>
         ))}
       </div>
-    </div>
+    </LayoutCard>
   );
 };
 

@@ -7,7 +7,7 @@ import { ToolBarElementData } from '@labelstack/viewer/src/ui/components/ToolBar
 import ViewModeSelector from '@labelstack/viewer/src/ui/panel_sections/ViewModeSelector';
 import ViewerImageList from '../../ui/panel_sections/ImageList/ViewerImageList';
 import { ViewerLabelMapList } from '../../ui/panel_sections/LabelMapList/ViewerLabelMapList';
-import ImageInfo from '../../ui/panel_sections/ImageInfo';
+import ImageMetadata from '../../ui/panel_sections/ImageMetadata';
 import ImagePropertiesOptions from '../../ui/panel_sections/ImagePropertiesOptions';
 import UiMode from './uiMode';
 
@@ -22,8 +22,8 @@ const leftPanels: TabbedPanelElement[] = [
     name: 'Viewer Panel',
     sections: [
       {
-        name: 'Image Info',
-        element: <ImageInfo />
+        name: 'Image Metadata',
+        element: <ImageMetadata />
       },
       {
         name: 'Image List',

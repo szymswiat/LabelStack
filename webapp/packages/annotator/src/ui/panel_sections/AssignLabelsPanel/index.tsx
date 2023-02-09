@@ -68,12 +68,11 @@ const AssignLabelsPanel: React.FC<AssignLabelsPanelProps> = () => {
     const CircleComponent = active ? BsCheck : BsCircle;
     return (
       <CircleComponent
-        className={classNames('rounded-full', {
-          'bg-primary-light text-primary-dark': active,
+        className={classNames('rounded-full w-[1rem] h-[1rem]', {
+          'bg-dark-text text-dark-card-bg': active,
           'opacity-40': editModeLocked,
           'cursor-pointer': !editModeLocked
         })}
-        size={20}
         onClick={() => {
           if (editModeLocked) {
             return;
@@ -106,28 +105,28 @@ const AssignLabelsPanel: React.FC<AssignLabelsPanelProps> = () => {
       <div className={'flex flex-row h-12 gap-x-4'}>
         <div className={'w-1/12 h-10 place-self-center grid'}>
           <div className={'place-self-center'}>
-            <BsSearch size={30} />
+            <BsSearch className='w-7 h-7' />
           </div>
         </div>
         <div
           className={
-            'flex-grow h-10 p-1 pl-3 pr-3 place-self-center rounded-lg text-primary-light border-primary-light border-2'
+            'flex-grow h-10 p-1 pl-3 pr-3 place-self-center rounded-lg text-dark-text border-dark-text border-2'
           }
         >
           <input
             type={'text'}
-            className={'bg-secondary-dark h-full w-full border-none outline-none place-self-center'}
+            className={'bg-dark-card-bg h-full w-full border-none outline-none place-self-center'}
             onChange={(event) => setSearchText(event.target.value)}
           />
         </div>
         {contentModified && <ContentChangedIndicator className={'w-6 h-10 py-2'} />}
       </div>
       <div className={'flex-grow h-100 overflow-auto no-scrollbar'}>
-        <div className={'grid grid-cols-12 gap-y-4'}>
+        <div className={'grid grid-cols-12 gap-y-2'}>
           {labelsToDisplay.map((label) => (
             <React.Fragment key={label.id}>
               <div className={'col-start-1 place-self-center'}>{renderCheckboxCircle(label)}</div>
-              <div className={'col-start-3 col-span-8'}>{label.name}</div>
+              <div className={'col-start-3 col-span-8 text-sm'}>{label.name}</div>
             </React.Fragment>
           ))}
         </div>

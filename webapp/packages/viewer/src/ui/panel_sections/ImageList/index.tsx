@@ -54,13 +54,13 @@ const ImageList: React.FC<ImageListProps> = ({ imageInstances, onImageInstanceCh
 
     let component: React.ReactNode;
     if (progress === 100) {
-      component = <PanelButton name={'Cached'} isActive={false} icon={BsServer} border={false} />;
+      component = <PanelButton name={'Cached'} isActive={false} icon={BsServer} iconClassName="text-dark-accent" border={false} />;
     } else if (progress == null) {
       component = <></>;
     } else if (progress >= 0) {
       component = (
         <Tooltip tooltipText={'Downloading ...'}>
-          <CircularProgressbar value={progress} className={'bg-primary-dark'} />
+          <CircularProgressbar value={progress} className={'bg-dark-bg'} />
         </Tooltip>
       );
     } else {
@@ -81,28 +81,28 @@ const ImageList: React.FC<ImageListProps> = ({ imageInstances, onImageInstanceCh
   return (
     <div className={'flex flex-col gap-y-4'}>
       <div className={'flex flex-row px-1'}>
-        <div className={'font-bold text-xl'}>
+        <div className={'text-base'}>
           Image: {imageInstanceList.indexOf(imageInstance) + 1}/{imageInstanceList.length}
         </div>
         <div className={'flex-grow'} />
-        <div className={'font-bold text-xl'}>
+        <div className={'text-base'}>
           Cached: {downloadProgress?.filter((x) => x === 100).length}/{imageInstanceList.length}
         </div>
       </div>
       <div className={'h-100 overflow-auto no-scrollbar'}>
-        <div className={'w-full h-full flex flex-col text-primary-light gap-y-1'}>
+        <div className={'w-full h-fit flex flex-col text-dark-text gap-y-2'}>
           {imageInstanceList.map((imageInstanceIter, index) => {
             return (
               <div
                 key={imageInstanceIter.id}
                 className={classNames(
-                  'flex flex-row w-full h-10 pl-2 pr-2 cursor-pointer bg-primary-dark rounded-md',
+                  'flex flex-row w-full h-10 px-2 cursor-pointer bg-dark-bg rounded-md',
                   imageInstance != null && imageInstanceIter.id === imageInstance.id ? 'opacity-100' : 'opacity-50'
                 )}
                 onClick={() => onImageInstanceChange(imageInstanceIter)}
               >
-                <div className={'flex flex-col justify-center pl-4'}>
-                  <div className={'text-xl'}>{imageInstanceIter.id}</div>
+                <div className={'flex flex-col justify-center pl-2'}>
+                  <div className={'text-base'}>{imageInstanceIter.id}</div>
                 </div>
                 <div className={'flex flex-grow'} />
                 {renderDownloadIndicator(index)}

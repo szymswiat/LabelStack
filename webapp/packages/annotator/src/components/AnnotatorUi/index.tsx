@@ -18,7 +18,7 @@ const AnnotatorUi: React.FC<{ children?: ReactNode }> = ({ children }) => {
   const [{ task }] = useAnnotatorDataContext();
 
   if (!task || !(task.task_type in taskModeMappings)) {
-    return <div className={'bg-primary-dark w-full h-full'} />;
+    return <div className={'bg-dark-bg w-full h-full'} />;
   }
 
   return (

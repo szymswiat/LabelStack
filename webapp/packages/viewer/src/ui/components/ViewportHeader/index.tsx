@@ -32,7 +32,7 @@ const ViewportHeader: React.FC = () => {
   }
 
   return (
-    <div className={'h-full w-full flex flex-row p-2 flex place-content-center text-primary-light font-bold'}>
+    <div className={'h-full w-full flex flex-row p-2 flex place-content-center text-dark-text font-bold'}>
       <span>W/L:</span>
       <div className={'w-2'} />
       {/*@ts-ignore*/}
