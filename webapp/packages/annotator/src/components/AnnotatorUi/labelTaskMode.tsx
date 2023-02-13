@@ -22,7 +22,7 @@ const leftPanels: TabbedPanelElement[] = [
     name: 'Task Details',
     sections: [
       {
-        name: 'Task Status Control',
+        name: 'Task Status',
         element: <TaskStatusControl />
       },
       {

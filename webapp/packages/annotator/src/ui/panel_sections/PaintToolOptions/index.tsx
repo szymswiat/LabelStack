@@ -16,6 +16,7 @@ import classNames from 'classnames';
 import { useViewerSettingsContext } from '@labelstack/viewer/src/contexts/ViewerSettingsContext';
 import { AnnotatorWidgetTool, DrawerMode, DrawMode } from '../../../contexts/AnnotatorToolsContext';
 import { useAnnotatorLayoutContext } from '../../../contexts/AnnotatorLayoutContext';
+import TopBarButton from '@labelstack/viewer/src/ui/components/TopBarButton';
 
 interface PaintToolOptionsProps {
   layoutOrientation: 'horizontal' | 'vertical';
@@ -79,42 +80,35 @@ export const PaintToolOptions: React.FC<PaintToolOptionsProps> = ({ layoutOrient
       <div className={'flex flex-row gap-x-2'}>
         {Object.values(AnnotatorWidgetTool).map((tool) => {
           return (
-            <PanelButton
+            <TopBarButton
               key={tool}
               name={capitalize(tool as string)}
-              containerClassName={'w-10 h-10'}
               isActive={activeTool === tool}
               onClick={() => setActiveTool(tool as AnnotatorWidgetTool)}
               icon={toolIcons[tool]}
-              iconProps={{ size: 20 }}
               disabled={editModeLocked}
             />
           );
         })}
       </div>
       <div className={'flex flex-row gap-x-2'}>
-        <PanelButton
+        <TopBarButton
           name={'Draw'}
-          containerClassName={'w-10 h-10'}
           isActive={drawModeActive}
           onClick={() => setDrawMode(DrawMode.DRAW)}
           icon={drawEraseIcons[DrawMode.DRAW]}
-          iconProps={{ size: 20 }}
           disabled={editModeLocked}
         />
-        <PanelButton
+        <TopBarButton
           name={'Erase'}
-          containerClassName={'w-10 h-10'}
           isActive={!drawModeActive}
           onClick={() => setDrawMode(DrawMode.ERASE)}
           icon={drawEraseIcons[DrawMode.ERASE]}
-          iconProps={{ size: 20 }}
           disabled={editModeLocked}
         />
-        <PanelButton
+        <TopBarButton
           name={'3D'}
           description={'Draw 3D'}
-          containerClassName={'w-10 h-10'}
           iconClassName={'font-bold'}
           isActive={drawerMode === DrawerMode.VOLUME}
           onClick={() => setDrawerMode(drawerMode === DrawerMode.SLICE ? DrawerMode.VOLUME : DrawerMode.SLICE)}
@@ -122,23 +116,19 @@ export const PaintToolOptions: React.FC<PaintToolOptionsProps> = ({ layoutOrient
         />
       </div>
       <div className={'flex flex-row gap-x-2'}>
-        <PanelButton
+        <TopBarButton
           name={'Undo'}
-          containerClassName={'w-10 h-10'}
           isActive={false}
           disabled={!canUndo || editModeLocked}
           onClick={triggerUndo}
           icon={undoRedoIcons.undo}
-          iconProps={{ size: 20 }}
         />
-        <PanelButton
+        <TopBarButton
           name={'Redo'}
-          containerClassName={'w-10 h-10'}
           isActive={false}
           disabled={!canRedo || editModeLocked}
           onClick={triggerRedo}
           icon={undoRedoIcons.redo}
-          iconProps={{ size: 20 }}
         />
       </div>
     </div>
