@@ -41,7 +41,7 @@ class ToolSizeManipulatorCompanion extends HookCompanion<ToolSizeManipulatorComp
   }
 
   unmount() {
-    this.rangeManipulator.delete();
+    // this.rangeManipulator.delete();
   }
 }
 

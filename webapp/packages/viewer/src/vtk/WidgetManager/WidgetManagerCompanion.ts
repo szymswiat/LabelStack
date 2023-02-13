@@ -2,8 +2,8 @@ import HookCompanion from '../../utils/HookCompanion';
 import { WidgetManagerProps } from './index';
 import vtkWidgetManager from '@kitware/vtk.js/Widgets/Core/WidgetManager';
 import { View } from 'react-vtk-js';
-import { ViewTypes } from '@kitware/vtk.js/Widgets/Core/WidgetManager/Constants.js';
-import { SlicingMode } from '@kitware/vtk.js/Rendering/Core/ImageMapper';
+import { ViewTypes } from '@kitware/vtk.js/Widgets/Core/WidgetManager/Constants';
+import { SlicingMode } from '@kitware/vtk.js/Rendering/Core/ImageMapper/Constants';
 
 export interface WidgetManagerCompanionProps extends WidgetManagerProps {
   view: View;

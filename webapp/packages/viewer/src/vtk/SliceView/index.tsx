@@ -2,7 +2,7 @@ import React, { ReactNode } from 'react';
 import ImageSliceRepresentation from '@labelstack/viewer/src/vtk/ImageSliceRepresentation';
 import { View } from 'react-vtk-js';
 import LabelMapSliceRepresentation from '@labelstack/viewer/src/vtk/LabelMapSliceRepresentation';
-import { SlicingMode } from '@kitware/vtk.js/Rendering/Core/ImageMapper';
+import { SlicingMode } from '@kitware/vtk.js/Rendering/Core/ImageMapper/Constants';
 import WindowLevelManipulator from '@labelstack/viewer/src/vtk/WindowLevelManipulator';
 import SliceManipulator from '@labelstack/viewer/src/vtk/SliceManipulator';
 import { useImageDataContext } from '@labelstack/viewer/src/contexts/ImageDataContext';
@@ -101,6 +101,7 @@ const SliceView: React.FC<SliceViewProps> = (props) => {
       cameraParallelProjection={true}
       background={[0, 0, 0]}
       interactorSettings={interactorSettings}
+      interactive={true}
     >
       <WidgetManager slicingMode={slicingMode} onMount={onWidgetManagerMount} />
       <ImageSliceRepresentation imageData={imageData} slicingMode={slicingMode} />

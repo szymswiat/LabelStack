@@ -17,6 +17,7 @@ export interface PanelButtonProps {
   iconClassName?: string;
   onClick?: () => void;
   disableTooltip?: boolean;
+  fullSize?: boolean;
 }
 
 const PanelButton: React.FC<PanelButtonProps> = ({
@@ -32,14 +33,14 @@ const PanelButton: React.FC<PanelButtonProps> = ({
   inactiveClassName,
   iconClassName,
   disableTooltip = false,
-  border = true
+  border = true,
+  fullSize = false
 }) => {
-
   if (activeClassName == null) {
-    activeClassName = 'bg-dark-text text-dark-dark-text'
+    activeClassName = 'bg-dark-text text-dark-dark-text';
   }
   if (inactiveClassName == null) {
-    inactiveClassName = 'text-dark-text'
+    inactiveClassName = 'text-dark-text';
   }
 
   function renderButtonContent() {
@@ -54,17 +55,13 @@ const PanelButton: React.FC<PanelButtonProps> = ({
     return (
       <div
         key={name}
-        className={classNames(
-          'h-full w-full',
-          'grid place-items-center border-dark-text rounded-lg text-sm',
-          {
-            'border-2': border,
-            [activeClassName]: isActive,
-            [inactiveClassName]: !isActive,
-            'opacity-40 cursor-default': disabled,
-            'cursor-pointer ': !disabled
-          }
-        )}
+        className={classNames('h-full w-full', 'grid place-items-center border-dark-text rounded-lg text-sm', {
+          'border-2': border,
+          [activeClassName]: isActive,
+          [inactiveClassName]: !isActive,
+          'opacity-40 cursor-default': disabled,
+          'cursor-pointer ': !disabled
+        })}
         onClick={disabled ? undefined : onClick}
       >
         {renderButtonContent()}
@@ -73,7 +70,7 @@ const PanelButton: React.FC<PanelButtonProps> = ({
   }
 
   return (
-    <div className={classNames('w-full h-full', containerClassName)}>
+    <div className={classNames(fullSize ? 'w-full h-full' : '', containerClassName)}>
       {!disableTooltip && <Tooltip tooltipText={description ? description : name}>{renderButtonComponent()}</Tooltip>}
       {disableTooltip && renderButtonComponent()}
     </div>

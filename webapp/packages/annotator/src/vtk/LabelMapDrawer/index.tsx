@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { SlicingMode } from '@kitware/vtk.js/Rendering/Core/ImageMapper';
+import { SlicingMode } from '@kitware/vtk.js/Rendering/Core/ImageMapper/Constants';
 import { useHookCompanion } from '@labelstack/viewer/src/utils/HookCompanion';
 import LabelMapDrawerCompanion from './LabelMapDrawerCompanion';
 import { useAnnotatorToolsContext } from '../../contexts/AnnotatorToolsContext';
@@ -9,7 +9,7 @@ import { useViewerLayoutContext } from '@labelstack/viewer/src/contexts/ViewerLa
 import { AnnotatorWidgetTool } from '../../contexts/AnnotatorToolsContext';
 import BrushWidgetInstance from '../BrushWidgetInstance';
 import SliceViewCompanion from '@labelstack/viewer/src/vtk/SliceView/SliceViewCompanion';
-import { ViewTypes } from '@kitware/vtk.js/Widgets/Core/WidgetManager/Constants.js';
+import { ViewTypes } from '@kitware/vtk.js/Widgets/Core/WidgetManager/Constants';
 import { useEditedAnnotationDataContext } from '../../contexts/EditedAnnotationDataContext';
 import { LabelMap, useAnnotationDataContext } from '@labelstack/viewer/src/contexts/AnnotationDataContext';
 import PolygonWidgetInstance from '../PolygonWidgetInstance';

@@ -58,7 +58,7 @@ const TabbedPanel: React.FC<TabbedPanelProps> = ({ elements, side, onPopClick })
       <div className={classNames('flex flex-grow flex-col space-y-4 w-full overflow-y-scroll no-scrollbar rounded-lg')}>
         {activePanel &&
           activePanel.sections.map((section) => (
-            <div key={section.name} className={'max-h-1/2'}>
+            <div key={section.name} className={'max-h-2/3'}>
               <PanelCollapsible headerName={section.name}>{section.element}</PanelCollapsible>
             </div>
           ))}

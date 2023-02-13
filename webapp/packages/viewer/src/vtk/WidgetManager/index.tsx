@@ -2,7 +2,7 @@ import React from 'react';
 import { useHookCompanion } from '../../utils/HookCompanion';
 import WidgetManagerCompanion from './WidgetManagerCompanion';
 import { useViewContext } from '../../contexts/consumers';
-import { SlicingMode } from '@kitware/vtk.js/Rendering/Core/ImageMapper';
+import { SlicingMode } from '@kitware/vtk.js/Rendering/Core/ImageMapper/Constants';
 import { useEffectNonNull } from '@labelstack/app/src/utils/hooks';
 
 export interface WidgetManagerProps {

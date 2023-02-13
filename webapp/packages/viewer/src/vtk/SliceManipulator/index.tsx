@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { SlicingMode } from '@kitware/vtk.js/Rendering/Core/ImageMapper';
+import { SlicingMode } from '@kitware/vtk.js/Rendering/Core/ImageMapper/Constants';
 import { ManipulatorOptions, ModifierOptions } from '../../types/vtkjs.ext';
 import SliceManipulatorCompanion from './SliceManipulatorCompanion';
 import { useImagePropertiesContext } from '../../contexts/ImagePropertiesContext';

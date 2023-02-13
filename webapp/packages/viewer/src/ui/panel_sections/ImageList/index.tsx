@@ -54,7 +54,16 @@ const ImageList: React.FC<ImageListProps> = ({ imageInstances, onImageInstanceCh
 
     let component: React.ReactNode;
     if (progress === 100) {
-      component = <PanelButton name={'Cached'} isActive={false} icon={BsServer} iconClassName="text-dark-accent" border={false} />;
+      component = (
+        <PanelButton
+          name={'Cached'}
+          isActive={false}
+          icon={BsServer}
+          iconClassName="text-dark-accent"
+          border={false}
+          fullSize={true}
+        />
+      );
     } else if (progress == null) {
       component = <></>;
     } else if (progress >= 0) {
@@ -71,6 +80,7 @@ const ImageList: React.FC<ImageListProps> = ({ imageInstances, onImageInstanceCh
           isActive={false}
           icon={BsExclamationLg}
           border={false}
+          fullSize={true}
         />
       );
     }
@@ -89,7 +99,7 @@ const ImageList: React.FC<ImageListProps> = ({ imageInstances, onImageInstanceCh
           Cached: {downloadProgress?.filter((x) => x === 100).length}/{imageInstanceList.length}
         </div>
       </div>
-      <div className={'h-100 overflow-auto no-scrollbar'}>
+      <div className={'h-100 overflow-y-scroll no-scrollbar'}>
         <div className={'w-full h-fit flex flex-col text-dark-text gap-y-2'}>
           {imageInstanceList.map((imageInstanceIter, index) => {
             return (

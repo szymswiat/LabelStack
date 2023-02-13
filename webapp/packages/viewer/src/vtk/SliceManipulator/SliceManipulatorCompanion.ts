@@ -43,7 +43,7 @@ class SliceManipulatorCompanion extends HookCompanion<SliceManipulatorCompanionP
 
     const dims = vtkImage.getDimensions();
 
-    const maxValue = dims[this.props.slicingMode] - 1;
+    const maxValue = dims[Number(this.props.slicingMode)] - 1;
     this.rangeManipulator.setScrollListener(
       0,
       maxValue,

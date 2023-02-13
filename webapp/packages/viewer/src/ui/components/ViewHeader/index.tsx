@@ -26,7 +26,7 @@ const ViewHeader: React.FC<PaintViewHeaderProps> = ({ viewId }) => {
 
   const slicingMode = slicingModes[viewId];
 
-  const sliceCount = imageData!.vtkImage.getDimensions()[slicingMode] - 1;
+  const sliceCount = imageData!.vtkImage.getDimensions()[Number(slicingMode)] - 1;
   const sliceIndex = visibleSlices[slicingMode];
 
   function updateVisibleSlice(sliceIndex: number) {

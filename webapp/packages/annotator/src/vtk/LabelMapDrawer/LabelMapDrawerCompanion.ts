@@ -1,7 +1,7 @@
 import { LabelMapDrawerProps } from './index';
 import vtkPaintFilter from '@kitware/vtk.js/Filters/General/PaintFilter';
 import { ImageData } from '@labelstack/viewer/src/contexts/ImageDataContext';
-import { SlicingMode } from '@kitware/vtk.js/Rendering/Core/ImageMapper';
+import { SlicingMode } from '@kitware/vtk.js/Rendering/Core/ImageMapper/Constants';
 import LabelMapSliceRepresentationCompanion from '@labelstack/viewer/src/vtk/LabelMapSliceRepresentation/LabelMapSliceRepresentationCompanion';
 import { DrawerMode, DrawMode } from '../../contexts/AnnotatorToolsContext';
 import HookCompanion from '@labelstack/viewer/src/utils/HookCompanion';
@@ -79,7 +79,7 @@ class LabelMapDrawerCompanion extends HookCompanion<LabelMapDrawerCompanionProps
 
     manipulatorOrigin[slicingMode] += sliceIndex * spacing[slicingMode];
 
-    widget.getManipulator().setOrigin(manipulatorOrigin);
+    widget.getManipulator().setWidgetOrigin(manipulatorOrigin);
   }
 
   setSlicingMode(slicingMode: SlicingMode | null) {

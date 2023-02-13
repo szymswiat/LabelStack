@@ -121,7 +121,7 @@ const AssignLabelsPanel: React.FC<AssignLabelsPanelProps> = () => {
         </div>
         {contentModified && <ContentChangedIndicator className={'w-6 h-10 py-2'} />}
       </div>
-      <div className={'flex-grow h-100 overflow-auto no-scrollbar'}>
+      <div className={'flex-grow h-100 overflow-y-scroll no-scrollbar'}>
         <div className={'grid grid-cols-12 gap-y-2'}>
           {labelsToDisplay.map((label) => (
             <React.Fragment key={label.id}>

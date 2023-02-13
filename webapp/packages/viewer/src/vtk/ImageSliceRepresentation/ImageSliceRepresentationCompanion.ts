@@ -1,11 +1,12 @@
 import HookCompanion from '../../utils/HookCompanion';
 import { View } from 'react-vtk-js';
 import vtkImageSlice from '@kitware/vtk.js/Rendering/Core/ImageSlice';
-import vtkImageMapper, { SlicingMode } from '@kitware/vtk.js/Rendering/Core/ImageMapper';
+import vtkImageMapper from '@kitware/vtk.js/Rendering/Core/ImageMapper';
 import { getOrientation } from '../../constants/slicingModeToOrientation';
 import { ImageData } from '../../contexts/ImageDataContext';
 import { ImageSliceRepresentationProps } from './index';
 import { delay } from '../../utils';
+import { SlicingMode } from '@kitware/vtk.js/Rendering/Core/ImageMapper/Constants';
 
 export interface ImageSliceRepresentationCompanionProps extends ImageSliceRepresentationProps {
   view: View;

@@ -1,6 +1,6 @@
 import React, { createContext, ReactNode, useContext, useState } from 'react';
 import SliceViewCompanion from '../../vtk/SliceView/SliceViewCompanion';
-import { SlicingMode } from '@kitware/vtk.js/Rendering/Core/ImageMapper';
+import { SlicingMode } from '@kitware/vtk.js/Rendering/Core/ImageMapper/Constants';
 
 export enum ViewMode {
   ONE_SLICE,

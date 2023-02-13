@@ -1,18 +1,16 @@
 import React, { useEffect } from 'react';
-import vtkImageMapper, { SlicingMode as SlicingModeT } from '@kitware/vtk.js/Rendering/Core/ImageMapper';
+import { SlicingMode } from '@kitware/vtk.js/Rendering/Core/ImageMapper/Constants';
 
 import SliceViewComponent from '../components/SliceViewComponent';
 import { ViewportProps } from '../ui/components/Viewport';
 import { useViewerLayoutContext } from '../contexts/ViewerLayoutContext';
 import { useLocalStorage } from '@labelstack/app/src/utils/hooks';
 
-// @ts-ignore
-const { SlicingMode } = vtkImageMapper;
 
 const ThreeSlicesViewport: React.FC<ViewportProps> = ({ sliceViewComponent }) => {
   const [{ slicingModes }, { setSlicingModes }] = useViewerLayoutContext();
 
-  const [slicingModesStorage, setSlicingModesStorage] = useLocalStorage<Record<string, SlicingModeT>>(
+  const [slicingModesStorage, setSlicingModesStorage] = useLocalStorage<Record<string, SlicingMode>>(
     'threeSlicesSlicingModes',
     { '0': SlicingMode.K, '1': SlicingMode.I, '2': SlicingMode.J }
   );

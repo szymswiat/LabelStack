@@ -1,5 +1,6 @@
 import HookCompanion from '../../utils/HookCompanion';
-import vtkImageMapper, { SlicingMode } from '@kitware/vtk.js/Rendering/Core/ImageMapper';
+import vtkImageMapper from '@kitware/vtk.js/Rendering/Core/ImageMapper';
+import { SlicingMode } from '@kitware/vtk.js/Rendering/Core/ImageMapper/Constants';
 import vtkImageSlice from '@kitware/vtk.js/Rendering/Core/ImageSlice';
 import vtkColorTransferFunction from '@kitware/vtk.js/Rendering/Core/ColorTransferFunction';
 import vtkPiecewiseFunction from '@kitware/vtk.js/Common/DataModel/PiecewiseFunction';

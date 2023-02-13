@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import vtkImageMapper, { SlicingMode as SlicingModeT } from '@kitware/vtk.js/Rendering/Core/ImageMapper';
+import vtkImageMapper, { SlicingMode as SlicingModeT } from '@kitware/vtk.js/Rendering/Core/ImageMapper/Constants';
 
 import SliceViewComponent from '../components/SliceViewComponent';
 import { ViewportProps } from '../ui/components/Viewport';

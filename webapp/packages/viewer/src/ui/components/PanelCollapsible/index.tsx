@@ -1,6 +1,5 @@
 import React, { ReactNode } from 'react';
 import useCollapse from 'react-collapsed';
-import { UseCollapseInput } from 'react-collapsed/dist/types';
 import { IoIosArrowDown, IoIosArrowUp } from 'react-icons/io';
 import LayoutCard from '../../../components/LayoutCard';
 

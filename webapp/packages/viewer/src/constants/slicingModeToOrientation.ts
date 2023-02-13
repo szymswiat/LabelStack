@@ -1,11 +1,8 @@
 import { Orientation } from '@cornerstonejs/core/dist/esm/types';
-import vtkImageMapper, { SlicingMode as SlicingModeType } from '@kitware/vtk.js/Rendering/Core/ImageMapper';
+import { SlicingMode } from '@kitware/vtk.js/Rendering/Core/ImageMapper/Constants';
 import { ORIENTATION } from '@cornerstonejs/core/dist/esm/constants';
 
-// @ts-ignore
-const { SlicingMode } = vtkImageMapper;
-
-function getOrientation(slicingMode: SlicingModeType): Orientation {
+function getOrientation(slicingMode: SlicingMode): Orientation {
   switch (slicingMode) {
     case SlicingMode.K:
       return ORIENTATION.AXIAL;

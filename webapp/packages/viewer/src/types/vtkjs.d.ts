@@ -4,7 +4,7 @@ declare module '@kitware/vtk.js/Filters/General/PaintFilter' {
   import { vtkPipelineConnection } from '@kitware/vtk.js/types';
   import vtkDataArray from '@kitware/vtk.js/Common/Core/DataArray';
   import vtkPolyData from '@kitware/vtk.js/Common/DataModel/PolyData';
-  import { SlicingMode } from '@kitware/vtk.js/Rendering/Core/ImageMapper';
+  import { SlicingMode } from '@kitware/vtk.js/Rendering/Core/ImageMapper/Constants';
 
   class vtkPaintFilter implements vtkAlgorithm {
     static newInstance: (options?: any) => vtkPaintFilter;
@@ -65,26 +65,6 @@ declare module '@kitware/vtk.js/Filters/General/PaintFilter' {
   export = vtkPaintFilter;
 }
 
-declare module '@kitware/vtk.js/Widgets/Core/WidgetManager' {
-  import vtkRenderer from '@kitware/vtk.js/Rendering/Core/Renderer';
-
-  class vtkWidgetManager {
-    static newInstance: (options?: any) => vtkWidgetManager;
-
-    setRenderer: (renderer: vtkRenderer) => void;
-    addWidget: (widget: any, viewType: number) => any;
-    removeWidget: (widget: any) => void;
-    removeWidgets: () => void;
-    grabFocus: (widget: any) => void;
-    releaseFocus: () => void;
-    enablePicking: () => void;
-    disablePicking: () => void;
-    delete: () => void;
-  }
-
-  export = vtkWidgetManager;
-}
-
 declare module '@kitware/vtk.js/Widgets/Widgets3D/PaintWidget' {
   class vtkPaintWidget {
     static newInstance: (options?: any) => vtkPaintWidget;
@@ -109,54 +89,6 @@ declare module '@kitware/vtk.js/Widgets/Widgets3D/SplineWidget' {
   }
 
   export = vtkSplineWidget;
-}
-
-declare module '@kitware/vtk.js/Widgets/Core/WidgetManager/Constants.js' {
-  enum ViewTypes {
-    DEFAULT = 0,
-    GEOMETRY = 1,
-    SLICE = 2,
-    VOLUME = 3,
-    YZ_PLANE = 4, // Sagittal
-    XZ_PLANE = 5 // Coronal
-  }
-
-  export { ViewTypes };
-}
-
-declare module '@kitware/vtk.js/Interaction/Manipulators/MouseRangeManipulator' {
-  class vtkMouseRangeManipulator {
-    static newInstance: (options?: any) => vtkMouseRangeManipulator;
-
-    setVerticalListener: (
-      min: number,
-      max: number,
-      step: number,
-      getValue: () => number,
-      setValue: (value: number) => void,
-      scale: number
-    ) => void;
-
-    setHorizontalListener: (
-      min: number,
-      max: number,
-      step: number,
-      getValue: () => number,
-      setValue: (value: number) => void,
-      scale: number
-    ) => void;
-
-    setScrollListener: (
-      min: number,
-      max: number,
-      step: number,
-      getValue: () => number,
-      setValue: (value: number) => void,
-      scale: number
-    ) => void;
-  }
-
-  export = vtkMouseRangeManipulator;
 }
 
 declare module '@kitware/vtk.js/Imaging/Core/ImageReslice' {
