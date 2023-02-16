@@ -66,6 +66,9 @@ function useLocalStorage<T>(key, initialValue: T): [T, (value: T) => void] {
     try {
       // Get from local storage by key
       const item = window.localStorage.getItem(key);
+      if (item == null) {
+        window.localStorage.setItem(key, JSON.stringify(initialValue));
+      }
       // Parse stored json or if none return initialValue
       return item ? JSON.parse(item) : initialValue;
     } catch (error) {

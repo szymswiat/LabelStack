@@ -1,25 +1,27 @@
 import Dexie, { Table } from 'dexie';
-import { ImageInstance } from '@labelstack/api';
+import { Dicom, ImageInstance } from '@labelstack/api';
 import { showDangerNotification } from '@labelstack/app/src/utils';
 
-const IMAGE_STORE_SIZE_MAX_DEFAULT = 5 * 1024;
+const IMAGE_STORE_SIZE_MAX_DEFAULT = 700;
 
-interface ImageData {
+interface DicomDb {
   id: number;
-  data: ArrayBuffer[];
+  imageInstanceId: number;
+  data: ArrayBuffer;
 }
 
-interface ImageMetadata {
+interface ImageMetadataDb {
   id: number;
   dateCreated: number;
   // TODO define type
   dataset: any;
-  size: number;
+  cachedSize: number;
+  fullyCached: boolean;
 }
 
 export class ViewerDb {
-  imageData: Table<ImageData>;
-  imageMetadata: Table<ImageMetadata>;
+  imageData: Table<DicomDb>;
+  imageMetadata: Table<ImageMetadataDb>;
 
   db: ViewerDb;
 
@@ -27,7 +29,7 @@ export class ViewerDb {
     const db = new Dexie('ViewerCacheDb');
 
     db.version(1).stores({
-      imageData: 'id',
+      imageData: 'id, imageInstanceId',
       imageMetadata: 'id, dateCreated'
     });
 
@@ -48,58 +50,111 @@ export class ViewerDb {
     return this.db;
   }
 
-  async cacheImage(imageInstance: ImageInstance, imageDataList: ArrayBuffer[], dataset: any) {
-    const totalImageSize = imageDataList.reduce((prev, curr) => prev + curr.byteLength, 0);
-
+  async createImageInstanceCacheEntry(imageInstance: ImageInstance) {
     await this.useRaw()
-      .transaction('rw', this.db.imageMetadata, this.db.imageData, async () => {
-        await this._dropImagesUntilEnoughSpace(totalImageSize);
-
+      .transaction('rw', this.db.imageMetadata, async () => {
         this.db.imageMetadata.add(
           {
             id: imageInstance.id,
-            dataset,
+            dataset: undefined,
             dateCreated: Date.now(),
-            size: totalImageSize
+            cachedSize: 0,
+            fullyCached: false
           },
           imageInstance.id
         );
-        this.db.imageData.add({ id: imageInstance.id, data: imageDataList }, imageInstance.id);
       })
       .catch(() => {
         showDangerNotification('ERROR', 'Cannot cache data.');
       });
   }
 
-  async getImage(imageInstance: ImageInstance) {
-    const imageMetadata = await this.db.imageMetadata.get(imageInstance.id);
-    const imageData = await this.db.imageData.get(imageInstance.id);
+  async cacheDicom(imageInstance: ImageInstance, dicom: Dicom, imageData: ArrayBuffer) {
+    if (!(await this.hasEntry(imageInstance))) {
+      throw 'There is no image instance entry for dicom. Cannot cache.';
+    }
 
-    return { imageData: imageData?.data, dataset: imageMetadata?.dataset };
+    const totalImageSize = imageData.byteLength;
+
+    await this.useRaw()
+      .transaction('rw', this.db.imageData, this.db.imageMetadata, async () => {
+        await this._dropImagesUntilEnoughSpace(totalImageSize);
+
+        const imageMetadata = await this.db.imageMetadata.get(imageInstance.id);
+        this.db.imageData.add({ id: dicom.id, imageInstanceId: imageInstance.id, data: imageData }, imageInstance.id);
+        this.db.imageMetadata.update(imageMetadata.id, { cachedSize: (imageMetadata.cachedSize += totalImageSize) });
+      })
+      .catch((e) => {
+        showDangerNotification('ERROR', 'Cannot cache data.');
+        console.log(e);
+      });
   }
 
-  async hasImage(imageInstance: ImageInstance) {
+  async finishCaching(imageInstance: ImageInstance, dicoms: Dicom[], dataset: any) {
+    const imageMetadata = await this.db.imageMetadata.get(imageInstance.id);
+
+    const cachedDicoms = dicoms.filter((dicom) => this.hasDicom(dicom));
+
+    if (cachedDicoms.length === dicoms.length) {
+      this.db.imageMetadata.update(imageMetadata.id, { fullyCached: true, dataset });
+    }
+  }
+
+  async getImage(imageInstance: ImageInstance) {
+    const imageMetadata = await this.db.imageMetadata.get(imageInstance.id);
+
+    if (imageMetadata.fullyCached) {
+      const dicomDataList = (await this.db.imageData.where({ imageInstanceId: imageInstance.id }).toArray()).map(
+        (dicomData) => dicomData.data
+      );
+
+      return { imageData: dicomDataList, dataset: imageMetadata?.dataset };
+    }
+
+    throw 'Image is not fully cached. Cannot retrieve.';
+  }
+
+  async getDicom(dicom: Dicom) {
+    return await this.db.imageData.get(dicom.id);
+  }
+
+  async hasEntry(imageInstance: ImageInstance) {
     const imageMetadata = await this.db.imageMetadata.get(imageInstance.id);
 
     return imageMetadata != null;
+  }
+
+  async hasCachedImage(imageInstance: ImageInstance) {
+    const imageMetadata = await this.db.imageMetadata.get(imageInstance.id);
+
+    return imageMetadata == undefined ? false : imageMetadata.fullyCached;
+  }
+
+  async hasDicom(dicom: Dicom) {
+    const imageData = await this.db.imageData.get(dicom.id);
+
+    return imageData != null;
   }
 
   async _dropImagesUntilEnoughSpace(newDataSize: number) {
     const storedMetaAll = await this.db.imageMetadata.orderBy('dateCreated').reverse().toArray();
     const cacheSize = Number(localStorage.getItem('imageCacheSizeMb')) * 1024 * 1024;
 
-    let totalSize = storedMetaAll.reduce((prev, curr) => prev + curr.size, 0);
+    let totalSize = storedMetaAll.reduce((prev, curr) => prev + curr.cachedSize, 0);
 
-    const metaToDrop: ImageMetadata[] = [];
+    const metaToDrop: ImageMetadataDb[] = [];
     while (totalSize + newDataSize > cacheSize) {
       const toDrop = storedMetaAll.pop();
-      totalSize -= toDrop.size;
+      totalSize -= toDrop.cachedSize;
       metaToDrop.push(toDrop);
     }
 
-    metaToDrop.forEach((meta) => {
-      this.db.imageMetadata.delete(meta.id);
-      this.db.imageData.delete(meta.id);
+    await this.useRaw().transaction('rw', this.db.imageData, this.db.imageMetadata, async () => {
+      metaToDrop.forEach(async (meta) => {
+        this.db.imageMetadata.delete(meta.id);
+
+        this.db.imageData.where({ imageInstanceId: meta.id }).delete();
+      });
     });
   }
 }

@@ -24,7 +24,7 @@ const ImageInstanceLoader: React.FC = () => {
       return;
     }
 
-    if (!(await db.hasImage(imageInstance))) {
+    if (!(await db.hasCachedImage(imageInstance))) {
       return;
     }
 

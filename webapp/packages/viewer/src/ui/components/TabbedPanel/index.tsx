@@ -29,7 +29,7 @@ const TabbedPanel: React.FC<TabbedPanelProps> = ({ elements, side, onPopClick })
 
   return (
     <div className={'flex flex-col h-full w-full'}>
-      <div className="h-24 pb-4">
+      <div className="h-22 pb-4">
         <LayoutCard className={classNames('flex px-4 gap-x-2', side === 'right' ? 'flex-row-reverse' : 'flex-row')}>
           {onPopClick && (
             <>

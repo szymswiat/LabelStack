@@ -69,11 +69,12 @@ const ViewHeader: React.FC<PaintViewHeaderProps> = ({ viewId }) => {
             <PanelButton
               name={slicingModeNameMapping[slicingMode]}
               isActive={false}
-              containerClassName={'w-24 h-full bg-dark-card-bg hover:bg-dark-bg rounded-md'}
+              containerClassName={'w-24 h-full rounded-md'}
               iconClassName={'select-none'}
               onClick={changeSlicingMode}
               border={false}
               disableTooltip={true}
+              inactiveClassName={'text-dark-card-bg hover:opacity-80 bg-dark-accent'}
             />
           )}
         </div>

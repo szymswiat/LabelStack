@@ -67,7 +67,7 @@ const ViewerLayout: React.FC<ViewerLayoutProps> = ({ toolBarElements, leftPanels
         >
           <div className={'flex flex-col w-full h-full p-4 gap-y-4 bg-dark-bg'}>
             {isComponentPopOut(componentLocations.toolBarLocation!) && (
-              <div className={'h-24 w-full'}>
+              <div className={'h-22 w-full'}>
                 <ToolBar elements={toolBarElements} />
               </div>
             )}
@@ -96,7 +96,7 @@ const ViewerLayout: React.FC<ViewerLayoutProps> = ({ toolBarElements, leftPanels
       <div className={'flex-grow'}>
         <div className={'flex flex-col w-full h-full'}>
           {!isComponentPopOut(componentLocations.toolBarLocation!) && (
-            <div className={'h-24 pb-4 w-full'}>
+            <div className={'h-22 pb-4 w-full'}>
               <ToolBar
                 elements={toolBarElements}
                 onPopClick={() => setLocationForAll(UiComponentLocation.SEPARATE_WINDOW)}
