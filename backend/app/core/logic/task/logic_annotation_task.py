@@ -1,5 +1,3 @@
-from typing import List
-
 from sqlalchemy.orm import Session
 
 from app import schemas, models, crud, query, core
@@ -11,17 +9,24 @@ def create_annotation_task(
     current_user: models.User,
 ) -> models.Task:
 
-    assert task_in.label_assignment_ids
+    assert task_in.image_instance_ids
+    task_in.label_assignment_ids = task_in.label_assignment_ids or []
+
+    task_label_assignments: list[
+        models.LabelAssignment
+    ] = crud.label_assignment.get_multi_by_ids(db, ids=task_in.label_assignment_ids)
+
+    if len(task_label_assignments) > 0:
+        for label_assignment in task_label_assignments:
+            if label_assignment.image_instance_id not in task_in.image_instance_ids:
+                raise core.LogicError(core.LogicErrorCode.task_input_misaligned)
+
     # check if there are no active tasks with assigned dicom and label
     conflicting_task_count = query.task.query_tasks_with_label_assignments(
         db, task_in.label_assignment_ids, schemas.TaskStatus.active_statuses()
     ).count()
     if conflicting_task_count > 0:
         raise core.LogicError(core.LogicErrorCode.dicom_and_label_combo_already_in_task)
-
-    task_label_assignments: List[
-        models.LabelAssignment
-    ] = crud.label_assignment.get_multi_by_ids(db, ids=task_in.label_assignment_ids)
 
     for label_assignment in task_label_assignments:
         if label_assignment.is_annotated is True:
@@ -108,7 +113,7 @@ def _status_in_progress_to_done(
     db: Session, task: models.Task, **kwargs
 ) -> models.Task:
     remove_draft_data = kwargs.get("remove_draft_data", False)
-    task_annotations: List[models.Annotation] = query.annotation.query_by_task(
+    task_annotations: list[models.Annotation] = query.annotation.query_by_task(
         db, task.id
     ).all()
 

@@ -1,7 +1,11 @@
 from typing import List
+from pydantic import BaseModel
 
 from app.schemas.schema_label_assignment import LabelAssignment
-from app.schemas.schema_tag_value import *
+from app.schemas.schema_tag_value import (
+    ImageInstanceTagValue,
+    ImageInstanceTagValueApiOut,
+)
 
 
 class ImageInstanceCreateCrud(BaseModel):
@@ -20,7 +24,7 @@ class ImageInstance(BaseModel):
     id: int
     id_ref: str
 
-    is_labeled: bool
+    visited: bool
     label_assignments: List[LabelAssignment]
 
     tags: List[ImageInstanceTagValue]

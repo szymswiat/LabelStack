@@ -18,7 +18,7 @@ module.exports = {
         },
         dark: { // for now used only by viewer
           'bg': '#282828',
-          'card-bg': '#0B0B10',
+          'card-bg': '#000000',
           'accent': '#5ACCE6',
           'text': '#F3DBDB',
           'dark-text': '#0B0B10'

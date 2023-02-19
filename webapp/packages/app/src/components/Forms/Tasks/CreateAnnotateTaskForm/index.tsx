@@ -51,7 +51,7 @@ const CreateAnnotateTaskForm = ({
         name: taskName,
         description: description,
         priority: priority,
-        image_instance_ids: [],
+        image_instance_ids: selectedLabelAssignments.map((labelAssignment) => labelAssignment.image_instance_id),
         label_assignment_ids: selectedLabelAssignments.map((labelAssignment) => labelAssignment.id),
         annotation_ids: []
       };

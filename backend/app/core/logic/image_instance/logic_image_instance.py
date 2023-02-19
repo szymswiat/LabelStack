@@ -1,5 +1,6 @@
 from itertools import groupby
 from typing import Dict, List
+from copy import deepcopy
 
 from sqlalchemy.orm import Session
 
@@ -80,7 +81,7 @@ def sync_pacs_with_image_instances(
     return synced_image_instances
 
 
-def get_all_image_instances_from_task(task: models.Task) -> List[models.ImageInstance]:
+def get_all_image_instances_for_task(task: models.Task) -> List[models.ImageInstance]:
     if task.task_type == schemas.TaskType.label_assignment:
         image_instances = task.image_instances
     elif task.task_type == schemas.TaskType.annotation:
@@ -105,6 +106,72 @@ def get_all_image_instances_from_task(task: models.Task) -> List[models.ImageIns
         raise ValueError("Invalid task type.")
 
     return image_instances
+
+
+def filter_image_instances_for_user(
+    image_instance_list: list[models.ImageInstance],
+    user: models.User,
+) -> list[schemas.ImageInstance]:
+
+    image_instance_list_new: list[schemas.ImageInstance] = []
+
+    for image_instance in image_instance_list:
+        image_instance_new = schemas.ImageInstance.from_orm(image_instance)
+        image_instance_new.label_assignments = filter_label_assignments_for_user(
+            image_instance.label_assignments, user
+        )
+
+        image_instance_list_new.append(image_instance_new)
+
+    return image_instance_list_new
+
+
+def filter_label_assignments_for_user(
+    label_assignment_list: list[models.LabelAssignment],
+    user: models.User,
+) -> list[schemas.LabelAssignment]:
+
+    label_assignment_list_new: list[schemas.LabelAssignment] = []
+
+    for label_assignment in label_assignment_list:
+
+        if (
+            label_assignment.parent_task.status != schemas.TaskStatus.done
+            and label_assignment.author_id != user.id
+        ):
+            continue
+
+        label_assignment_new = schemas.LabelAssignment.from_orm(label_assignment)
+        label_assignment_new.annotations = filter_annotations_for_user(
+            label_assignment.annotations, user
+        )
+
+        label_assignment_list_new.append(label_assignment_new)
+
+    return label_assignment_list_new
+
+
+def filter_annotations_for_user(
+    annotation_list: list[models.Annotation],
+    user: models.User,
+) -> list[schemas.Annotation]:
+
+    annotation_list_new: list[schemas.Annotation] = []
+
+    for annotation in annotation_list:
+
+        if (
+            annotation.label_assignment.parent_task.status != schemas.TaskStatus.done
+            and annotation.author_id != user.id
+        ):
+            continue
+
+        annotation_new = schemas.Annotation.from_orm(annotation)
+        annotation_list_new.append(annotation_new)
+
+        pass
+
+    return annotation_list_new
 
 
 def group_instances_by_series(

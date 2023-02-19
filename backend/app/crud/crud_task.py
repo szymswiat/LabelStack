@@ -9,6 +9,11 @@ class CRUDTask(CRUDBase[models.Task, schemas.TaskCreateCrud, schemas.TaskUpdateC
     def schema_to_model_create(
         self, db: Session, *, create_obj: schemas.TaskCreateCrud
     ) -> models.Task:
+
+        assert create_obj.image_instance_ids
+        assert create_obj.label_assignment_ids
+        assert create_obj.annotation_ids
+
         image_instances = crud.image_instance.get_multi_by_ids(
             db, ids=create_obj.image_instance_ids
         )

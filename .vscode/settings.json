@@ -14,7 +14,8 @@
         "--config",
         "${workspaceFolder}/backend/.flake8"
     ],
-    "python.linting.pylintEnabled": true,
+    // disable pylint temporarily since it's very slow with sqlalchemy 2.0
+    "python.linting.pylintEnabled": false,
     "python.linting.pylintArgs": [
         "--rcfile",
         "${workspaceFolder}/backend/pyproject.toml"

@@ -18,12 +18,12 @@ def validate_label_task_input(db: Session, task_in: schemas.TaskCreateApiIn):
 
 
 def validate_annotation_task_input(db: Session, task_in: schemas.TaskCreateApiIn):
-    if len(task_in.label_assignment_ids) == 0:
+    if len(task_in.image_instance_ids) == 0:
         raise HTTPException(
             status_code=status.HTTP_406_NOT_ACCEPTABLE,
-            detail=f"Label assignment id list is required for this type of task.",
+            detail=f"Image instance id list is required for this type of task.",
         )
-    if len(task_in.image_instance_ids) or len(task_in.annotation_ids):
+    if len(task_in.annotation_ids):
         raise HTTPException(
             status_code=status.HTTP_406_NOT_ACCEPTABLE,
             detail=f"Cannot insert annotation task with dicom_ids or annotation_ids.",

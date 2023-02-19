@@ -8,6 +8,7 @@ class LogicErrorCode(int, Enum):
     dicom_and_label_combo_already_in_task = auto()
 
     task_missing_assigned_user = auto()
+    task_input_misaligned = auto()
 
     annotation_not_finished = auto()
     annotation_missing_data_blob = auto()

@@ -81,11 +81,11 @@ export const api = {
     return (await wadoClient._httpGetMultipartApplicationDicom(url, null, null, progressCallback))[0];
   },
 
-  async getImageInstances(token: string, waitingForLabels = false, withoutActiveTask = false, byIds?: number[]) {
+  async getImageInstances(token: string, unvisited = false, withoutActiveTask = false, byIds?: number[]) {
     return axios.get<ImageInstance[]>(`${apiUrl}${apiV1}/image_instances/`, {
       ...authHeaders(token),
       params: {
-        waiting_for_labels: waitingForLabels,
+        unvisited: unvisited,
         without_active_task: withoutActiveTask,
         by_ids: byIds?.join(',')
       }

@@ -56,7 +56,7 @@ const rightPanels: TabbedPanelElement[] = [
     name: 'Annotation Task Panel',
     sections: [
       {
-        name: 'Annotations To Create',
+        name: 'Editable Annotations',
         element: <AnnotationTaskLabelMapList labelMapsDisplayMode={LabelMapsDisplayMode.toCreate} />
       },
       {

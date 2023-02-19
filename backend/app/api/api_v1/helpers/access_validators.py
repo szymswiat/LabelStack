@@ -7,11 +7,11 @@ from app.core import logic
 
 
 def validate_access_to_task(
-    task: models.Task,
+    task: models.Task | None,
     user: models.User,
-    roles_bypassing_access: List[schemas.RoleType] = None,
-    with_one_of_statuses: List[schemas.TaskStatus] = None,
-    has_type: schemas.TaskType = None,
+    roles_bypassing_access: List[schemas.RoleType] | None = None,
+    with_one_of_statuses: List[schemas.TaskStatus] | None = None,
+    has_type: schemas.TaskType | None = None,
 ):
     if roles_bypassing_access is None:
         roles_bypassing_access = []
@@ -23,7 +23,7 @@ def validate_access_to_task(
     if task is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Task does not exist.",
+            detail="Task does not exist.",
         )
     if has_type is not None:
         if task.task_type != has_type:
@@ -35,17 +35,18 @@ def validate_access_to_task(
         if task.assigned_user_id != user.id:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
-                detail=f"User is not permitted to access selected task.",
+                detail="User is not permitted to access selected task.",
             )
         if task.status not in with_one_of_statuses:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
-                detail=f"User is not permitted to read the data. Task is not in required status.",
+                detail="User is not permitted to read the data. Task is not in required status.",
             )
 
 
 def validate_access_by_role(
-    user: models.User, roles_bypassing_access: List[schemas.RoleType] = None
+    user: models.User,
+    roles_bypassing_access: List[schemas.RoleType] | None = None,
 ):
     if roles_bypassing_access is None:
         roles_bypassing_access = []
@@ -54,14 +55,14 @@ def validate_access_by_role(
     if not logic.user.has_role_one_of(user, roles_bypassing_access):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail=f"User is not permitted to modify selected annotation.",
+            detail="User is not permitted to modify selected annotation.",
         )
 
 
 def validate_access_to_annotation(
     annotation: models.Annotation,
     user: models.User,
-    roles_bypassing_access: List[schemas.RoleType] = None,
+    roles_bypassing_access: List[schemas.RoleType] | None = None,
 ):
     if roles_bypassing_access is None:
         roles_bypassing_access = []
@@ -70,20 +71,22 @@ def validate_access_to_annotation(
     if annotation is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Segment annotation with id does not exist.",
+            detail="Segment annotation with id does not exist.",
         )
     if not logic.user.has_role_one_of(user, roles_bypassing_access):
         if annotation.author_id != user.id:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
-                detail=f"User is not permitted to modify selected annotation.",
+                detail="User is not permitted to modify selected annotation.",
             )
 
 
-def check_if_task_is_editable(task: models.Task):
+def check_if_task_is_editable(
+    task: models.Task,
+):
     if task.status != schemas.TaskStatus.in_progress:
         raise HTTPException(
             status_code=status.HTTP_406_NOT_ACCEPTABLE,
-            detail=f"Data related to task can be modified if task is in progress only. "
-            f"Change status of task to 'In Progress'",
+            detail="Data related to task can be modified if task is in progress only. "
+            "Change status of task to 'In Progress'",
         )

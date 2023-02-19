@@ -26,14 +26,13 @@ const AnnotationTaskDataLoader: React.FC = () => {
   const prevImageInstanceId = useRef<number | null>(null);
 
   function buildTaskObjects() {
-    const taskLabelAssignmentIds = task.label_assignments.map((labelAssignment) => labelAssignment.id);
 
     const taskLabelAssignments: LabelAssignmentsObject = {};
     const taskAnnotations: AnnotationsObject = {};
 
     imageInstance.label_assignments.forEach((labelAssignment) => {
       labelAssignment.imageInstance = imageInstance;
-      if (taskLabelAssignmentIds.includes(labelAssignment.id)) {
+      if (task.label_assignment_ids.includes(labelAssignment.id)) {
         taskLabelAssignments[labelAssignment.id] = labelAssignment;
       }
       labelAssignment.annotations.forEach((annotation) => {
@@ -49,7 +48,7 @@ const AnnotationTaskDataLoader: React.FC = () => {
   }
 
   async function loadAnnotationData() {
-    if (!imageInstance || !task.label_assignments) {
+    if (!imageInstance || !task.label_assignment_ids) {
       return;
     }
 

@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import { ImageInstance, ImageInstancesObject } from '@labelstack/api';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { useViewerSettingsContext } from '../../../contexts/ViewerSettingsContext';
-import { BsExclamationLg, BsServer } from 'react-icons/bs';
+import { BsExclamationLg, BsFillImageFill, BsServer } from 'react-icons/bs';
 import PanelButton from '../../components/PanelButton';
 import { CircularProgressbar } from 'react-circular-progressbar';
 import Tooltip from '../../components/Tooltip';
@@ -90,14 +90,32 @@ const ImageList: React.FC<ImageListProps> = ({ imageInstances, onImageInstanceCh
 
   return (
     <div className={'flex flex-col gap-y-4'}>
-      <div className={'flex flex-row px-1'}>
+      <div className={'flex flex-row'}>
+        <PanelButton
+          name={'Images'}
+          isActive={false}
+          icon={BsFillImageFill}
+          iconClassName="text-dark-accent w-4 h-4"
+          containerClassName="w-6 h-6"
+          border={false}
+          fullSize={false}
+        />
         <div className={'text-base'}>
-          Image: {imageInstanceList.indexOf(imageInstance) + 1}/{imageInstanceList.length}
+          {imageInstanceList.indexOf(imageInstance) + 1}/{imageInstanceList.length}
+        </div>
+        <PanelButton
+          name={'Download status'}
+          isActive={false}
+          icon={BsServer}
+          iconClassName="text-dark-accent"
+          containerClassName="w-6 h-6 cursor-default ml-2"
+          border={false}
+          fullSize={false}
+        />
+        <div className={'text-base'}>
+          {downloadProgress?.filter((x) => x === 100).length}/{imageInstanceList.length}
         </div>
         <div className={'flex-grow'} />
-        <div className={'text-base'}>
-          Cached: {downloadProgress?.filter((x) => x === 100).length}/{imageInstanceList.length}
-        </div>
       </div>
       <div className={'h-100 overflow-y-scroll no-scrollbar'}>
         <div className={'w-full h-fit flex flex-col text-dark-text gap-y-2'}>

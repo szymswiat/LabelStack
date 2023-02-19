@@ -144,7 +144,7 @@ def read_label_assignments(
       - **waiting_for_annotations** - returns labels assignments that are not annotated
       - **without_active_task** - filters label assignments and returns items that do not have active annotation task
     """
-    query_out = query.label_assignment.query(db)
+    query_out = query.label_assignment.query_for_finished(db=db)
 
     if without_active_task:
         query_out = query.label_assignment.query_without_active_task(

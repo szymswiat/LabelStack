@@ -11,7 +11,7 @@ class ImageInstance(Base):
     id = sa.Column(sa.Integer, Identity(always=True), primary_key=True)
     id_ref = sa.Column(sa.String, nullable=False, unique=True)
 
-    is_labeled = sa.Column(sa.Boolean, nullable=False, default=False)
+    visited = sa.Column(sa.Boolean, nullable=False, default=False)
 
     label_assignments = relationship(
         "LabelAssignment",

@@ -28,7 +28,6 @@ const AnnotationReviewTaskDataLoader: React.FC = () => {
 
   async function buildTaskObjects() {
     const { data: reviewData } = await api.readAnnotationReviews(token, task);
-    const taskAnnotationIds = task.annotations.map((annotation) => annotation.id);
 
     const taskLabelAssignments: LabelAssignmentsObject = {};
     const taskAnnotations: AnnotationsObject = {};
@@ -38,7 +37,7 @@ const AnnotationReviewTaskDataLoader: React.FC = () => {
       labelAssignment.imageInstance = imageInstance;
       labelAssignment.annotations.forEach((annotation) => {
         annotation.labelAssignment = labelAssignment;
-        if (taskAnnotationIds.includes(annotation.id)) {
+        if (task.annotation_ids.includes(annotation.id)) {
           taskLabelAssignments[labelAssignment.id] = labelAssignment;
           taskAnnotations[annotation.id] = annotation;
         }

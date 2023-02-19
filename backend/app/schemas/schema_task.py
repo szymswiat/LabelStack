@@ -78,9 +78,13 @@ class Task(BaseModel):
 
     target_annotation_type: Optional[AnnotationType] = None
 
-    image_instances: List[ImageInstance]
-    label_assignments: List[LabelAssignment]
-    annotations: List[Annotation]
+    image_instances: List[ImageInstance] | None
+    label_assignments: List[LabelAssignment] | None
+    annotations: List[Annotation] | None
+
+    image_instance_ids: list[int] | None
+    label_assignment_ids: list[int] | None
+    annotation_ids: list[int] | None
 
     class Config:
         orm_mode = True
@@ -89,9 +93,9 @@ class Task(BaseModel):
 class TaskApiOut(Task):
     target_annotation_type: Optional[AnnotationTypeApiOut] = None
 
-    image_instances: List[ImageInstanceApiOut]
-    label_assignments: List[LabelAssignmentApiOut]
-    annotations: List[AnnotationApiOut]
+    image_instances: List[ImageInstanceApiOut] | None
+    label_assignments: List[LabelAssignmentApiOut] | None
+    annotations: List[AnnotationApiOut] | None
 
 
 class AvailableStatusesForTaskApiOut(BaseModel):

@@ -35,7 +35,7 @@ def setup_tables():
         "image_instance",
         sa.Column("id", sa.Integer, Identity(always=True)),
         sa.Column("id_ref", sa.String, nullable=False),
-        sa.Column("is_labeled", sa.Boolean, nullable=False, default=False),
+        sa.Column("visited", sa.Boolean, nullable=False, default=False),
         sa.PrimaryKeyConstraint("id"),
     )
     op.create_table(

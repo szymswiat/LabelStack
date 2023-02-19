@@ -10,12 +10,12 @@ class QueryImageInstance(QueryBase[models.ImageInstance]):
     def query_by_id_ref(self, db: Session, *, id_ref: str) -> Query:
         return self.query(db).filter(models.ImageInstance.id_ref == id_ref)
 
-    def query_for_labeled(
-        self, db: Session, query_in: Optional[Query] = None, labeled=True
+    def query_for_visited(
+        self, db: Session, query_in: Optional[Query] = None, visited=True
     ) -> Query:
         query_in = self.query(db, query_in)
 
-        return query_in.filter(models.ImageInstance.is_labeled == labeled)
+        return query_in.filter(models.ImageInstance.visited == visited)
 
     def query_without_active_task(
         self, *, db: Session, query_in: Optional[Query] = None

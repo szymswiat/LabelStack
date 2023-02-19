@@ -36,8 +36,8 @@ export const imageInstancesColumnDefs: ColDef[] = [
   },
   { field: 'id', headerName: 'ID', width: 100, minWidth: 100, resizable: true },
   {
-    field: 'is_labeled',
-    headerName: 'Is Labeled?',
+    field: 'visited',
+    headerName: 'Visited',
     cellRenderer: (params: ICellRendererParams) => dicomIsLabeledCellRenderer(params),
     filter: BooleanFilter,
     width: 100,

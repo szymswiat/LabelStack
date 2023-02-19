@@ -40,34 +40,37 @@ def create_task(
             task = logic.task.create_annotation_review_task(db, task_in, current_user)
         else:
             raise ValueError()
-    except core.LogicError as e:
-        if e.error_code == core.LogicErrorCode.dicom_already_in_label_task:
+    except core.LogicError as error:
+        if error.error_code == core.LogicErrorCode.dicom_already_in_label_task:
             raise HTTPException(
                 status_code=status.HTTP_409_CONFLICT,
-                detail=f"At least one of dicoms is already assigned in other active task.",
-            )
-        if e.error_code == core.LogicErrorCode.dicom_and_label_combo_already_in_task:
+                detail="At least one of dicoms is already assigned in other active task.",
+            ) from error
+        if (
+            error.error_code
+            == core.LogicErrorCode.dicom_and_label_combo_already_in_task
+        ):
             raise HTTPException(
                 status_code=status.HTTP_409_CONFLICT,
-                detail=f"Some of selected combination of dicom and label is "
-                f"already assigned in different active task.",
-            )
-        if e.error_code == core.LogicErrorCode.annotation_not_finished:
+                detail="Some of selected combination of dicom and label is "
+                "already assigned in different active task.",
+            ) from error
+        if error.error_code == core.LogicErrorCode.annotation_not_finished:
             raise HTTPException(
                 status_code=status.HTTP_406_NOT_ACCEPTABLE,
-                detail=f"At least one of selected annotations does not have 'done' status.",
-            )
-        if e.error_code == core.LogicErrorCode.annotation_already_in_review_task:
+                detail="At least one of selected annotations does not have 'done' status.",
+            ) from error
+        if error.error_code == core.LogicErrorCode.annotation_already_in_review_task:
             raise HTTPException(
                 status_code=status.HTTP_409_CONFLICT,
-                detail=f"One annotation from selected annotations list is already assigned in other review.",
-            )
-        if e.error_code == core.LogicErrorCode.label_assignment_already_annotated:
+                detail="One annotation from selected annotations list is already assigned in other review.",
+            ) from error
+        if error.error_code == core.LogicErrorCode.label_assignment_already_annotated:
             raise HTTPException(
                 status_code=status.HTTP_409_CONFLICT,
-                detail=f"Label assignment with id={e.extra['id']} is already annotated.",
-            )
-        raise e
+                detail=f"Label assignment with id={error.extra['id']} is already annotated.",
+            ) from error
+        raise error
 
     return task
 
@@ -84,9 +87,10 @@ def read_tasks(
     current_user: models.User = Depends(
         deps.get_current_user_with_role([schemas.RoleType.annotator])
     ),
-) -> List[models.Task]:
+) -> List[models.Task | schemas.Task]:
     """
     Read list of tasks filtered by following options:
+      - **id** - return task data by id
       - **task_status** - filters with specified task status, possible values:
         - *TaskStatus.unassigned (0)*, *TaskStatus.open (1)*, *TaskStatus.in_progress (2)*,
           *TaskStatus.done (3)*, *TaskStatus.cancelled (4)*,
@@ -100,7 +104,9 @@ def read_tasks(
     if id is not None:
         task = crud.task.get(db, id=id)
         helpers.validate_access_to_task(task, current_user)
-        return [task]
+        assert task
+
+        return [helpers.convert_task_nested_to_ids(task)]
     query_out = query.task.query(db)
 
     if for_me:
@@ -111,7 +117,7 @@ def read_tasks(
         if not logic.user.has_role_one_of(current_user, [schemas.RoleType.superuser]):
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
-                detail=f"User is not permitted to use option 'for_user_id'.",
+                detail="User is not permitted to use option 'for_user_id'.",
             )
         query_out = query.task.query_by_user(
             db, user_id=for_user_id, query_in=query_out
@@ -125,7 +131,7 @@ def read_tasks(
             db, task_type=task_type, query_in=query_out
         )
 
-    return query_out.all()
+    return [helpers.convert_task_nested_to_ids(task) for task in query_out.all()]
 
 
 @router.post("/change_status/{task_id}", response_model=schemas.TaskApiOut)
@@ -139,7 +145,7 @@ def change_task_status(
             [schemas.RoleType.annotator, schemas.RoleType.task_admin]
         )
     ),
-) -> models.Task:
+) -> models.Task | schemas.Task:
     """
     Update status of task. Task status flows are listed below. Disallowed status change (transition not listed below)
     will return response 406 error code.
@@ -175,7 +181,7 @@ def change_task_status(
     task = crud.task.get(db, id=task_id)
 
     helpers.validate_access_to_task(task, current_user, [schemas.RoleType.task_admin])
-
+    assert task
     change_status_fn = {
         schemas.TaskType.label_assignment: logic.task.change_label_task_status,
         schemas.TaskType.annotation: logic.task.change_annotation_task_status,
@@ -183,25 +189,25 @@ def change_task_status(
     }
 
     try:
-        task = change_status_fn[task.task_type](db, task, new_status)
-    except core.LogicError as e:
-        if e.error_code == core.LogicErrorCode.invalid_status_change:
+        task = change_status_fn[task.task_type](db, task, new_status)  # type: ignore
+    except core.LogicError as error:
+        if error.error_code == core.LogicErrorCode.invalid_status_change:
             raise HTTPException(
                 status_code=status.HTTP_406_NOT_ACCEPTABLE,
                 detail=f"Status change from {task.status} to {new_status.value} is not allowed.",
-            )
-        if e.error_code == core.LogicErrorCode.task_missing_assigned_user:
+            ) from error
+        if error.error_code == core.LogicErrorCode.task_missing_assigned_user:
             raise HTTPException(
                 status_code=status.HTTP_406_NOT_ACCEPTABLE,
-                detail=f"Task does not have value for assigned_user_id. Please assign user first.",
-            )
-        if e.error_code == core.LogicErrorCode.annotation_missing_data_blob:
+                detail="Task does not have value for assigned_user_id. Please assign user first.",
+            ) from error
+        if error.error_code == core.LogicErrorCode.annotation_missing_data_blob:
             raise HTTPException(
                 status_code=status.HTTP_406_NOT_ACCEPTABLE,
-                detail=f"Annotation with id={e.extra['id']} does not have data.",
-            )
+                detail=f"Annotation with id={error.extra['id']} does not have data.",
+            ) from error
 
-    return task
+    return helpers.convert_task_nested_to_ids(task)
 
 
 @router.post("/change_owner/{task_id}", response_model=schemas.TaskApiOut)
@@ -215,7 +221,7 @@ def change_task_owner(
             [schemas.RoleType.annotator, schemas.RoleType.task_admin]
         )
     ),
-) -> models.Task:
+) -> models.Task | schemas.Task:
     """
     Update task owner (assigned user).
     """
@@ -223,7 +229,7 @@ def change_task_owner(
     if task is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Task does not exist.",
+            detail="Task does not exist.",
         )
 
     if not (
@@ -232,20 +238,20 @@ def change_task_owner(
     ):
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
-            detail=f"Cannot change owner of modified task.",
+            detail="Cannot change owner of modified task.",
         )
 
     new_owner = crud.user.get(db, id=new_owner_id)
     if new_owner is None:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail=f"User does not exist."
+            status_code=status.HTTP_404_NOT_FOUND, detail="User does not exist."
         )
 
-    task.assigned_user_id = new_owner_id
-    task.status = schemas.TaskStatus.open
+    task.assigned_user_id = new_owner_id  # type: ignore
+    task.status = schemas.TaskStatus.open  # type: ignore
     db.commit()
 
-    return task
+    return helpers.convert_task_nested_to_ids(task)
 
 
 @router.get(
@@ -265,6 +271,7 @@ def get_available_statuses_for_task(
     task = crud.task.get(db, id=task_id)
 
     helpers.validate_access_to_task(task, current_user, [schemas.RoleType.task_admin])
+    assert task
 
     available_statuses: Dict[schemas.TaskType, Dict[schemas.TaskStatus, Any]] = {
         schemas.TaskType.label_assignment: logic.task.label_task_status_flows,
@@ -272,11 +279,15 @@ def get_available_statuses_for_task(
         schemas.TaskType.annotation_review: logic.task.annotation_review_task_status_flows,
     }
 
-    available_statuses_for_task_type = available_statuses[task.task_type]
+    available_statuses_for_task_type = available_statuses[
+        schemas.TaskType(task.task_type)
+    ]
 
     return schemas.AvailableStatusesForTaskApiOut(
         statuses=[
             status
-            for status in available_statuses_for_task_type.get(task.status, {}).keys()
+            for status in available_statuses_for_task_type.get(
+                schemas.TaskStatus(task.status), {}
+            ).keys()
         ]
     )

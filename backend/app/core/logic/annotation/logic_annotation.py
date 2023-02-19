@@ -4,7 +4,7 @@ from sqlalchemy import null
 from sqlalchemy.orm import Session
 
 from app import schemas, models, crud
-from app.core.logic.image_instance import get_all_image_instances_from_task
+from app.core.logic.image_instance import get_all_image_instances_for_task
 
 
 def is_annotation_waiting_for_review(
@@ -87,7 +87,7 @@ def change_annotation_review_result(
 
 
 def get_all_annotations_from_task(task: models.Task) -> List[models.Annotation]:
-    all_image_instances = get_all_image_instances_from_task(task)
+    all_image_instances = get_all_image_instances_for_task(task)
 
     annotations = [
         annotation

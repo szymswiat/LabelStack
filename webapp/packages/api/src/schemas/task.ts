@@ -56,10 +56,6 @@ export interface Task {
   image_instance_ids?: number[];
   label_assignment_ids?: number[];
   annotation_ids?: number[];
-
-  image_instances?: ImageInstance[];
-  label_assignments?: LabelAssignment[];
-  annotations?: Annotation[];
 }
 
 export interface AvailableStatusesForTaskApiOut {

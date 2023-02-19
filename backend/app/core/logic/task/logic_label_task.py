@@ -67,7 +67,7 @@ def _status_in_progress_to_done(
     db: Session, task: models.Task, **kwargs
 ) -> models.Task:
     for image_instance in task.image_instances:
-        image_instance.is_labeled = True
+        image_instance.visited = True
 
     return task
 

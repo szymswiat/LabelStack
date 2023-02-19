@@ -59,7 +59,7 @@ def read_dicoms_for_image_instance(
         task = crud.task.get(db, id=task_id)
         helpers.validate_access_to_task(task, current_user)
 
-        image_instances = logic.image_instance.get_all_image_instances_from_task(task)
+        image_instances = logic.image_instance.get_all_image_instances_for_task(task)
         if image_instance_id not in {ii.id for ii in image_instances}:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
