@@ -1,5 +1,5 @@
 import sqlalchemy as sa
-from sqlalchemy.orm import deferred
+from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db.base_class import Base
 
@@ -8,10 +8,10 @@ from app.db.base_class import Base
 class AnnotationData(Base):
     __tablename__ = "annotation_data"
 
-    annotation_id = sa.Column(
+    annotation_id: Mapped[int] = mapped_column(
         sa.Integer, sa.ForeignKey("annotation.id"), nullable=True, primary_key=True
     )
-    sequence = sa.Column(sa.Integer, nullable=False, primary_key=True)
+    sequence: Mapped[int] = mapped_column(sa.Integer, nullable=False, primary_key=True)
 
-    data = deferred(sa.Column(sa.LargeBinary, nullable=False))
-    md5_hash = sa.Column(sa.String, nullable=False)
+    data: Mapped[bytes] = mapped_column(sa.LargeBinary, nullable=False, deferred=True)
+    md5_hash: Mapped[str] = mapped_column(sa.String, nullable=False)

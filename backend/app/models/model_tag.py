@@ -1,18 +1,19 @@
 import sqlalchemy as sa
 from sqlalchemy import Identity
+from sqlalchemy.orm import Mapped, mapped_column
 from app.db.base_class import Base
 
 
 class Tag(Base):
     __tablename__ = "tag"
 
-    id = sa.Column(sa.Integer, Identity(always=True), primary_key=True)
+    id: Mapped[int] = mapped_column(sa.Integer, Identity(always=True), primary_key=True)
 
-    tag_group = sa.Column(sa.Integer, nullable=False)
-    tag_element = sa.Column(sa.Integer, nullable=False)
+    tag_group: Mapped[int] = mapped_column(sa.Integer, nullable=False)
+    tag_element: Mapped[int] = mapped_column(sa.Integer, nullable=False)
 
-    name = sa.Column(sa.String, nullable=False)
-    keyword = sa.Column(sa.String, nullable=False)
+    name: Mapped[str] = mapped_column(sa.String, nullable=False)
+    keyword: Mapped[str] = mapped_column(sa.String, nullable=False)
 
     __table_args__ = (sa.UniqueConstraint("tag_group", "tag_element"),)
 

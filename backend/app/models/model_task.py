@@ -1,6 +1,7 @@
+from typing import TYPE_CHECKING
 import sqlalchemy as sa
 from sqlalchemy import Identity
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, Mapped, mapped_column
 
 from app.db.base_class import Base
 from app.models.model_associations import (
@@ -9,27 +10,36 @@ from app.models.model_associations import (
     TaskAnnotation,
 )
 
+if TYPE_CHECKING:
+    from app import models
+
 
 # TODO: add creation time field (in seconds)
 class Task(Base):
     __tablename__ = "task"
 
-    id = sa.Column(sa.Integer, Identity(always=True), primary_key=True)
+    id: Mapped[int] = mapped_column(sa.Integer, Identity(always=True), primary_key=True)
 
-    assigned_user_id = sa.Column(sa.Integer, sa.ForeignKey("user.id"), nullable=True)
-    submitter_user_id = sa.Column(sa.Integer, sa.ForeignKey("user.id"), nullable=False)
+    assigned_user_id: Mapped[int] = mapped_column(
+        sa.Integer, sa.ForeignKey("user.id"), nullable=True
+    )
+    submitter_user_id: Mapped[int] = mapped_column(
+        sa.Integer, sa.ForeignKey("user.id"), nullable=False
+    )
 
-    task_type = sa.Column(sa.Integer, nullable=False)
-    name = sa.Column(sa.String, nullable=False)
-    description = sa.Column(sa.String, nullable=True)
-    priority = sa.Column(sa.Integer, nullable=False, default=0)
-    status = sa.Column(sa.Integer, nullable=False)
-    total_time = sa.Column(sa.BigInteger, nullable=False, default=0)
+    task_type: Mapped[int] = mapped_column(sa.Integer, nullable=False)
+    name: Mapped[str] = mapped_column(sa.String, nullable=False)
+    description: Mapped[str] = mapped_column(sa.String, nullable=True)
+    priority: Mapped[int] = mapped_column(sa.Integer, nullable=False, default=0)
+    status: Mapped[int] = mapped_column(sa.Integer, nullable=False)
+    total_time: Mapped[int] = mapped_column(sa.BigInteger, nullable=False, default=0)
 
-    image_instances = relationship(
+    image_instances: Mapped[list["models.ImageInstance"]] = relationship(
         "ImageInstance", secondary=TaskImageInstance.__table__
     )
-    label_assignments = relationship(
+    label_assignments: Mapped[list["models.LabelAssignment"]] = relationship(
         "LabelAssignment", secondary=TaskLabelAssignment.__table__
     )
-    annotations = relationship("Annotation", secondary=TaskAnnotation.__table__)
+    annotations: Mapped[list["models.Annotation"]] = relationship(
+        "Annotation", secondary=TaskAnnotation.__table__
+    )

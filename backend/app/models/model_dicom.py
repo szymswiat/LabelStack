@@ -1,7 +1,11 @@
+from typing import TYPE_CHECKING
 import sqlalchemy as sa
 from sqlalchemy import Identity
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, mapped_column, Mapped
 from app.db.base_class import Base
+
+if TYPE_CHECKING:
+    from app import models
 
 
 # TODO: add creation time field (in seconds)
@@ -9,11 +13,11 @@ from app.db.base_class import Base
 class Dicom(Base):
     __tablename__ = "dicom"
 
-    id = sa.Column(sa.Integer, Identity(always=True), primary_key=True)
+    id: Mapped[int] = mapped_column(sa.Integer, Identity(always=True), primary_key=True)
 
-    patient_id = sa.Column(sa.String, nullable=False)
-    study_id = sa.Column(sa.String, nullable=False)
-    series_id = sa.Column(sa.String, nullable=False)
-    instance_id = sa.Column(sa.String, nullable=False)
+    patient_id: Mapped[str] = mapped_column(sa.String, nullable=False)
+    study_id: Mapped[str] = mapped_column(sa.String, nullable=False)
+    series_id: Mapped[str] = mapped_column(sa.String, nullable=False)
+    instance_id: Mapped[str] = mapped_column(sa.String, nullable=False)
 
-    tags = relationship("DicomTagValue")
+    tags: Mapped[list["models.DicomTagValue"]] = relationship("DicomTagValue")

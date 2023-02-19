@@ -1,6 +1,7 @@
 from typing import List
 
 from sqlalchemy.orm import Session
+from sqlalchemy import text
 
 from app import crud, schemas, query, models
 from app.api.api_v1.endpoints.endpoint_dicoms import sync_dicomweb
@@ -86,9 +87,12 @@ def init_db(db: Session) -> None:
 
 def clear_db(db: Session):
     db.execute(
-        """truncate table
-    label__label_type, user__role, task__label_assignment, task__image_instance, image_instance, task__annotation,
-    annotation_review, annotation, annotation_data, label_assignment, task, role, label_type,
-    label, dicom, app.public."user", tag, dicom_tag_value, image_instance_tag_value, annotation_type;"""
+        text(
+            """truncate table
+               label__label_type, user__role, task__label_assignment, task__image_instance, image_instance, task__annotation,
+               annotation_review, annotation, annotation_data, label_assignment, task, role, label_type,
+               label, dicom, app.public."user", tag, dicom_tag_value, image_instance_tag_value, annotation_type;
+            """
+        )
     )
     db.commit()
