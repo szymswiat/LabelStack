@@ -1,6 +1,5 @@
-from typing import Dict
-
 from fastapi.testclient import TestClient
+from pydantic import EmailStr
 from sqlalchemy.orm import Session
 
 from app import crud, query, schemas
@@ -13,7 +12,7 @@ from app.tests.utils.utils import random_email, random_lower_string
 
 def user_authentication_headers(
     *, client: TestClient, email: str, password: str
-) -> Dict[str, str]:
+) -> dict[str, str]:
     data = {"username": email, "password": password}
 
     r = client.post(f"{settings.API_V1_STR}/login/access-token", data=data)
@@ -26,14 +25,14 @@ def user_authentication_headers(
 def create_random_user(db: Session) -> User:
     email = random_email()
     password = random_lower_string()
-    user_in = UserCreate(username=email, email=email, password=password)
+    user_in = UserCreate(email=email, password=password)
     user = crud.user.create(db=db, obj_in=user_in)
     return user
 
 
 def authentication_token_from_email(
-    *, client: TestClient, email: str, db: Session
-) -> Dict[str, str]:
+    *, client: TestClient, email: EmailStr, db: Session
+) -> dict[str, str]:
     """
     Return a valid token for the user with given email.
 
@@ -42,7 +41,7 @@ def authentication_token_from_email(
     password = random_lower_string()
     user = query.user.query_by_email(db, email=email).first()
     if not user:
-        user_in_create = UserCreate(username=email, email=email, password=password)
+        user_in_create = UserCreate(email=email, password=password)
         user = crud.user.create(db, obj_in=user_in_create)
     else:
         user_in_update = UserUpdate(password=password)
@@ -53,11 +52,12 @@ def authentication_token_from_email(
 
 def auth_data_for_test_user(
     db: Session, client: TestClient, user_role: schemas.RoleType, user_idx: int
-):
+) -> tuple[User, dict[str, str]]:
     meta_by_role = test_users_meta[user_role]
     assert user_idx < len(meta_by_role)
     user_meta = meta_by_role[user_idx]
     user = query.user.query_by_email(db, email=user_meta["email"]).first()
+    assert user
 
     headers = user_authentication_headers(
         client=client, email=user_meta["email"], password=user_meta["password"]

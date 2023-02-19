@@ -1,6 +1,4 @@
-from typing import List
-
-ALL_MODALITIES: List[str] = [
+ALL_MODALITIES: list[str] = [
     "CR",  # Computed Radiography
     "CT",  # Computed Tomography
     "MR",  # Magnetic Resonance
@@ -42,7 +40,7 @@ ALL_MODALITIES: List[str] = [
     "SMR",  # Stereometric Relationship
 ]
 
-IMAGING_MODALITIES: List[str] = [
+IMAGING_MODALITIES: list[str] = [
     "CR",  # Computed Radiography
     "CT",  # Computed Tomography
     "MR",  # Magnetic Resonance

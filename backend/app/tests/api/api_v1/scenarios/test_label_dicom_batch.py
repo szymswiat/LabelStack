@@ -1,5 +1,4 @@
 import random
-from typing import List
 
 import pytest
 from sqlalchemy.orm import Session
@@ -71,7 +70,7 @@ def test_step0_1_create_additional_label_task(client: TestClient, db: Session):
         db, client, schemas.RoleType.annotator, 1
     )
 
-    image_instances: List[schemas.ImageInstanceApiOut] = TEST_OUTPUTS["step0"][
+    image_instances: list[schemas.ImageInstanceApiOut] = TEST_OUTPUTS["step0"][
         "image_instances"
     ]
 
@@ -118,6 +117,7 @@ def test_step1_assign_labels(client: TestClient, db: Session):
     all_labels = [schemas.LabelApiOut.parse_obj(d) for d in r.json()]
 
     label_task = annotator_tasks[0]
+    assert label_task.image_instances
     assert (
         len(label_task.image_instances) == ANNOTATOR_0_LABEL_TASK_DICOM_COUNT
     ), f"{r.status_code}: {r.content}"

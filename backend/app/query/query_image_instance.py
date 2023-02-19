@@ -1,5 +1,3 @@
-from typing import Optional
-
 from sqlalchemy.orm import Session, Query
 
 from app import models, schemas
@@ -11,14 +9,14 @@ class QueryImageInstance(QueryBase[models.ImageInstance]):
         return self.query(db).filter(models.ImageInstance.id_ref == id_ref)
 
     def query_for_visited(
-        self, db: Session, query_in: Optional[Query] = None, visited=True
+        self, db: Session, query_in: Query | None = None, visited=True
     ) -> Query:
         query_in = self.query(db, query_in)
 
         return query_in.filter(models.ImageInstance.visited == visited)
 
     def query_without_active_task(
-        self, *, db: Session, query_in: Optional[Query] = None
+        self, *, db: Session, query_in: Query | None = None
     ) -> Query:
         active_tasks_by_type = (
             db.query(models.Task.id)

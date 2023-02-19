@@ -1,7 +1,6 @@
-from typing import List
-
 from sqlalchemy.orm import Session
 from sqlalchemy import text
+from pydantic import EmailStr
 
 from app import crud, schemas, query, models
 from app.api.api_v1.endpoints.endpoint_dicoms import sync_dicomweb
@@ -21,12 +20,14 @@ from app.tests.utils.gen_test_users import test_users_meta
 
 
 def create_user(
-    db: Session, email: str, password: str, roles: List[models.Role]
+    db: Session, email: str, password: str, roles: list[models.Role]
 ) -> models.User:
     user = query.user.query_by_email(db, email=email).first()
     if not user:
         user_in = schemas.UserCreate(
-            email=email, password=password, role_ids=[role.id for role in roles]
+            email=EmailStr(email),
+            password=password,
+            role_ids=[role.id for role in roles],
         )
         user = crud.user.create(db, obj_in=user_in)  # noqa: F841
 
@@ -49,6 +50,7 @@ def init_db(db: Session) -> None:
     superuser_role = query.role.query_by_type(
         db, type=schemas.RoleType.superuser
     ).first()
+    assert superuser_role
 
     superuser = create_user(
         db,
@@ -65,6 +67,7 @@ def init_db(db: Session) -> None:
 
     for role_type, user_meta_list in test_users_meta.items():
         role = query.role.query_by_type(db, type=role_type).first()
+        assert role
         for user_meta in user_meta_list:
             create_user(
                 db,

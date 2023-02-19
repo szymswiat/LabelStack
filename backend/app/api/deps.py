@@ -1,12 +1,12 @@
-from typing import Generator, List, Callable
+from typing import Generator, Callable
 
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
-from jose import jwt
+from jose import jwt, JWTError
 from pydantic import ValidationError
 from sqlalchemy.orm import Session
 
-from app import crud, models, schemas, query
+from app import crud, models, schemas
 from app.core import security, logic
 from app.core.config import settings
 from app.db.session import SessionLocal
@@ -18,11 +18,13 @@ reusable_oauth2 = OAuth2PasswordBearer(
 
 
 def get_db() -> Generator:
+    db: Session | None = None
     try:
         db = SessionLocal()
         yield db
     finally:
-        db.close()
+        if db:
+            db.close()
 
 
 def get_current_user(
@@ -33,7 +35,7 @@ def get_current_user(
             token, settings.SECRET_KEY, algorithms=[security.ALGORITHM]
         )
         token_data = schemas.TokenPayload(**payload)
-    except (jwt.JWTError, ValidationError):
+    except (JWTError, ValidationError):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Could not validate credentials",
@@ -45,7 +47,7 @@ def get_current_user(
 
 
 def get_current_user_with_role(
-    role_types: List[RoleType] = None,
+    role_types: list[RoleType] | None = None,
     check_active: bool = True,
     allow_no_roles: bool = False,
 ) -> Callable[[models.User], models.User]:

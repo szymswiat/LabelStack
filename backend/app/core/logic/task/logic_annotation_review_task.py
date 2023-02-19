@@ -1,5 +1,3 @@
-from typing import List
-
 from sqlalchemy.orm import Session
 
 from app import schemas, models, crud, query, core
@@ -12,6 +10,7 @@ def create_annotation_review_task(
     current_user: models.User,
 ) -> models.Task:
     # check if there is no active review for annotations
+    assert task_in.annotation_ids
     conflicting_task_count = query.task.query_tasks_with_annotations(
         db, task_in.annotation_ids, schemas.TaskStatus.active_statuses()
     ).count()
@@ -64,7 +63,7 @@ def _status_open_to_in_progress(
     new_reviews = []
 
     # create AnnotationReview objects for all annotation specified in task
-    annotations: List[models.Annotation] = task.annotations
+    annotations: list[models.Annotation] = task.annotations
     for annotation in annotations:
         if not logic.annotation.is_annotation_waiting_for_review(
             schemas.Annotation.from_orm(annotation),
@@ -111,7 +110,7 @@ def _status_in_progress_to_done(
     remove_draft_data = kwargs.get("remove_draft_data", False)
 
     created_annotations = []
-    task_reviews: List[models.AnnotationReview] = query.annotation_review.query_by_task(
+    task_reviews: list[models.AnnotationReview] = query.annotation_review.query_by_task(
         db, task.id
     ).all()
 
@@ -133,6 +132,7 @@ def _status_in_progress_to_done(
             resulting_annotation = crud.annotation.get(
                 db, id=review.resulting_annotation_id
             )
+            assert resulting_annotation
             created_annotations.append(resulting_annotation)
 
             if len(resulting_annotation.data_list) == 0:
@@ -149,6 +149,7 @@ def _status_in_progress_to_done(
 
         if review.result == schemas.AnnotationReviewResult.accepted:
             bound_annotation = crud.annotation.get(db, id=review.annotation_id)
+            assert bound_annotation
             if not logic.annotation.is_annotation_waiting_for_review(
                 schemas.Annotation.from_orm(bound_annotation), 1
             ):
@@ -156,6 +157,7 @@ def _status_in_progress_to_done(
                 bound_label_assignment = crud.label_assignment.get(
                     db, id=bound_annotation.label_assignment_id
                 )
+                assert bound_label_assignment
                 bound_label_assignment.is_annotated = True
 
     # TODO: what about review time?
@@ -194,10 +196,11 @@ def change_annotation_review_task_status(
     commit_changes=True,
     **kwargs
 ) -> models.Task:
-    if new_status not in annotation_review_task_status_flows[task.status]:
+    task_status = schemas.TaskStatus(task.status)
+    if new_status not in annotation_review_task_status_flows[task_status]:
         raise core.LogicError(core.LogicErrorCode.invalid_status_change)
 
-    task = annotation_review_task_status_flows[task.status][new_status](db, task)
+    task = annotation_review_task_status_flows[task_status][new_status](db, task)
     task.status = new_status
 
     if commit_changes:

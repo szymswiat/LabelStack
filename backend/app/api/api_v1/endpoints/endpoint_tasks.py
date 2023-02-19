@@ -1,4 +1,4 @@
-from typing import List, Optional, Any, Dict
+from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
@@ -75,19 +75,19 @@ def create_task(
     return task
 
 
-@router.get("/", response_model=List[schemas.TaskApiOut])
+@router.get("/", response_model=list[schemas.TaskApiOut])
 def read_tasks(
     *,
     db: Session = Depends(deps.get_db),
-    id: Optional[int] = None,
-    task_status: Optional[schemas.TaskStatus] = None,
-    task_type: Optional[schemas.TaskType] = None,
-    for_me: Optional[bool] = None,
-    for_user_id: Optional[int] = None,
+    id: int | None = None,
+    task_status: schemas.TaskStatus | None = None,
+    task_type: schemas.TaskType | None = None,
+    for_me: bool | None = None,
+    for_user_id: int | None = None,
     current_user: models.User = Depends(
         deps.get_current_user_with_role([schemas.RoleType.annotator])
     ),
-) -> List[models.Task | schemas.Task]:
+) -> list[models.Task | schemas.Task]:
     """
     Read list of tasks filtered by following options:
       - **id** - return task data by id
@@ -273,7 +273,7 @@ def get_available_statuses_for_task(
     helpers.validate_access_to_task(task, current_user, [schemas.RoleType.task_admin])
     assert task
 
-    available_statuses: Dict[schemas.TaskType, Dict[schemas.TaskStatus, Any]] = {
+    available_statuses: dict[schemas.TaskType, dict[schemas.TaskStatus, Any]] = {
         schemas.TaskType.label_assignment: logic.task.label_task_status_flows,
         schemas.TaskType.annotation: logic.task.annotation_task_status_flows,
         schemas.TaskType.annotation_review: logic.task.annotation_review_task_status_flows,

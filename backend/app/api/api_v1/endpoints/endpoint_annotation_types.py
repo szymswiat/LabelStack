@@ -1,4 +1,4 @@
-from typing import Any, List
+from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
@@ -35,7 +35,7 @@ def create_annotation_type(
     return annotation_type
 
 
-@router.get("/", response_model=List[schemas.AnnotationTypeApiOut])
+@router.get("/", response_model=list[schemas.AnnotationTypeApiOut])
 def read_all_annotation_types(
     *,
     db: Session = Depends(deps.get_db),
@@ -68,14 +68,18 @@ def update_annotation_type(
     """
     annotation_type = crud.annotation_type.get(db, id=id)
 
-    if not annotation_type:
+    if annotation_type is None:
         raise HTTPException(
             status_code=status.HTTP_406_NOT_ACCEPTABLE,
             detail=f"AnnotationType with id={id} does not exist.",
         )
 
+    annotation_type_update = schemas.AnnotationTypeUpdateCrud.parse_obj(
+        annotation_type_in
+    )
+
     annotation_type = crud.annotation_type.update(
-        db, db_obj=annotation_type, obj_in=annotation_type_in
+        db, db_obj=annotation_type, obj_in=annotation_type_update
     )
 
     return annotation_type

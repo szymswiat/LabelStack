@@ -1,5 +1,3 @@
-from typing import List
-
 from fastapi import HTTPException, status
 
 from app import models, schemas
@@ -9,8 +7,8 @@ from app.core import logic
 def validate_access_to_task(
     task: models.Task | None,
     user: models.User,
-    roles_bypassing_access: List[schemas.RoleType] | None = None,
-    with_one_of_statuses: List[schemas.TaskStatus] | None = None,
+    roles_bypassing_access: list[schemas.RoleType] | None = None,
+    with_one_of_statuses: list[schemas.TaskStatus] | None = None,
     has_type: schemas.TaskType | None = None,
 ):
     if roles_bypassing_access is None:
@@ -46,7 +44,7 @@ def validate_access_to_task(
 
 def validate_access_by_role(
     user: models.User,
-    roles_bypassing_access: List[schemas.RoleType] | None = None,
+    roles_bypassing_access: list[schemas.RoleType] | None = None,
 ):
     if roles_bypassing_access is None:
         roles_bypassing_access = []
@@ -60,9 +58,9 @@ def validate_access_by_role(
 
 
 def validate_access_to_annotation(
-    annotation: models.Annotation,
+    annotation: models.Annotation | None,
     user: models.User,
-    roles_bypassing_access: List[schemas.RoleType] | None = None,
+    roles_bypassing_access: list[schemas.RoleType] | None = None,
 ):
     if roles_bypassing_access is None:
         roles_bypassing_access = []

@@ -1,4 +1,4 @@
-from typing import List, Dict
+from typing import Any
 from typing_extensions import Self
 
 from sqlalchemy.orm import Session
@@ -6,13 +6,13 @@ from sqlalchemy.orm import Session
 from app import models, crud
 
 
-ADDITIONAL_TAGS_TO_FETCH: List[str] = [
+ADDITIONAL_TAGS_TO_FETCH: list[str] = [
     "ScanOptions",
 ]
 
 
 class DicomTags:
-    def __init__(self, tags: List[models.Tag]) -> None:
+    def __init__(self, tags: list[models.Tag]) -> None:
         self.tags = tags
         self.tags_by_keyword = {tag.keyword: tag for tag in self.tags}
         # tags by group and element
@@ -37,7 +37,7 @@ class DicomWebQidoInstance:
 
     def __init__(
         self,
-        data: Dict[str, Dict],
+        data: dict[str, Any],
     ) -> None:
         self.data = data
 

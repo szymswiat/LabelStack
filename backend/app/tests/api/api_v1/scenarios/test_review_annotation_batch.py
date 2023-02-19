@@ -1,7 +1,6 @@
 import random
 import pytest
 
-from typing import List
 from random import randbytes
 from sqlalchemy.orm import Session
 from starlette.testclient import TestClient
@@ -32,15 +31,15 @@ def test_step0_create_annotation_review_task(client: TestClient, db: Session):
         headers=task_admin_0_headers,
     )
     assert 200 <= r.status_code < 300
-    annotations_waiting_for_review: List[schemas.AnnotationApiOut] = [
+    annotations_waiting_for_review: list[schemas.AnnotationApiOut] = [
         schemas.AnnotationApiOut.parse_obj(d) for d in r.json()
     ]
 
     task_create = schemas.TaskCreateApiIn(
         assigned_user_id=annotator_3.id,
         task_type=schemas.TaskType.annotation_review,
-        name=f"First annotation review task",
-        description=f"Review assigned annotations.",
+        name="First annotation review task",
+        description="Review assigned annotations.",
         annotation_ids=[a.id for a in annotations_waiting_for_review],
     )
 
@@ -66,7 +65,7 @@ def test_step1_change_task_status(client: TestClient, db: Session):
         headers=annotator_3_headers,
     )
     assert 200 <= r.status_code < 300
-    annotator_tasks: List[schemas.TaskApiOut] = [
+    annotator_tasks: list[schemas.TaskApiOut] = [
         schemas.TaskApiOut.parse_obj(d) for d in r.json()
     ]
     # pick first annotator task
@@ -97,7 +96,7 @@ def test_step2_fill_reviews_with_data(client: TestClient, db: Session):
         headers=annotator_3_headers,
     )
     assert 200 <= r.status_code < 300
-    task_reviews: List[schemas.AnnotationReviewApiOut] = [
+    task_reviews: list[schemas.AnnotationReviewApiOut] = [
         schemas.AnnotationReviewApiOut.parse_obj(d) for d in r.json()
     ]
 

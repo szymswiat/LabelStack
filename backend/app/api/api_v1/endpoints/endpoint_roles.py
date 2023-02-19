@@ -1,5 +1,3 @@
-from typing import List
-
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
@@ -9,7 +7,7 @@ from app.api import deps
 router = APIRouter()
 
 
-@router.get("/", response_model=List[schemas.RoleApiOut])
+@router.get("/", response_model=list[schemas.RoleApiOut])
 def read_all_roles(
     *,
     db: Session = Depends(deps.get_db),

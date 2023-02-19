@@ -1,4 +1,4 @@
-from typing import Any, List
+from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
@@ -33,7 +33,7 @@ def create_label_type(
     return label_type
 
 
-@router.get("/", response_model=List[schemas.LabelTypeApiOut])
+@router.get("/", response_model=list[schemas.LabelTypeApiOut])
 def read_all_label_types(
     *,
     db: Session = Depends(deps.get_db),
@@ -72,6 +72,8 @@ def update_label_type(
             detail=f"LabelType with id={id} does not exist.",
         )
 
-    label_type = crud.label_type.update(db, db_obj=label_type, obj_in=label_type_in)
+    label_type_update = schemas.LabelTypeUpdateCrud.parse_obj(label_type_in)
+
+    label_type = crud.label_type.update(db, db_obj=label_type, obj_in=label_type_update)
 
     return label_type

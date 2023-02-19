@@ -1,14 +1,13 @@
-from typing import Optional, List
 from pydantic import BaseModel, EmailStr
 
 from app.schemas import RoleApiOut
 
 
 class UserCRUDBase(BaseModel):
-    email: Optional[EmailStr] = None
-    is_active: Optional[bool] = True
-    full_name: Optional[str] = None
-    role_ids: Optional[List[int]] = None
+    email: EmailStr | None = None
+    is_active: bool | None = True
+    full_name: str | None = None
+    role_ids: list[int] | None = None
 
 
 class UserCreate(UserCRUDBase):
@@ -17,16 +16,16 @@ class UserCreate(UserCRUDBase):
 
 
 class UserUpdate(UserCRUDBase):
-    password: Optional[str] = None
+    password: str | None = None
 
 
 class UserInDBBase(BaseModel):
-    id: Optional[int] = None
-    email: Optional[EmailStr] = None
-    is_active: Optional[bool] = True
-    full_name: Optional[str] = None
+    id: int | None = None
+    email: EmailStr | None = None
+    is_active: bool | None = True
+    full_name: str | None = None
 
-    roles: List[RoleApiOut]
+    roles: list[RoleApiOut]
 
     class Config:
         orm_mode = True

@@ -1,5 +1,3 @@
-from typing import List, Dict, Optional
-
 from dicomweb_client import DICOMwebClient
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
@@ -36,19 +34,19 @@ def read_dicom(
 
 
 @router.get(
-    "/for_image_instance/{image_instance_id}", response_model=List[schemas.DicomApiOut]
+    "/for_image_instance/{image_instance_id}", response_model=list[schemas.DicomApiOut]
 )
 def read_dicoms_for_image_instance(
     *,
     db: Session = Depends(deps.get_db),
     image_instance_id: int,
-    task_id: Optional[int] = None,
+    task_id: int | None = None,
     current_user: models.User = Depends(
         deps.get_current_user_with_role(
             [schemas.RoleType.annotator, schemas.RoleType.data_admin]
         )
     ),
-) -> List[models.Dicom]:
+) -> list[models.Dicom]:
     """
     Read metadata of all dicoms related to image instance.
     """
@@ -58,6 +56,7 @@ def read_dicoms_for_image_instance(
     if task_id is not None:
         task = crud.task.get(db, id=task_id)
         helpers.validate_access_to_task(task, current_user)
+        assert task
 
         image_instances = logic.image_instance.get_all_image_instances_for_task(task)
         if image_instance_id not in {ii.id for ii in image_instances}:
@@ -75,21 +74,21 @@ def read_dicoms_for_image_instance(
             detail=f"Image instance with id={image_instance} does not exist.",
         )
 
-    dicoms: List[models.Dicom] = query.dicom.query_by_series_id(
+    dicoms: list[models.Dicom] = query.dicom.query_by_series_id(
         db, series_id=image_instance.id_ref
     ).all()
 
     return dicoms
 
 
-@router.post("/sync_dicomweb", response_model=List[schemas.DicomApiOut])
+@router.post("/sync_dicomweb", response_model=list[schemas.DicomApiOut])
 def sync_dicomweb(
     *,
     db: Session = Depends(deps.get_db),
     current_user: models.User = Depends(
         deps.get_current_user_with_role([schemas.RoleType.data_admin])
     ),
-) -> List[models.Dicom]:
+) -> list[models.Dicom]:
     """
     Sync internal backend database with attached pacs using dicomweb.
     """

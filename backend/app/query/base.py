@@ -1,4 +1,4 @@
-from typing import Generic, Type, TypeVar, Optional
+from typing import Generic, Type, TypeVar
 
 from sqlalchemy.orm import Session, Query
 
@@ -11,7 +11,7 @@ class QueryBase(Generic[ModelType]):
     def __init__(self, model: Type[ModelType]):
         self.model = model
 
-    def query(self, db: Session, query_in: Optional[Query] = None) -> Query:
+    def query(self, db: Session, query_in: Query | None = None) -> Query:
         if query_in is None:
             query_in = db.query(self.model)
         return query_in

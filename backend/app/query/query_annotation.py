@@ -1,6 +1,3 @@
-from typing import List, Optional
-
-import sqlalchemy as sa
 from sqlalchemy.orm import Session, Query
 
 from app import models, schemas
@@ -21,7 +18,7 @@ class QueryAnnotation(QueryBase[models.Annotation]):
         self,
         db: Session,
         *,
-        annotation_ids: Optional[List[int]] = None,
+        annotation_ids: list[int] | None = None,
         status: schemas.AnnotationStatus
     ) -> Query:
         q = self.query(db).filter(models.Annotation.status == status)
@@ -35,7 +32,7 @@ class QueryAnnotation(QueryBase[models.Annotation]):
         return self.query(db).filter(models.Annotation.parent_task_id == task_id)
 
     def query_without_active_task(
-        self, db: Session, query_in: Optional[Query] = None
+        self, db: Session, query_in: Query | None = None
     ) -> Query:
         active_tasks_by_type = (
             db.query(models.Task.id)

@@ -1,6 +1,5 @@
 from __future__ import annotations
 from enum import Enum
-from typing import List
 
 from pydantic import BaseModel
 
@@ -12,7 +11,7 @@ class RoleType(str, Enum):
     annotator = "annotator"
 
     @staticmethod
-    def all_roles() -> List[RoleType]:
+    def all_roles() -> list[RoleType]:
         return [
             RoleType.superuser,
             RoleType.task_admin,

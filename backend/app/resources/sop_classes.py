@@ -1,7 +1,4 @@
-from typing import List
-
-
-ALL_SOP_CLASSES: List[str] = [
+ALL_SOP_CLASSES: list[str] = [
     "1.2.840.10008.1.20.1",  # Storage Commitment Push Model SOP Class
     "1.2.840.10008.1.3.10",  # Media Storage Directory Storage
     "1.2.840.10008.4.2",  # Storage Service Class
@@ -70,7 +67,7 @@ ALL_SOP_CLASSES: List[str] = [
 ]
 
 
-IMAGING_SOP_CLASSES: List[str] = [
+IMAGING_SOP_CLASSES: list[str] = [
     "1.2.840.10008.5.1.4.1.1.1",  # CR Image Storage
     "1.2.840.10008.5.1.4.1.1.1.1",  # Digital X-Ray Image Storage â€“ for Presentation
     "1.2.840.10008.5.1.4.1.1.1.1.1",  # Digital X-Ray Image Storage â€“ for Processing

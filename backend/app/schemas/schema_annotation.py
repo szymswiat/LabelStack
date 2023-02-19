@@ -1,5 +1,4 @@
 from enum import IntEnum
-from typing import List, Optional
 
 from pydantic import BaseModel
 
@@ -30,12 +29,12 @@ class AnnotationCreateCrud(AnnotationCreateApiIn):
 
 
 class AnnotationUpdateApiIn(BaseModel):
-    spent_time: Optional[int] = None
+    spent_time: int | None = None
 
 
 class AnnotationUpdateCrud(BaseModel):
-    status: Optional[AnnotationStatus] = None
-    spent_time: Optional[int] = None
+    status: AnnotationStatus | None = None
+    spent_time: int | None = None
 
 
 class Annotation(BaseModel):
@@ -50,13 +49,13 @@ class Annotation(BaseModel):
     spent_time: int
     status: AnnotationStatus
 
-    reviews: List[AnnotationReview]
-    data_list: List[AnnotationData]
+    reviews: list[AnnotationReview]
+    data_list: list[AnnotationData]
 
     class Config:
         orm_mode = True
 
 
 class AnnotationApiOut(Annotation):
-    reviews: List[AnnotationReviewApiOut]
-    data_list: List[AnnotationDataApiOut]
+    reviews: list[AnnotationReviewApiOut]
+    data_list: list[AnnotationDataApiOut]

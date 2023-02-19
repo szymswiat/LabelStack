@@ -1,9 +1,7 @@
-from typing import Dict, List
-
 from app import schemas
 
 
-def generate_test_users() -> Dict[schemas.RoleType, List]:
+def generate_test_users() -> dict[schemas.RoleType, list]:
     dev_users = [
         (schemas.RoleType.task_admin, 2),
         (schemas.RoleType.data_admin, 3),

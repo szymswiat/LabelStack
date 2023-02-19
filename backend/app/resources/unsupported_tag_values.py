@@ -1,6 +1,3 @@
-from typing import List
-
-
-UNSUPPORTED_SCAN_OPTIONS: List[str] = [
+UNSUPPORTED_SCAN_OPTIONS: list[str] = [
     "SCOUT MODE",
 ]

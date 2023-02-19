@@ -1,5 +1,3 @@
-from typing import List, Optional, Union
-
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
@@ -26,6 +24,7 @@ def update_annotation(
     """
     annotation = crud.annotation.get(db, id=id)
     helpers.validate_access_to_annotation(annotation, current_user)
+    assert annotation
 
     update_obj = schemas.AnnotationUpdateCrud.parse_obj(obj_in.dict())
 
@@ -34,21 +33,21 @@ def update_annotation(
     return updated_obj
 
 
-@router.get("/", response_model=List[schemas.AnnotationApiOut])
+@router.get("/", response_model=list[schemas.AnnotationApiOut])
 def read_annotations(
     *,
     db: Session = Depends(deps.get_db),
-    by_id: Optional[int] = None,
-    by_task_id: Optional[int] = None,
-    waiting_for_review: Optional[bool] = None,
-    without_active_task: Optional[bool] = None,
+    by_id: int | None = None,
+    by_task_id: int | None = None,
+    waiting_for_review: bool | None = None,
+    without_active_task: bool | None = None,
     required_accepted_reviews: int = 1,
     current_user: models.User = Depends(
         deps.get_current_user_with_role(
             [schemas.RoleType.annotator, schemas.RoleType.task_admin]
         )
     ),
-) -> Union[List[schemas.Annotation], List[models.Annotation]]:
+) -> list[schemas.Annotation] | list[models.Annotation]:
     """
     Read list of annotations filtered by following options:
       - **by_id** - return annotation with id

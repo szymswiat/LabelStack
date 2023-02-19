@@ -1,4 +1,4 @@
-from typing import Any, Dict, Generic, List, Optional, Type, TypeVar, Union
+from typing import Any, Generic, Type, TypeVar
 
 from fastapi.encoders import jsonable_encoder
 from pydantic import BaseModel
@@ -23,15 +23,15 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         """
         self.model = model
 
-    def get(self, db: Session, id: Any) -> Optional[ModelType]:
+    def get(self, db: Session, id: Any) -> ModelType | None:
         return db.query(self.model).filter(self.model.id == id).first()
 
-    def get_multi_by_ids(self, db: Session, ids: List[int]) -> List[ModelType]:
+    def get_multi_by_ids(self, db: Session, ids: list[int]) -> list[ModelType]:
         return db.query(self.model).filter(self.model.id.in_(ids)).all()
 
     def get_multi(
         self, db: Session, *, skip: int = 0, limit: int = 100
-    ) -> List[ModelType]:
+    ) -> list[ModelType]:
         return db.query(self.model).offset(skip).limit(limit).all()
 
     def create(
@@ -45,7 +45,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         db.refresh(db_obj)
         return db_obj
 
-    def create_bulk(self, db: Session, *, objs_in: List[CreateSchemaType], commit=True):
+    def create_bulk(self, db: Session, *, objs_in: list[CreateSchemaType], commit=True):
         db_objs = [
             self.schema_to_model_create(db, create_obj=obj_in) for obj_in in objs_in
         ]
@@ -55,7 +55,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         if commit:
             db.commit()
 
-    def create_many(self, db: Session, *, objs_in: List[CreateSchemaType], commit=True):
+    def create_many(self, db: Session, *, objs_in: list[CreateSchemaType], commit=True):
         db_objs = [
             self.schema_to_model_create(db, create_obj=obj_in) for obj_in in objs_in
         ]
@@ -81,12 +81,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         return db_obj
 
     def update(
-        self,
-        db: Session,
-        *,
-        db_obj: ModelType,
-        obj_in: Union[UpdateSchemaType, Dict[str, Any]],
-        commit=True
+        self, db: Session, *, db_obj: ModelType, obj_in: UpdateSchemaType, commit=True
     ) -> ModelType:
         db_obj = self.schema_to_model_update(db, db_obj=db_obj, update_obj=obj_in)
 
@@ -97,7 +92,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         db.refresh(db_obj)
         return db_obj
 
-    def remove(self, db: Session, *, id: int, commit=True) -> ModelType:
+    def remove(self, db: Session, *, id: int, commit=True) -> ModelType | None:
         obj = db.query(self.model).get(id)
         db.delete(obj)
         db.flush([obj])
@@ -106,7 +101,9 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         return obj
 
     @staticmethod
-    def get_update_data(obj_in: Union[Dict, BaseModel], exclude_unset=True) -> Dict:
+    def get_update_data(
+        obj_in: dict[str, Any] | BaseModel, exclude_unset=True
+    ) -> dict[str, Any]:
         if isinstance(obj_in, dict):
             update_data = obj_in
         else:
@@ -115,7 +112,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         return update_data
 
     @staticmethod
-    def set_matching_fields(update_data: Dict, db_obj: ModelType):
+    def set_matching_fields(update_data: dict[str, Any], db_obj: ModelType):
         obj_data = jsonable_encoder(db_obj)
         for field in obj_data:
             if field in update_data:

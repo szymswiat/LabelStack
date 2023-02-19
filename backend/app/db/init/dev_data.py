@@ -1,5 +1,4 @@
 from pathlib import Path
-from typing import List, Tuple
 
 import pandas as pd
 from sqlalchemy.orm import Session
@@ -10,14 +9,14 @@ from app.core.config import settings
 resources_root = Path(settings.TEST_INIT_DATA_ROOT)
 
 
-def label_types_create_data() -> List[schemas.LabelTypeCreateCrud]:
+def label_types_create_data() -> list[schemas.LabelTypeCreateCrud]:
     label_types = pd.read_csv(resources_root / "label_types.csv")["label_type"].tolist()
 
     data = [schemas.LabelTypeCreateCrud(name=lt) for lt in label_types]
     return data
 
 
-def annotation_types_create_data() -> List[schemas.AnnotationTypeCreateCrud]:
+def annotation_types_create_data() -> list[schemas.AnnotationTypeCreateCrud]:
     annotation_types = pd.read_csv(resources_root / "annotation_types.csv")[
         "annotation_type"
     ].tolist()
@@ -26,7 +25,7 @@ def annotation_types_create_data() -> List[schemas.AnnotationTypeCreateCrud]:
     return data
 
 
-def tags_create_data() -> List[schemas.TagCreateCrud]:
+def tags_create_data() -> list[schemas.TagCreateCrud]:
     tags_df = pd.read_csv(resources_root / "tags.csv", sep="|")
 
     data = []
@@ -48,12 +47,10 @@ def tags_create_data() -> List[schemas.TagCreateCrud]:
     return data
 
 
-def labels_create_data(db: Session) -> List[schemas.LabelCreateCrud]:
+def labels_create_data(db: Session) -> list[schemas.LabelCreateCrud]:
     labels_df = pd.read_csv(resources_root / "labels.csv")
     label_types = crud.label_type.get_multi(db)
-    segment_annotation_type: models.AnnotationType = (
-        query.annotation_type.query_by_name(db, "segment").first()
-    )
+    segment_annotation_type = query.annotation_type.query_by_name(db, "segment").first()
 
     data = []
     for _, row in labels_df.iterrows():

@@ -1,5 +1,3 @@
-from typing import List, Optional
-
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.orm import Session
 
@@ -11,11 +9,11 @@ from app.core import logic
 router = APIRouter()
 
 
-@router.post("/add_to_instances", response_model=List[schemas.LabelAssignmentApiOut])
+@router.post("/add_to_instances", response_model=list[schemas.LabelAssignmentApiOut])
 def add_label_assignments(
     *,
     db: Session = Depends(deps.get_db),
-    image_instance_ids: List[int] = Query(),
+    image_instance_ids: list[int] = Query(),
     label_to_add_id: int,
     current_user: models.User = Depends(
         deps.get_current_user_with_role(
@@ -26,7 +24,7 @@ def add_label_assignments(
             ]
         )
     ),
-) -> List[models.LabelAssignment]:
+) -> list[models.LabelAssignment]:
 
     label_to_create = crud.label.get(db, label_to_add_id)
 
@@ -36,7 +34,7 @@ def add_label_assignments(
             detail=f"There is no label with id={label_to_add_id}",
         )
 
-    label_assignments_out: List[models.LabelAssignment] = []
+    label_assignments_out: list[models.LabelAssignment] = []
     for image_instance_id in image_instance_ids:
         image_instance = crud.image_instance.get(db, id=image_instance_id)
 
@@ -64,7 +62,7 @@ def add_label_assignments(
     return label_assignments_out
 
 
-@router.post("/for_image_instance", response_model=List[schemas.LabelAssignmentApiOut])
+@router.post("/for_image_instance", response_model=list[schemas.LabelAssignmentApiOut])
 def modify_label_assignments(
     *,
     db: Session = Depends(deps.get_db),
@@ -72,7 +70,7 @@ def modify_label_assignments(
     current_user: models.User = Depends(
         deps.get_current_user_with_role([schemas.RoleType.annotator])
     ),
-) -> List[models.LabelAssignment]:
+) -> list[models.LabelAssignment]:
     """
     Create group of label annotations for image_instance.
     """
@@ -102,7 +100,7 @@ def modify_label_assignments(
     labels_to_create = crud.label.get_multi_by_ids(
         db, label_assignments_in.label_ids_to_create
     )
-    label_assignments_out: List[models.LabelAssignment] = []
+    label_assignments_out: list[models.LabelAssignment] = []
     for label in labels_to_create:
         if logic.image_instance.has_labels(image_instance, [label]):
             continue
@@ -127,18 +125,18 @@ def modify_label_assignments(
     return label_assignments_out
 
 
-@router.get("/", response_model=List[schemas.LabelAssignmentApiOut])
+@router.get("/", response_model=list[schemas.LabelAssignmentApiOut])
 def read_label_assignments(
     *,
     db: Session = Depends(deps.get_db),
-    waiting_for_annotations: Optional[bool] = False,
-    without_active_task: Optional[bool] = False,
+    waiting_for_annotations: bool | None = False,
+    without_active_task: bool | None = False,
     current_user: models.User = Depends(
         deps.get_current_user_with_role(
             [schemas.RoleType.data_admin, schemas.RoleType.task_admin]
         )
     ),
-) -> List[schemas.Dicom]:
+) -> list[schemas.Dicom]:
     """
     Read list of label assignments filtered by following options:
       - **waiting_for_annotations** - returns labels assignments that are not annotated

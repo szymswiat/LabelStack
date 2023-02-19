@@ -1,4 +1,3 @@
-from typing import List
 from copy import deepcopy
 
 from sqlalchemy.orm import Session
@@ -9,12 +8,12 @@ from app.utils.dicomweb import DicomTags, DicomWebQidoInstance
 
 def sync_pacs_with_dicoms(
     db: Session,
-    instances: List[DicomWebQidoInstance],
+    instances: list[DicomWebQidoInstance],
     tags: DicomTags,
     *,
     commit: bool = False,
-) -> List[models.Dicom]:
-    synced_dicoms: List[models.Dicom] = []
+) -> list[models.Dicom]:
+    synced_dicoms: list[models.Dicom] = []
 
     instances = deepcopy(instances)
 

@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from enum import IntEnum
-from typing import List, Optional
 
 from pydantic import BaseModel
 
@@ -25,24 +24,24 @@ class TaskStatus(IntEnum):
     cancelled = 4
 
     @staticmethod
-    def active_statuses() -> List[TaskStatus]:
+    def active_statuses() -> list[TaskStatus]:
         return [TaskStatus.unassigned, TaskStatus.open, TaskStatus.in_progress]
 
     @staticmethod
-    def inactive_statuses() -> List[TaskStatus]:
+    def inactive_statuses() -> list[TaskStatus]:
         return [TaskStatus.done, TaskStatus.cancelled]
 
 
 class TaskCreateApiIn(BaseModel):
-    assigned_user_id: Optional[int] = None
+    assigned_user_id: int | None = None
     task_type: TaskType
     name: str
-    description: Optional[str] = None
-    priority: Optional[int] = None
+    description: str | None = None
+    priority: int | None = None
 
-    image_instance_ids: Optional[List[int]] = []
-    label_assignment_ids: Optional[List[int]] = []
-    annotation_ids: Optional[List[int]] = []
+    image_instance_ids: list[int] | None = []
+    label_assignment_ids: list[int] | None = []
+    annotation_ids: list[int] | None = []
 
 
 class TaskCreateCrud(TaskCreateApiIn):
@@ -52,35 +51,35 @@ class TaskCreateCrud(TaskCreateApiIn):
 
 
 class TaskUpdateApiIn(BaseModel):
-    assigned_user_id: Optional[int] = None
+    assigned_user_id: int | None = None
 
 
 class TaskUpdateCrud(TaskUpdateApiIn):
-    status: Optional[TaskStatus] = None
-    total_time: Optional[int] = None
-    name: Optional[str] = None
-    description: Optional[str] = None
-    priority: Optional[int] = None
+    status: TaskStatus | None = None
+    total_time: int | None = None
+    name: str | None = None
+    description: str | None = None
+    priority: int | None = None
 
 
 class Task(BaseModel):
     id: int
 
-    assigned_user_id: Optional[int] = None
+    assigned_user_id: int | None = None
     submitter_user_id: int
 
     task_type: TaskType
     name: str
-    description: Optional[str] = None
+    description: str | None = None
     priority: int
     status: TaskStatus
     total_time: int
 
-    target_annotation_type: Optional[AnnotationType] = None
+    target_annotation_type: AnnotationType | None = None
 
-    image_instances: List[ImageInstance] | None
-    label_assignments: List[LabelAssignment] | None
-    annotations: List[Annotation] | None
+    image_instances: list[ImageInstance] | None
+    label_assignments: list[LabelAssignment] | None
+    annotations: list[Annotation] | None
 
     image_instance_ids: list[int] | None
     label_assignment_ids: list[int] | None
@@ -91,12 +90,12 @@ class Task(BaseModel):
 
 
 class TaskApiOut(Task):
-    target_annotation_type: Optional[AnnotationTypeApiOut] = None
+    target_annotation_type: AnnotationTypeApiOut | None = None
 
-    image_instances: List[ImageInstanceApiOut] | None
-    label_assignments: List[LabelAssignmentApiOut] | None
-    annotations: List[AnnotationApiOut] | None
+    image_instances: list[ImageInstanceApiOut] | None
+    label_assignments: list[LabelAssignmentApiOut] | None
+    annotations: list[AnnotationApiOut] | None
 
 
 class AvailableStatusesForTaskApiOut(BaseModel):
-    statuses: List[int]
+    statuses: list[int]

@@ -1,5 +1,3 @@
-from typing import List, Union
-
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
@@ -11,7 +9,7 @@ from app.core import logic
 router = APIRouter()
 
 
-@router.get("/", response_model=List[schemas.AnnotationReviewApiOut])
+@router.get("/", response_model=list[schemas.AnnotationReviewApiOut])
 def read_annotation_reviews(
     *,
     db: Session = Depends(deps.get_db),
@@ -21,7 +19,7 @@ def read_annotation_reviews(
             [schemas.RoleType.annotator, schemas.RoleType.task_admin]
         )
     ),
-) -> Union[List[schemas.AnnotationReview], List[models.AnnotationReview]]:
+) -> list[models.AnnotationReview]:
     """
     Read list of annotation reviews filtered by following options:
       - **by_task_id** - return annotation reviews bound to task

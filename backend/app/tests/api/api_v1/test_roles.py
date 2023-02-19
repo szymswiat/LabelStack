@@ -1,9 +1,8 @@
-from typing import List
-
 from sqlalchemy.orm import Session
 from starlette.testclient import TestClient
 
 from app import crud, schemas
+from app.schemas import RoleApiOut
 from app.core.config import settings
 
 
@@ -18,9 +17,9 @@ def test_read_all_roles(client: TestClient, superuser_token_headers: dict, db: S
 
     content = r.json()
     assert isinstance(content, list)
-    content: List[schemas.RoleApiOut] = [
-        schemas.RoleApiOut.parse_obj(obj) for obj in content
-    ]
+
+    schemas.Role
+    content: list[RoleApiOut] = [RoleApiOut.parse_obj(obj) for obj in content]
 
     roles_db = {lt.id: lt for lt in roles_db}
     for role_resp in content:

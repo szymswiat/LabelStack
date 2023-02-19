@@ -1,5 +1,4 @@
 from enum import IntEnum, Enum
-from typing import Optional
 
 from pydantic import BaseModel
 
@@ -28,11 +27,11 @@ class AnnotationReviewCreateCrud(AnnotationReviewCreateApiIn):
 
 class AnnotationReviewUpdateApiIn(BaseModel):
     result: AnnotationReviewResult
-    comment: Optional[str] = None
+    comment: str | None = None
 
 
 class AnnotationReviewUpdateCrud(AnnotationReviewUpdateApiIn):
-    status: Optional[AnnotationReviewStatus] = None
+    status: AnnotationReviewStatus | None = None
 
 
 class AnnotationReview(BaseModel):
@@ -41,13 +40,13 @@ class AnnotationReview(BaseModel):
     annotation_id: int
     sequence: int
 
-    resulting_annotation_id: Optional[int] = None
+    resulting_annotation_id: int | None = None
 
     author_id: int
     parent_task_id: int
     status: AnnotationReviewStatus
-    result: Optional[AnnotationReviewResult] = None
-    comment: Optional[str] = None
+    result: AnnotationReviewResult | None = None
+    comment: str | None = None
 
     class Config:
         orm_mode = True

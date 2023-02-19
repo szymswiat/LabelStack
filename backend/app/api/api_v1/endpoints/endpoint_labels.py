@@ -1,4 +1,4 @@
-from typing import Any, List, Optional
+from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
@@ -33,12 +33,12 @@ def create_label(
     return label
 
 
-@router.get("/", response_model=List[schemas.LabelApiOut])
+@router.get("/", response_model=list[schemas.LabelApiOut])
 def read_labels(
     *,
     db: Session = Depends(deps.get_db),
-    with_label_type_name: Optional[str] = None,
-    with_allowed_annotation_type_name: Optional[str] = None,
+    with_label_type_name: str | None = None,
+    with_allowed_annotation_type_name: str | None = None,
     current_user: models.User = Depends(
         deps.get_current_user_with_role(schemas.RoleType.all_roles())
     ),
@@ -49,7 +49,7 @@ def read_labels(
     if with_label_type_name and with_allowed_annotation_type_name:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
-            detail=f"Only one filter (with_label_type_name, with_allowed_annotation_type_name) is allowed.",
+            detail="Only one filter (with_label_type_name, with_allowed_annotation_type_name) is allowed.",
         )
 
     query_out = query.label.query(db)

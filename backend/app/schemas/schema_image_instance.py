@@ -1,4 +1,3 @@
-from typing import List
 from pydantic import BaseModel
 
 from app.schemas.schema_label_assignment import LabelAssignment
@@ -25,13 +24,13 @@ class ImageInstance(BaseModel):
     id_ref: str
 
     visited: bool
-    label_assignments: List[LabelAssignment]
+    label_assignments: list[LabelAssignment]
 
-    tags: List[ImageInstanceTagValue]
+    tags: list[ImageInstanceTagValue]
 
     class Config:
         orm_mode = True
 
 
 class ImageInstanceApiOut(ImageInstance):
-    tags: List[ImageInstanceTagValueApiOut]
+    tags: list[ImageInstanceTagValueApiOut]

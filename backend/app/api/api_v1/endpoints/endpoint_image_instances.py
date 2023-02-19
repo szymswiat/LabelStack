@@ -1,5 +1,3 @@
-from typing import List, Optional
-
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.orm import Session
 
@@ -32,19 +30,19 @@ def read_image_instance(
     return image_instance
 
 
-@router.get("/", response_model=List[schemas.ImageInstanceApiOut])
+@router.get("/", response_model=list[schemas.ImageInstanceApiOut])
 def read_image_instances(
     *,
     db: Session = Depends(deps.get_db),
-    by_ids: Optional[str] = None,
-    unvisited: Optional[bool] = False,
-    without_active_task: Optional[bool] = False,
+    by_ids: str | None = None,
+    unvisited: bool | None = False,
+    without_active_task: bool | None = False,
     current_user: models.User = Depends(
         deps.get_current_user_with_role(
             [schemas.RoleType.data_admin, schemas.RoleType.task_admin]
         )
     ),
-) -> List[models.ImageInstance]:
+) -> list[models.ImageInstance]:
     """
     Read list of image_instance metadata filtered by following options:
       - **by_ids** - returns image instances specified in id list e.g. by_ids=1,2,3,4 ...
@@ -73,7 +71,7 @@ def read_image_instances(
     return query_out.all()
 
 
-@router.get("/for_task/{task_id}", response_model=List[schemas.ImageInstanceApiOut])
+@router.get("/for_task/{task_id}", response_model=list[schemas.ImageInstanceApiOut])
 def read_image_instances_for_task(
     *,
     db: Session = Depends(deps.get_db),
@@ -81,7 +79,7 @@ def read_image_instances_for_task(
     current_user: models.User = Depends(
         deps.get_current_user_with_role([schemas.RoleType.annotator])
     ),
-) -> List[models.ImageInstance] | list[schemas.ImageInstance]:
+) -> list[models.ImageInstance] | list[schemas.ImageInstance]:
     """
     Read list of image_instances bound to task.
     """
@@ -98,11 +96,11 @@ def read_image_instances_for_task(
     return image_instances
 
 
-@router.post("/mark_as_labeled", response_model=List[schemas.ImageInstance])
+@router.post("/mark_as_labeled", response_model=list[schemas.ImageInstance])
 def mark_image_instances_as_labeled(
     *,
     db: Session = Depends(deps.get_db),
-    image_instance_ids: List[int] = Query(),
+    image_instance_ids: list[int] = Query(),
     current_user: models.User = Depends(
         deps.get_current_user_with_role(
             [
@@ -111,7 +109,7 @@ def mark_image_instances_as_labeled(
             ]
         )
     ),
-) -> List[models.ImageInstance]:
+) -> list[models.ImageInstance]:
 
     image_instances = crud.image_instance.get_multi_by_ids(db, ids=image_instance_ids)
 

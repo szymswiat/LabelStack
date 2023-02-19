@@ -1,5 +1,3 @@
-from typing import List
-
 from sqlalchemy import null
 from sqlalchemy.orm import Session
 
@@ -32,8 +30,8 @@ def is_annotation_waiting_for_review(
 
 
 def filter_annotations_waiting_for_review(
-    annotations: List[schemas.Annotation], required_accepted_reviews: int = 1
-) -> List[schemas.Annotation]:
+    annotations: list[schemas.Annotation], required_accepted_reviews: int = 1
+) -> list[schemas.Annotation]:
     annotations_out = []
 
     for annotation in annotations:
@@ -56,9 +54,10 @@ def change_annotation_review_result(
 
     if new_result == Result.denied_corrected:
         # create new resulting annotation
-        parent_annotation: models.Annotation = crud.annotation.get(
+        parent_annotation = crud.annotation.get(
             db, annotation_review.annotation_id
         )
+        assert parent_annotation
         new_annotation = schemas.AnnotationCreateCrud(
             label_assignment_id=parent_annotation.label_assignment_id,
             parent_task_id=annotation_review.parent_task_id,
@@ -75,8 +74,9 @@ def change_annotation_review_result(
     if annotation_review.result == Result.denied_corrected:
         # drop resulting annotation
         annotation_id_to_remove = annotation_review.resulting_annotation_id
-        annotation_review.resulting_annotation_id = null()
+        annotation_review.resulting_annotation_id = null()  # type: ignore
         annotation_to_remove = crud.annotation.get(db, id=annotation_id_to_remove)
+        assert annotation_to_remove
         annotation_to_remove.data_list = []
         db.flush()
         crud.annotation.remove(db, id=annotation_id_to_remove, commit=commit_changes)
@@ -86,7 +86,7 @@ def change_annotation_review_result(
     return annotation_review
 
 
-def get_all_annotations_from_task(task: models.Task) -> List[models.Annotation]:
+def get_all_annotations_from_task(task: models.Task) -> list[models.Annotation]:
     all_image_instances = get_all_image_instances_for_task(task)
 
     annotations = [

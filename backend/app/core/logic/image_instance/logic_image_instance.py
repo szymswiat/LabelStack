@@ -1,26 +1,24 @@
 from itertools import groupby
-from typing import Dict, List
-from copy import deepcopy
 
 from sqlalchemy.orm import Session
 
-from app import models, query, schemas, crud, core, utils
+from app import models, query, schemas, crud, utils
 from app.resources.modalities import IMAGING_MODALITIES
 from app.utils import DicomWebQidoInstance, DicomTags
 from app import resources
 
 
 def has_labels(
-    image_instance: models.ImageInstance, labels: List[models.Label]
+    image_instance: models.ImageInstance, labels: list[models.Label]
 ) -> bool:
-    image_label_ids = [l.label_id for l in image_instance.label_assignments]
+    image_label_ids = [la.label_id for la in image_instance.label_assignments]
     for label in labels:
         if label.id not in image_label_ids:
             return False
     return True
 
 
-def clear_labels(image_instance: models.ImageInstance, label_ids: List[int]):
+def clear_labels(image_instance: models.ImageInstance, label_ids: list[int]):
     label_assignments_to_remove = [
         la for la in image_instance.label_assignments if la.label_id in label_ids
     ]
@@ -30,12 +28,12 @@ def clear_labels(image_instance: models.ImageInstance, label_ids: List[int]):
 
 def sync_pacs_with_image_instances(
     db: Session,
-    series_list: List[DicomWebQidoInstance],
-    instances: List[DicomWebQidoInstance],
+    series_list: list[DicomWebQidoInstance],
+    instances: list[DicomWebQidoInstance],
     tags: DicomTags,
     *,
     commit: bool = False,
-) -> List[models.ImageInstance]:
+) -> list[models.ImageInstance]:
     tag_keywords_for_image_instance = [
         "PatientID",
         "Modality",
@@ -44,7 +42,7 @@ def sync_pacs_with_image_instances(
 
     grouped_instances = group_instances_by_series(instances)
 
-    synced_image_instances: List[models.ImageInstance] = []
+    synced_image_instances: list[models.ImageInstance] = []
 
     for series in series_list:
         id_ref = series.get_tag_by_keyword("SeriesInstanceUID")
@@ -81,7 +79,7 @@ def sync_pacs_with_image_instances(
     return synced_image_instances
 
 
-def get_all_image_instances_for_task(task: models.Task) -> List[models.ImageInstance]:
+def get_all_image_instances_for_task(task: models.Task) -> list[models.ImageInstance]:
     if task.task_type == schemas.TaskType.label_assignment:
         image_instances = task.image_instances
     elif task.task_type == schemas.TaskType.annotation:
@@ -175,8 +173,8 @@ def filter_annotations_for_user(
 
 
 def group_instances_by_series(
-    instances: List[DicomWebQidoInstance],
-) -> Dict[str, List[DicomWebQidoInstance]]:
+    instances: list[DicomWebQidoInstance],
+) -> dict[str, list[DicomWebQidoInstance]]:
 
     instances_by_series = [
         (instance.get_tag_by_keyword("SeriesInstanceUID"), instance)
@@ -187,7 +185,7 @@ def group_instances_by_series(
 
 
 def check_support_for_series(
-    bound_instances: List[DicomWebQidoInstance],
+    bound_instances: list[DicomWebQidoInstance],
 ) -> bool:
 
     for instance in bound_instances:

@@ -1,12 +1,11 @@
-from typing import List
 from pydantic import BaseModel
 
 from app.schemas.schema_annotation import Annotation, AnnotationApiOut
 
 
 class LabelAssignmentsModifyApiIn(BaseModel):
-    label_ids_to_create: List[int]
-    label_ids_to_remove: List[int]
+    label_ids_to_create: list[int]
+    label_ids_to_remove: list[int]
     image_instance_id: int
 
     parent_task_id: int | None = None
@@ -37,7 +36,7 @@ class LabelAssignment(BaseModel):
     author_id: int
     parent_task_id: int | None = None
 
-    annotations: List[Annotation]
+    annotations: list[Annotation]
 
     class Config:
         orm_mode = True
@@ -52,7 +51,7 @@ class LabelAssignmentApiOut(BaseModel):
     author_id: int
     parent_task_id: int | None = None
 
-    annotations: List[AnnotationApiOut]
+    annotations: list[AnnotationApiOut]
 
     class Config:
         orm_mode = True

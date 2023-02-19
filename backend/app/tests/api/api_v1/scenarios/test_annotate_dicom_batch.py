@@ -1,6 +1,5 @@
 import random
 from random import randbytes
-from typing import List
 
 import pytest
 from sqlalchemy.orm import Session
@@ -29,7 +28,7 @@ def test_step0_create_annotation_task(client: TestClient, db: Session):
         headers=task_admin_0_headers,
     )
     assert 200 <= r.status_code < 300, f"{r.status_code}: {r.content}"
-    segmentable_labels: List[schemas.LabelApiOut] = [
+    segmentable_labels: list[schemas.LabelApiOut] = [
         schemas.LabelApiOut.parse_obj(d) for d in r.json()
     ]
 
@@ -41,7 +40,7 @@ def test_step0_create_annotation_task(client: TestClient, db: Session):
         headers=task_admin_0_headers,
     )
     assert 200 <= r.status_code < 300, f"{r.status_code}: {r.content}"
-    labels_assignments_to_annotate: List[schemas.LabelAssignmentApiOut] = [
+    labels_assignments_to_annotate: list[schemas.LabelAssignmentApiOut] = [
         schemas.LabelAssignmentApiOut.parse_obj(d) for d in r.json()
     ]
 

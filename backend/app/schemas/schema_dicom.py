@@ -1,6 +1,6 @@
-from typing import List
+from pydantic import BaseModel
 
-from app.schemas.schema_tag_value import *
+from app.schemas.schema_tag_value import DicomTagValue, DicomTagValueApiOut
 
 
 class DicomCreateCrud(BaseModel):
@@ -28,11 +28,11 @@ class Dicom(BaseModel):
     series_id: str
     instance_id: str
 
-    tags: List[DicomTagValue]
+    tags: list[DicomTagValue]
 
     class Config:
         orm_mode = True
 
 
 class DicomApiOut(Dicom):
-    tags: List[DicomTagValueApiOut]
+    tags: list[DicomTagValueApiOut]
