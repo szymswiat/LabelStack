@@ -6,7 +6,7 @@ from app.schemas import RoleApiOut
 from app.core.config import settings
 
 
-def test_read_all_roles(client: TestClient, superuser_token_headers: dict, db: Session):
+def test_read_all_roles(client: TestClient, superuser_token_headers: dict[str, str], db: Session):
     roles_db = crud.role.get_multi(db)
 
     r = client.get(

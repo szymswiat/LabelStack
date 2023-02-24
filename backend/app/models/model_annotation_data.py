@@ -8,7 +8,7 @@ from app.db.base_class import Base
 class AnnotationData(Base):
     __tablename__ = "annotation_data"
 
-    annotation_id: Mapped[int] = mapped_column(
+    annotation_id: Mapped[int | None] = mapped_column(
         sa.Integer, sa.ForeignKey("annotation.id"), nullable=True, primary_key=True
     )
     sequence: Mapped[int] = mapped_column(sa.Integer, nullable=False, primary_key=True)

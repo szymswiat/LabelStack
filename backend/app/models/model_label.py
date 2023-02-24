@@ -17,7 +17,7 @@ class Label(Base):
     id: Mapped[int] = mapped_column(sa.Integer, Identity(always=True), primary_key=True)
 
     name: Mapped[str] = mapped_column(sa.String, nullable=False)
-    allowed_annotation_type_id: Mapped[int] = mapped_column(
+    allowed_annotation_type_id: Mapped[int | None] = mapped_column(
         sa.Integer, sa.ForeignKey("annotation_type.id"), nullable=True
     )
 

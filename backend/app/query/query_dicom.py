@@ -4,6 +4,9 @@ from app import models
 from app.query.base import QueryBase
 
 
+Query = Query[models.Dicom]
+
+
 class QueryDicom(QueryBase[models.Dicom]):
     def query_by_instance_id(self, db: Session, *, instance_id: str) -> Query:
         return self.query(db).filter(models.Dicom.instance_id == instance_id)

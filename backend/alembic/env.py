@@ -12,6 +12,7 @@ config = context.config
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
+assert config.config_file_name
 fileConfig(config.config_file_name)
 
 # add your model's MetaData object here
@@ -55,7 +56,7 @@ def run_migrations_offline():
         url=url, target_metadata=target_metadata, literal_binds=True, compare_type=True
     )
 
-    with context.begin_transaction():
+    with context.begin_transaction():  # type: ignore
         context.run_migrations()
 
 
@@ -66,7 +67,9 @@ def run_migrations_online():
     and associate a connection with the context.
 
     """
-    configuration = config.get_section(config.config_ini_section)
+    configuration = config.get_section(config.config_ini_section)  # type: ignore
+    assert configuration
+
     configuration["sqlalchemy.url"] = get_url()
     connectable = engine_from_config(
         configuration,
@@ -79,7 +82,7 @@ def run_migrations_online():
             connection=connection, target_metadata=target_metadata, compare_type=True
         )
 
-        with context.begin_transaction():
+        with context.begin_transaction():  # type: ignore
             context.run_migrations()
 
 

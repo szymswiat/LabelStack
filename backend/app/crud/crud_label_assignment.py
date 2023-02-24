@@ -17,7 +17,7 @@ class CRUDLabelAssignment(
         *,
         db_obj: models.LabelAssignment,
         obj_in: schemas.LabelAssignmentUpdateCrud,
-        commit=True
+        commit: bool = True
     ) -> models.LabelAssignment:
         raise AttributeError("Unsupported operation for LabelAssignment.")
 

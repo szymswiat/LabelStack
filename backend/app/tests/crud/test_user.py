@@ -57,6 +57,7 @@ def test_check_if_user_is_superuser(db: Session) -> None:
     email = random_email()
     password = random_lower_string()
     superuser_role = query.role.query_by_type(db, type=RoleType.superuser).first()
+    assert superuser_role
     user_in = UserCreate(email=email, password=password, role_ids=[superuser_role.id])
     user = crud.user.create(db, obj_in=user_in)
     has_superuser_role = logic.user.has_role_one_of(user, [RoleType.superuser])
@@ -67,6 +68,7 @@ def test_check_if_user_is_superuser_normal_user(db: Session) -> None:
     username = random_email()
     password = random_lower_string()
     annotator_role = query.role.query_by_type(db, type=RoleType.annotator).first()
+    assert annotator_role
     user_in = UserCreate(
         email=username, password=password, role_ids=[annotator_role.id]
     )
@@ -79,6 +81,7 @@ def test_get_user(db: Session) -> None:
     password = random_lower_string()
     username = random_email()
     superuser_role = query.role.query_by_type(db, type=RoleType.superuser).first()
+    assert superuser_role
     user_in = UserCreate(
         email=username, password=password, role_ids=[superuser_role.id]
     )
@@ -93,6 +96,7 @@ def test_update_user(db: Session) -> None:
     password = random_lower_string()
     email = random_email()
     superuser_role = query.role.query_by_type(db, type=RoleType.superuser).first()
+    assert superuser_role
     user_in = UserCreate(email=email, password=password, role_ids=[superuser_role.id])
     user = crud.user.create(db, obj_in=user_in)
     new_password = random_lower_string()

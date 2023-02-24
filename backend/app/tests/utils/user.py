@@ -56,11 +56,11 @@ def auth_data_for_test_user(
     meta_by_role = test_users_meta[user_role]
     assert user_idx < len(meta_by_role)
     user_meta = meta_by_role[user_idx]
-    user = query.user.query_by_email(db, email=user_meta["email"]).first()
+    user = query.user.query_by_email(db, email=user_meta.email).first()
     assert user
 
     headers = user_authentication_headers(
-        client=client, email=user_meta["email"], password=user_meta["password"]
+        client=client, email=user_meta.email, password=user_meta.password
     )
 
     return user, headers

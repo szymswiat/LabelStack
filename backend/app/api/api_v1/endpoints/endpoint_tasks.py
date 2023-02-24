@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Callable
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
@@ -182,7 +182,10 @@ def change_task_status(
 
     helpers.validate_access_to_task(task, current_user, [schemas.RoleType.task_admin])
     assert task
-    change_status_fn = {
+    change_status_fn: dict[
+        schemas.TaskType,
+        Callable[[Session, models.Task, schemas.TaskStatus, bool], models.Task],
+    ] = {
         schemas.TaskType.label_assignment: logic.task.change_label_task_status,
         schemas.TaskType.annotation: logic.task.change_annotation_task_status,
         schemas.TaskType.annotation_review: logic.task.change_annotation_review_task_status,
@@ -207,6 +210,7 @@ def change_task_status(
                 detail=f"Annotation with id={error.extra['id']} does not have data.",
             ) from error
 
+    assert isinstance(task, models.Task)
     return helpers.convert_task_nested_to_ids(task)
 
 

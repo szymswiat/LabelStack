@@ -1,3 +1,6 @@
+# flake8: noqa: F401
+# type: ignore
+
 from .logic_annotation_review_task import (
     create_annotation_review_task,
     change_annotation_review_task_status,

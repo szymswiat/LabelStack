@@ -3,7 +3,7 @@ from typing import Any
 from fastapi import HTTPException, status
 
 
-def allow_use_one_of(options: dict[str, Any], enforce_one_option=False) -> None:
+def allow_use_one_of(options: dict[str, Any], enforce_one_option: bool = False) -> None:
     count_not_none = 0
     for v in options.values():
         if v is not None:

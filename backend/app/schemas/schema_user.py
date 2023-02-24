@@ -1,6 +1,6 @@
 from pydantic import BaseModel, EmailStr
 
-from app.schemas import RoleApiOut
+from app.schemas.schema_role import RoleApiOut
 
 
 class UserCRUDBase(BaseModel):

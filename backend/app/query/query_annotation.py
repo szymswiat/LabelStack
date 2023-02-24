@@ -4,6 +4,9 @@ from app import models, schemas
 from app.query.base import QueryBase
 
 
+Query = Query[models.Annotation]
+
+
 class QueryAnnotation(QueryBase[models.Annotation]):
     def query_all_for_label_assignment(
         self,

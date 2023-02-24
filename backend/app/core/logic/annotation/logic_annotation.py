@@ -32,7 +32,7 @@ def is_annotation_waiting_for_review(
 def filter_annotations_waiting_for_review(
     annotations: list[schemas.Annotation], required_accepted_reviews: int = 1
 ) -> list[schemas.Annotation]:
-    annotations_out = []
+    annotations_out: list[schemas.Annotation] = []
 
     for annotation in annotations:
         if is_annotation_waiting_for_review(annotation, required_accepted_reviews):
@@ -74,9 +74,12 @@ def change_annotation_review_result(
     if annotation_review.result == Result.denied_corrected:
         # drop resulting annotation
         annotation_id_to_remove = annotation_review.resulting_annotation_id
+        assert annotation_id_to_remove is not None
+
         annotation_review.resulting_annotation_id = null()  # type: ignore
         annotation_to_remove = crud.annotation.get(db, id=annotation_id_to_remove)
         assert annotation_to_remove
+
         annotation_to_remove.data_list = []
         db.flush()
         crud.annotation.remove(db, id=annotation_id_to_remove, commit=commit_changes)

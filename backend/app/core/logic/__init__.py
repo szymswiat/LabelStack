@@ -1,3 +1,6 @@
+# flake8: noqa
+# type: ignore
+
 from ..logic import task
 from ..logic import annotation
 from ..logic import image_instance

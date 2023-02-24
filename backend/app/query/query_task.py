@@ -4,6 +4,9 @@ from app import models, schemas
 from app.query.base import QueryBase
 
 
+Query = Query[models.Task]
+
+
 class QueryTask(QueryBase[models.Task]):
     def query_active_tasks_with_image_instances(
         self,

@@ -1,3 +1,4 @@
+from typing import Any
 from sqlalchemy.orm import Session
 
 from app import schemas, models, crud, query, core
@@ -44,23 +45,25 @@ def create_annotation_review_task(
     return created_task
 
 
-def _status_unassigned_to_open(db: Session, task: models.Task, **kwargs) -> models.Task:
+def _status_unassigned_to_open(
+    db: Session, task: models.Task, **kwargs: Any
+) -> models.Task:
     if task.assigned_user_id is None:
         raise core.LogicError(core.LogicErrorCode.task_missing_assigned_user)
     return task
 
 
 def _status_unassigned_to_cancelled(
-    db: Session, task: models.Task, **kwargs
+    db: Session, task: models.Task, **kwargs: Any
 ) -> models.Task:
     # just change status
     return task
 
 
 def _status_open_to_in_progress(
-    db: Session, task: models.Task, **kwargs
+    db: Session, task: models.Task, **kwargs: Any
 ) -> models.Task:
-    new_reviews = []
+    new_reviews: list[schemas.AnnotationReviewCreateCrud] = []
 
     # create AnnotationReview objects for all annotation specified in task
     annotations: list[models.Annotation] = task.annotations
@@ -74,6 +77,8 @@ def _status_open_to_in_progress(
         new_sequence = (
             annotation.reviews[-1].sequence + 1 if len(annotation.reviews) > 0 else 0
         )
+
+        assert task.assigned_user_id is not None
 
         review = schemas.AnnotationReviewCreateCrud(
             annotation_id=annotation.id,
@@ -89,13 +94,15 @@ def _status_open_to_in_progress(
     return task
 
 
-def _status_open_to_cancelled(db: Session, task: models.Task, **kwargs) -> models.Task:
+def _status_open_to_cancelled(
+    db: Session, task: models.Task, **kwargs: Any
+) -> models.Task:
     # just change status
     return task
 
 
 def _status_in_progress_to_cancelled(
-    db: Session, task: models.Task, **kwargs
+    db: Session, task: models.Task, **kwargs: Any
 ) -> models.Task:
     raise NotImplementedError()
     # TODO: add option for dropping all associated data
@@ -105,11 +112,11 @@ def _status_in_progress_to_cancelled(
 
 
 def _status_in_progress_to_done(
-    db: Session, task: models.Task, **kwargs
+    db: Session, task: models.Task, **kwargs: Any
 ) -> models.Task:
     remove_draft_data = kwargs.get("remove_draft_data", False)
 
-    created_annotations = []
+    created_annotations: list[models.Annotation] = []
     task_reviews: list[models.AnnotationReview] = query.annotation_review.query_by_task(
         db, task.id
     ).all()
@@ -171,7 +178,9 @@ def _status_in_progress_to_done(
     return task
 
 
-annotation_review_task_status_flows = {
+annotation_review_task_status_flows: dict[
+    schemas.TaskStatus, dict[schemas.TaskStatus, Any]
+] = {
     schemas.TaskStatus.unassigned: {
         schemas.TaskStatus.open: _status_unassigned_to_open,
         schemas.TaskStatus.cancelled: _status_unassigned_to_cancelled,
@@ -193,8 +202,8 @@ def change_annotation_review_task_status(
     db: Session,
     task: models.Task,
     new_status: schemas.TaskStatus,
-    commit_changes=True,
-    **kwargs
+    commit_changes: bool = True,
+    **kwargs: Any
 ) -> models.Task:
     task_status = schemas.TaskStatus(task.status)
     if new_status not in annotation_review_task_status_flows[task_status]:

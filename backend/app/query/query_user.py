@@ -1,7 +1,10 @@
 from sqlalchemy.orm import Session, Query
 
-from app import models, schemas
+from app import models
 from app.query.base import QueryBase
+
+
+Query = Query[models.User]
 
 
 class QueryUser(QueryBase[models.User]):

@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-from app.schemas.schema_label_assignment import LabelAssignment
+from app.schemas.schema_label_assignment import LabelAssignment, LabelAssignmentApiOut
 from app.schemas.schema_tag_value import (
     ImageInstanceTagValue,
     ImageInstanceTagValueApiOut,
@@ -19,18 +19,21 @@ class ImageInstanceUpdateCrud(ImageInstanceUpdateApiIn):
     pass
 
 
-class ImageInstance(BaseModel):
+class ImageInstanceBase(BaseModel):
     id: int
     id_ref: str
 
     visited: bool
-    label_assignments: list[LabelAssignment]
-
-    tags: list[ImageInstanceTagValue]
 
     class Config:
         orm_mode = True
 
 
-class ImageInstanceApiOut(ImageInstance):
+class ImageInstance(ImageInstanceBase):
+    label_assignments: list[LabelAssignment]
+    tags: list[ImageInstanceTagValue]
+
+
+class ImageInstanceApiOut(ImageInstanceBase):
+    label_assignments: list[LabelAssignmentApiOut]
     tags: list[ImageInstanceTagValueApiOut]

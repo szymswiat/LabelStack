@@ -1,4 +1,5 @@
 from enum import Enum, auto
+from typing import Any
 
 
 class LogicErrorCode(int, Enum):
@@ -23,7 +24,7 @@ class LogicErrorCode(int, Enum):
 
 
 class LogicError(Exception):
-    def __init__(self, error_code: LogicErrorCode, **kwargs):
+    def __init__(self, error_code: LogicErrorCode, **kwargs: Any):
         self.error_code = error_code
 
         self.extra = kwargs

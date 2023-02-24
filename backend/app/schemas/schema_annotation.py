@@ -37,7 +37,7 @@ class AnnotationUpdateCrud(BaseModel):
     spent_time: int | None = None
 
 
-class Annotation(BaseModel):
+class AnnotationBase(BaseModel):
     id: int
 
     label_assignment_id: int
@@ -49,13 +49,15 @@ class Annotation(BaseModel):
     spent_time: int
     status: AnnotationStatus
 
-    reviews: list[AnnotationReview]
-    data_list: list[AnnotationData]
-
     class Config:
         orm_mode = True
 
 
-class AnnotationApiOut(Annotation):
+class Annotation(AnnotationBase):
+    reviews: list[AnnotationReview]
+    data_list: list[AnnotationData]
+
+
+class AnnotationApiOut(AnnotationBase):
     reviews: list[AnnotationReviewApiOut]
     data_list: list[AnnotationDataApiOut]

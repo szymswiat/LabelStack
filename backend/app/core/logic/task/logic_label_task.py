@@ -1,3 +1,4 @@
+from typing import Any
 from sqlalchemy.orm import Session
 
 from app import schemas, models, crud, query, core
@@ -8,6 +9,7 @@ def create_label_task(
     task_in: schemas.TaskCreateApiIn,
     current_user: models.User,
 ):
+    assert task_in.image_instance_ids
     active_redundant_task_count = query.task.query_active_tasks_with_image_instances(
         db, task_in.image_instance_ids
     ).count()
@@ -31,40 +33,40 @@ def create_label_task(
     return task
 
 
-def _status_unassigned_to_open(db: Session, task: models.Task, **kwargs) -> models.Task:
+def _status_unassigned_to_open(db: Session, task: models.Task, **kwargs: Any) -> models.Task:
     if task.assigned_user_id is None:
         raise core.LogicError(core.LogicErrorCode.task_missing_assigned_user)
     return task
 
 
 def _status_unassigned_to_cancelled(
-    db: Session, task: models.Task, **kwargs
+    db: Session, task: models.Task, **kwargs: Any
 ) -> models.Task:
     # just change status
     return task
 
 
 def _status_open_to_in_progress(
-    db: Session, task: models.Task, **kwargs
+    db: Session, task: models.Task, **kwargs: Any
 ) -> models.Task:
     # just change status
     return task
 
 
-def _status_open_to_cancelled(db: Session, task: models.Task, **kwargs) -> models.Task:
+def _status_open_to_cancelled(db: Session, task: models.Task, **kwargs: Any) -> models.Task:
     # just change status
     return task
 
 
 def _status_in_progress_to_cancelled(
-    db: Session, task: models.Task, **kwargs
+    db: Session, task: models.Task, **kwargs: Any
 ) -> models.Task:
     # TODO: add a way to check which images have assigned labels
     return task
 
 
 def _status_in_progress_to_done(
-    db: Session, task: models.Task, **kwargs
+    db: Session, task: models.Task, **kwargs: Any
 ) -> models.Task:
     for image_instance in task.image_instances:
         image_instance.visited = True
@@ -72,7 +74,7 @@ def _status_in_progress_to_done(
     return task
 
 
-label_task_status_flows = {
+label_task_status_flows: dict[schemas.TaskStatus, dict[schemas.TaskStatus, Any]] = {
     schemas.TaskStatus.unassigned: {
         schemas.TaskStatus.open: _status_unassigned_to_open,
         schemas.TaskStatus.cancelled: _status_unassigned_to_cancelled,
@@ -94,13 +96,14 @@ def change_label_task_status(
     db: Session,
     task: models.Task,
     new_status: schemas.TaskStatus,
-    commit_changes=True,
-    **kwargs
+    commit_changes: bool = True,
+    **kwargs: Any
 ) -> models.Task:
-    if new_status not in label_task_status_flows[task.status]:
+    task_status = schemas.TaskStatus(task.status)
+    if new_status not in label_task_status_flows[task_status]:
         raise core.LogicError(core.LogicErrorCode.invalid_status_change)
 
-    task = label_task_status_flows[task.status][new_status](db, task)
+    task = label_task_status_flows[task_status][new_status](db, task)
     task.status = new_status
 
     if commit_changes:

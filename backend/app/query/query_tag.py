@@ -4,6 +4,9 @@ from app import models
 from app.query.base import QueryBase
 
 
+Query = Query[models.Tag]
+
+
 class QueryTag(QueryBase[models.Tag]):
     def query_by_keyword(self, db: Session, keyword: str) -> Query:
         return self.query(db).filter(models.Tag.keyword == keyword)

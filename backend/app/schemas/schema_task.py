@@ -62,7 +62,7 @@ class TaskUpdateCrud(TaskUpdateApiIn):
     priority: int | None = None
 
 
-class Task(BaseModel):
+class TaskBase(BaseModel):
     id: int
 
     assigned_user_id: int | None = None
@@ -77,10 +77,6 @@ class Task(BaseModel):
 
     target_annotation_type: AnnotationType | None = None
 
-    image_instances: list[ImageInstance] | None
-    label_assignments: list[LabelAssignment] | None
-    annotations: list[Annotation] | None
-
     image_instance_ids: list[int] | None
     label_assignment_ids: list[int] | None
     annotation_ids: list[int] | None
@@ -89,7 +85,13 @@ class Task(BaseModel):
         orm_mode = True
 
 
-class TaskApiOut(Task):
+class Task(TaskBase):
+    image_instances: list[ImageInstance] | None
+    label_assignments: list[LabelAssignment] | None
+    annotations: list[Annotation] | None
+
+
+class TaskApiOut(TaskBase):
     target_annotation_type: AnnotationTypeApiOut | None = None
 
     image_instances: list[ImageInstanceApiOut] | None

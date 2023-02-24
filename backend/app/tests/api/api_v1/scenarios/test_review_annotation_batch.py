@@ -16,12 +16,10 @@ TEST_OUTPUTS = {}
 
 @pytest.mark.order(after="test_label_dicom_batch.py::test_step2_finish_label_task")
 def test_step0_create_annotation_review_task(client: TestClient, db: Session):
-    task_admin_0, task_admin_0_headers = auth_data_for_test_user(
+    _, task_admin_0_headers = auth_data_for_test_user(
         db, client, schemas.RoleType.task_admin, 0
     )
-    annotator_3, annotator_3_headers = auth_data_for_test_user(
-        db, client, schemas.RoleType.annotator, 3
-    )
+    annotator_3, _ = auth_data_for_test_user(db, client, schemas.RoleType.annotator, 3)
 
     # fetch annotation waiting for review
     r = client.get(
@@ -53,7 +51,7 @@ def test_step0_create_annotation_review_task(client: TestClient, db: Session):
 
 @pytest.mark.order(after="test_step0_create_annotation_review_task")
 def test_step1_change_task_status(client: TestClient, db: Session):
-    annotator_3, annotator_3_headers = auth_data_for_test_user(
+    _, annotator_3_headers = auth_data_for_test_user(
         db, client, schemas.RoleType.annotator, 3
     )
 
@@ -85,7 +83,7 @@ def test_step1_change_task_status(client: TestClient, db: Session):
 
 @pytest.mark.order(after="test_step1_change_task_status")
 def test_step2_fill_reviews_with_data(client: TestClient, db: Session):
-    annotator_3, annotator_3_headers = auth_data_for_test_user(
+    _, annotator_3_headers = auth_data_for_test_user(
         db, client, schemas.RoleType.annotator, 3
     )
 
@@ -154,7 +152,7 @@ def test_step2_fill_reviews_with_data(client: TestClient, db: Session):
 
 @pytest.mark.order(after="test_step2_fill_reviews_with_data")
 def test_step3_close_annotation_review_task(client: TestClient, db: Session):
-    annotator_3, annotator_3_headers = auth_data_for_test_user(
+    _, annotator_3_headers = auth_data_for_test_user(
         db, client, schemas.RoleType.annotator, 3
     )
 

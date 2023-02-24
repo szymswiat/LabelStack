@@ -35,7 +35,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         return db.query(self.model).offset(skip).limit(limit).all()
 
     def create(
-        self, db: Session, *, obj_in: CreateSchemaType, commit=True
+        self, db: Session, *, obj_in: CreateSchemaType, commit: bool = True
     ) -> ModelType:
         db_obj = self.schema_to_model_create(db, create_obj=obj_in)
         db.add(db_obj)
@@ -45,7 +45,9 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         db.refresh(db_obj)
         return db_obj
 
-    def create_bulk(self, db: Session, *, objs_in: list[CreateSchemaType], commit=True):
+    def create_bulk(
+        self, db: Session, *, objs_in: list[CreateSchemaType], commit: bool = True
+    ):
         db_objs = [
             self.schema_to_model_create(db, create_obj=obj_in) for obj_in in objs_in
         ]
@@ -55,7 +57,9 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         if commit:
             db.commit()
 
-    def create_many(self, db: Session, *, objs_in: list[CreateSchemaType], commit=True):
+    def create_many(
+        self, db: Session, *, objs_in: list[CreateSchemaType], commit: bool = True
+    ):
         db_objs = [
             self.schema_to_model_create(db, create_obj=obj_in) for obj_in in objs_in
         ]
@@ -81,7 +85,12 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         return db_obj
 
     def update(
-        self, db: Session, *, db_obj: ModelType, obj_in: UpdateSchemaType, commit=True
+        self,
+        db: Session,
+        *,
+        db_obj: ModelType,
+        obj_in: UpdateSchemaType,
+        commit: bool = True
     ) -> ModelType:
         db_obj = self.schema_to_model_update(db, db_obj=db_obj, update_obj=obj_in)
 
@@ -92,7 +101,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         db.refresh(db_obj)
         return db_obj
 
-    def remove(self, db: Session, *, id: int, commit=True) -> ModelType | None:
+    def remove(self, db: Session, *, id: int, commit: bool = True) -> ModelType | None:
         obj = db.query(self.model).get(id)
         db.delete(obj)
         db.flush([obj])
@@ -102,7 +111,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
 
     @staticmethod
     def get_update_data(
-        obj_in: dict[str, Any] | BaseModel, exclude_unset=True
+        obj_in: dict[str, Any] | BaseModel, exclude_unset: bool = True
     ) -> dict[str, Any]:
         if isinstance(obj_in, dict):
             update_data = obj_in

@@ -1,7 +1,10 @@
-from sqlalchemy.orm import Session, Query
+from sqlalchemy.orm import Session
 
 from app import models, schemas
-from app.query.base import QueryBase
+from app.query.base import QueryBase, Query
+
+
+Query = Query[models.AnnotationReview]
 
 
 class QueryAnnotationReview(QueryBase[models.AnnotationReview]):

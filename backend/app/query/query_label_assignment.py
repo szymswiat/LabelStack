@@ -4,6 +4,9 @@ from app import models, schemas
 from app.query.base import QueryBase
 
 
+Query = Query[models.LabelAssignment]
+
+
 class QueryLabelAssignment(QueryBase[models.LabelAssignment]):
     def query_for_not_annotated(
         self,

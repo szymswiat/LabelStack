@@ -4,6 +4,9 @@ from app import models
 from app.query.base import QueryBase
 
 
+Query = Query[models.Label]
+
+
 class QueryLabel(QueryBase[models.Label]):
     def query_by_name(self, db: Session, name: str) -> Query:
         return self.query(db).filter(models.Label.name == name)

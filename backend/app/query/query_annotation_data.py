@@ -1,7 +1,10 @@
-from sqlalchemy.orm import Session, Query, undefer
+from sqlalchemy.orm import Session, Query
 
 from app import models
 from app.query.base import QueryBase
+
+
+Query = Query[models.AnnotationData]
 
 
 class QueryAnnotationData(QueryBase[models.AnnotationData]):

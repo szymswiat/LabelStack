@@ -20,7 +20,7 @@ class Task(Base):
 
     id: Mapped[int] = mapped_column(sa.Integer, Identity(always=True), primary_key=True)
 
-    assigned_user_id: Mapped[int] = mapped_column(
+    assigned_user_id: Mapped[int | None] = mapped_column(
         sa.Integer, sa.ForeignKey("user.id"), nullable=True
     )
     submitter_user_id: Mapped[int] = mapped_column(
@@ -29,7 +29,7 @@ class Task(Base):
 
     task_type: Mapped[int] = mapped_column(sa.Integer, nullable=False)
     name: Mapped[str] = mapped_column(sa.String, nullable=False)
-    description: Mapped[str] = mapped_column(sa.String, nullable=True)
+    description: Mapped[str | None] = mapped_column(sa.String, nullable=True)
     priority: Mapped[int] = mapped_column(sa.Integer, nullable=False, default=0)
     status: Mapped[int] = mapped_column(sa.Integer, nullable=False)
     total_time: Mapped[int] = mapped_column(sa.BigInteger, nullable=False, default=0)

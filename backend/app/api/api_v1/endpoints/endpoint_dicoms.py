@@ -98,14 +98,14 @@ def sync_dicomweb(
     utils.DicomWebQidoInstance.bind_tags(tags)
 
     instances = [
-        utils.DicomWebQidoInstance(instance)
-        for instance in client.search_for_instances(
+        utils.DicomWebQidoInstance(instance)  # type: ignore
+        for instance in client.search_for_instances(  # type: ignore
             fields=utils.ADDITIONAL_TAGS_TO_FETCH
         )
     ]
     series_list = [
-        utils.DicomWebQidoInstance(series_item)
-        for series_item in client.search_for_series()
+        utils.DicomWebQidoInstance(series_item)  # type: ignore
+        for series_item in client.search_for_series()  # type: ignore
     ]
 
     synced_dicoms = logic.dicom.sync_pacs_with_dicoms(db, instances, tags, commit=False)

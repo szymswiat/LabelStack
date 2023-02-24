@@ -20,10 +20,10 @@ def test_step0_create_label_task(client: TestClient, db: Session):
     """
     Create label task for annotator_0 with 50 dicoms. This task will be finished in below tests.
     """
-    task_admin_0, task_admin_0_headers = auth_data_for_test_user(
+    _, task_admin_0_headers = auth_data_for_test_user(
         db, client, schemas.RoleType.task_admin, 0
     )
-    annotator_0, annotator_0_headers = auth_data_for_test_user(
+    annotator_0, _ = auth_data_for_test_user(
         db, client, schemas.RoleType.annotator, 0
     )
 
@@ -63,10 +63,10 @@ def test_step0_1_create_additional_label_task(client: TestClient, db: Session):
     """
     Create label task for annotator_1 with 25 dicoms. Below tests will not finish it. It will just hang in open state.
     """
-    task_admin_0, task_admin_0_headers = auth_data_for_test_user(
+    _, task_admin_0_headers = auth_data_for_test_user(
         db, client, schemas.RoleType.task_admin, 0
     )
-    annotator_1, annotator_1_headers = auth_data_for_test_user(
+    annotator_1, _ = auth_data_for_test_user(
         db, client, schemas.RoleType.annotator, 1
     )
 
@@ -98,7 +98,7 @@ def test_step0_1_create_additional_label_task(client: TestClient, db: Session):
 
 @pytest.mark.order(after="test_step0_create_label_task")
 def test_step1_assign_labels(client: TestClient, db: Session):
-    annotator_0, annotator_0_headers = auth_data_for_test_user(
+    _, annotator_0_headers = auth_data_for_test_user(
         db, client, schemas.RoleType.annotator, 0
     )
 
@@ -155,7 +155,7 @@ def test_step1_assign_labels(client: TestClient, db: Session):
 
 @pytest.mark.order(after="test_step1_assign_labels")
 def test_step2_finish_label_task(client: TestClient, db: Session):
-    annotator_0, annotator_0_headers = auth_data_for_test_user(
+    _, annotator_0_headers = auth_data_for_test_user(
         db, client, schemas.RoleType.annotator, 0
     )
 

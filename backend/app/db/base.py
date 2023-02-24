@@ -1,6 +1,9 @@
+# flake8: noqa: F401
+# type: ignore
+
 # Import all the models, so that Base has them before being
 # imported by Alembic
-from app.db.base_class import Base  # noqa
+from app.db.base_class import Base
 
 from app.models.model_associations import (
     TaskImageInstance,
@@ -16,4 +19,4 @@ from app.models.model_role import Role
 from app.models.model_annotation import Annotation
 from app.models.model_annotation_review import AnnotationReview
 from app.models.model_task import Task
-from app.models.model_user import User  # noqa
+from app.models.model_user import User

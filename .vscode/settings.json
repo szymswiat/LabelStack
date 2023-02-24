@@ -3,9 +3,10 @@
         "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
     "python.languageServer": "Pylance",
-    "python.analysis.typeCheckingMode": "basic",
+    "python.analysis.typeCheckingMode": "strict",
     "python.analysis.extraPaths": ["${workspaceFolder}/backend"],
     "python.analysis.autoSearchPaths": true,
+    "python.analysis.diagnosticMode": "workspace",
     "files.trimTrailingWhitespace": true,
     "python.formatting.provider": "black",
     "python.linting.enabled": true,

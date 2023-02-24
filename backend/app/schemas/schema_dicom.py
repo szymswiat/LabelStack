@@ -21,18 +21,20 @@ class DicomUpdateCrud(DicomUpdateApiIn):
     pass
 
 
-class Dicom(BaseModel):
+class DicomBase(BaseModel):
     id: int
     patient_id: str
     study_id: str
     series_id: str
     instance_id: str
 
-    tags: list[DicomTagValue]
-
     class Config:
         orm_mode = True
 
 
-class DicomApiOut(Dicom):
+class Dicom(DicomBase):
+    tags: list[DicomTagValue]
+
+
+class DicomApiOut(DicomBase):
     tags: list[DicomTagValueApiOut]

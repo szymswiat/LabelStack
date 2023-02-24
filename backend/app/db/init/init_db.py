@@ -5,7 +5,7 @@ from pydantic import EmailStr
 from app import crud, schemas, query, models
 from app.api.api_v1.endpoints.endpoint_dicoms import sync_dicomweb
 from app.core.config import settings
-from app.db import base  # noqa: F401
+from app.db import base  # noqa: F401 # type: ignore
 
 # make sure all SQL Alchemy models are imported (app.db.base) before initializing DB
 # otherwise, SQL Alchemy might fail to initialize relationships properly
@@ -71,8 +71,8 @@ def init_db(db: Session) -> None:
         for user_meta in user_meta_list:
             create_user(
                 db,
-                email=user_meta["email"],
-                password=user_meta["password"],
+                email=user_meta.email,
+                password=user_meta.password,
                 roles=[role],
             )
 

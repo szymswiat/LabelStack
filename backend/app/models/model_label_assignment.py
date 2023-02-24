@@ -26,7 +26,7 @@ class LabelAssignment(Base):
     author_id: Mapped[int] = mapped_column(
         sa.Integer, sa.ForeignKey("user.id"), nullable=False
     )
-    parent_task_id: Mapped[int] = mapped_column(
+    parent_task_id: Mapped[int | None] = mapped_column(
         sa.Integer, sa.ForeignKey("task.id"), nullable=True
     )
 

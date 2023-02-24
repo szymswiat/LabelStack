@@ -136,7 +136,7 @@ def read_label_assignments(
             [schemas.RoleType.data_admin, schemas.RoleType.task_admin]
         )
     ),
-) -> list[schemas.Dicom]:
+) -> list[models.LabelAssignment]:
     """
     Read list of label assignments filtered by following options:
       - **waiting_for_annotations** - returns labels assignments that are not annotated

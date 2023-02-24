@@ -16,7 +16,7 @@ class AnnotationReview(Base):
     )
     sequence: Mapped[int] = mapped_column(sa.Integer, nullable=False)
 
-    resulting_annotation_id: Mapped[int] = mapped_column(
+    resulting_annotation_id: Mapped[int | None] = mapped_column(
         sa.Integer, sa.ForeignKey("annotation.id"), nullable=True
     )
 
@@ -27,7 +27,7 @@ class AnnotationReview(Base):
         sa.Integer, sa.ForeignKey("task.id"), nullable=False
     )
     status: Mapped[int] = mapped_column(sa.Integer, nullable=False)
-    result: Mapped[str] = mapped_column(sa.String, nullable=True)
-    comment: Mapped[str] = mapped_column(sa.String, nullable=True)
+    result: Mapped[str | None] = mapped_column(sa.String, nullable=True)
+    comment: Mapped[str | None] = mapped_column(sa.String, nullable=True)
 
     __table_args__ = (sa.UniqueConstraint("annotation_id", "sequence"),)

@@ -1,3 +1,6 @@
+# flake8: noqa: F401
+# type: ignore
+
 from .crud_dicom import dicom
 from .crud_tag import tag
 from .crud_label import label

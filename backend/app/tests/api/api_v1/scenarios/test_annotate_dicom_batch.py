@@ -16,12 +16,10 @@ TEST_OUTPUTS = {}
 
 @pytest.mark.order(after="test_label_dicom_batch.py::test_step2_finish_label_task")
 def test_step0_create_annotation_task(client: TestClient, db: Session):
-    task_admin_0, task_admin_0_headers = auth_data_for_test_user(
+    _, task_admin_0_headers = auth_data_for_test_user(
         db, client, schemas.RoleType.task_admin, 0
     )
-    annotator_2, annotator_2_headers = auth_data_for_test_user(
-        db, client, schemas.RoleType.annotator, 2
-    )
+    annotator_2, _ = auth_data_for_test_user(db, client, schemas.RoleType.annotator, 2)
 
     r = client.get(
         f"{settings.API_V1_STR}/labels/?with_allowed_annotation_type_name=segment",
@@ -52,7 +50,7 @@ def test_step0_create_annotation_task(client: TestClient, db: Session):
     assert 200 <= r.status_code < 300, f"{r.status_code}: {r.content}"
 
     # group label_assignments by label_id
-    grouped_by_label = {}
+    grouped_by_label: dict[int, list[schemas.LabelAssignmentApiOut]] = {}
     labels_by_id = {label.id: label for label in segmentable_labels}
 
     for label in segmentable_labels:
@@ -83,7 +81,7 @@ def test_step0_create_annotation_task(client: TestClient, db: Session):
 
 @pytest.mark.order(after="test_step0_create_annotation_task")
 def test_step1_upload_data_for_annotations(client: TestClient, db: Session):
-    annotator_2, annotator_2_headers = auth_data_for_test_user(
+    _, annotator_2_headers = auth_data_for_test_user(
         db, client, schemas.RoleType.annotator, 2
     )
 
@@ -152,7 +150,7 @@ def test_step1_upload_data_for_annotations(client: TestClient, db: Session):
 
 @pytest.mark.order(after="test_step1_upload_data_for_annotations")
 def test_step2_close_annotation_task(client: TestClient, db: Session):
-    annotator_2, annotator_2_headers = auth_data_for_test_user(
+    _, annotator_2_headers = auth_data_for_test_user(
         db, client, schemas.RoleType.annotator, 2
     )
 

@@ -10,9 +10,9 @@ class CRUDTask(CRUDBase[models.Task, schemas.TaskCreateCrud, schemas.TaskUpdateC
         self, db: Session, *, create_obj: schemas.TaskCreateCrud
     ) -> models.Task:
 
-        assert create_obj.image_instance_ids
-        assert create_obj.label_assignment_ids
-        assert create_obj.annotation_ids
+        assert create_obj.image_instance_ids is not None
+        assert create_obj.label_assignment_ids is not None
+        assert create_obj.annotation_ids is not None
 
         image_instances = crud.image_instance.get_multi_by_ids(
             db, ids=create_obj.image_instance_ids

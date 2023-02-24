@@ -1,3 +1,6 @@
+# flake8: noqa
+# type: ignore
+
 from .query_dicom import dicom
 from .query_image_instance import image_instance
 from .query_label import label

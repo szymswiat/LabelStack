@@ -7,6 +7,6 @@ def is_active(user: models.User) -> bool:
 
 def has_role_one_of(user: models.User, role_types: list[schemas.RoleType]):
     for role in user.roles:
-        if role.type in role_types:
+        if schemas.RoleType(role.type) in role_types:
             return True
     return False

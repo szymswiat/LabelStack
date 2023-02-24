@@ -3,21 +3,21 @@ from pathlib import Path
 import pandas as pd
 from sqlalchemy.orm import Session
 
-from app import crud, query, schemas, models
+from app import crud, query, schemas
 from app.core.config import settings
 
 resources_root = Path(settings.TEST_INIT_DATA_ROOT)
 
 
 def label_types_create_data() -> list[schemas.LabelTypeCreateCrud]:
-    label_types = pd.read_csv(resources_root / "label_types.csv")["label_type"].tolist()
+    label_types: list[str] = pd.read_csv(resources_root / "label_types.csv")["label_type"].tolist()  # type: ignore
 
     data = [schemas.LabelTypeCreateCrud(name=lt) for lt in label_types]
     return data
 
 
 def annotation_types_create_data() -> list[schemas.AnnotationTypeCreateCrud]:
-    annotation_types = pd.read_csv(resources_root / "annotation_types.csv")[
+    annotation_types: list[str] = pd.read_csv(resources_root / "annotation_types.csv")[  # type: ignore
         "annotation_type"
     ].tolist()
 
@@ -26,10 +26,12 @@ def annotation_types_create_data() -> list[schemas.AnnotationTypeCreateCrud]:
 
 
 def tags_create_data() -> list[schemas.TagCreateCrud]:
-    tags_df = pd.read_csv(resources_root / "tags.csv", sep="|")
+    tags_df = pd.read_csv(resources_root / "tags.csv", sep="|")  # type: ignore
 
-    data = []
-    for i, row in tags_df.iterrows():
+    data: list[schemas.TagCreateCrud] = []
+
+    row: pd.Series[str]
+    for _, row in tags_df.iterrows():  # type: ignore
         if "x" in row["Tag"]:
             continue
         tag_group, tag_element = row["Tag"].split(",")
@@ -48,14 +50,17 @@ def tags_create_data() -> list[schemas.TagCreateCrud]:
 
 
 def labels_create_data(db: Session) -> list[schemas.LabelCreateCrud]:
-    labels_df = pd.read_csv(resources_root / "labels.csv")
+    labels_df = pd.read_csv(resources_root / "labels.csv")  # type: ignore
     label_types = crud.label_type.get_multi(db)
     segment_annotation_type = query.annotation_type.query_by_name(db, "segment").first()
 
-    data = []
-    for _, row in labels_df.iterrows():
-        row = row.to_dict()
-        type_ids = []
+    assert segment_annotation_type
+
+    data: list[schemas.LabelCreateCrud] = []
+    row_series: pd.Series[str]
+    for _, row_series in labels_df.iterrows():  # type: ignore
+        row: dict[str, str] = row_series.to_dict()  # type: ignore
+        type_ids: list[int] = []
         for label_type in label_types:
             if label_type.name in row and row[label_type.name] is True:
                 type_ids.append(label_type.id)

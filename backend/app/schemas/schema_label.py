@@ -24,17 +24,19 @@ class LabelUpdateCrud(LabelUpdateApiIn):
     pass
 
 
-class Label(BaseModel):
+class LabelBase(BaseModel):
     id: int
     name: str
-
-    allowed_annotation_type: AnnotationType | None = None
-    types: list[LabelType]
 
     class Config:
         orm_mode = True
 
 
-class LabelApiOut(Label):
+class Label(LabelBase):
+    allowed_annotation_type: AnnotationType | None = None
+    types: list[LabelType]
+
+
+class LabelApiOut(LabelBase):
     allowed_annotation_type: AnnotationTypeApiOut | None = None
     types: list[LabelTypeApiOut]

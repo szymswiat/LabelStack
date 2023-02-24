@@ -1,3 +1,6 @@
+# flake8: noqa
+# type: ignore
+
 from .model_user import User
 from .model_dicom import Dicom
 from .model_tag import Tag
