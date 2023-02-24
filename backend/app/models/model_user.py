@@ -21,6 +21,4 @@ class User(Base):
     hashed_password: Mapped[str] = mapped_column(sa.String, nullable=False)
     is_active: Mapped[bool] = mapped_column(sa.Boolean(), default=True)
 
-    roles: Mapped[list["models.Role"]] = relationship(
-        "Role", secondary=UserRole.__table__
-    )
+    roles: Mapped[list["models.Role"]] = relationship("Role", secondary=UserRole.__table__)

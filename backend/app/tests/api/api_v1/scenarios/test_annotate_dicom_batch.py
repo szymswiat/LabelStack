@@ -16,9 +16,7 @@ TEST_OUTPUTS = {}
 
 @pytest.mark.order(after="test_label_dicom_batch.py::test_step2_finish_label_task")
 def test_step0_create_annotation_task(client: TestClient, db: Session):
-    _, task_admin_0_headers = auth_data_for_test_user(
-        db, client, schemas.RoleType.task_admin, 0
-    )
+    _, task_admin_0_headers = auth_data_for_test_user(db, client, schemas.RoleType.task_admin, 0)
     annotator_2, _ = auth_data_for_test_user(db, client, schemas.RoleType.annotator, 2)
 
     r = client.get(
@@ -26,9 +24,7 @@ def test_step0_create_annotation_task(client: TestClient, db: Session):
         headers=task_admin_0_headers,
     )
     assert 200 <= r.status_code < 300, f"{r.status_code}: {r.content}"
-    segmentable_labels: list[schemas.LabelApiOut] = [
-        schemas.LabelApiOut.parse_obj(d) for d in r.json()
-    ]
+    segmentable_labels: list[schemas.LabelApiOut] = [schemas.LabelApiOut.parse_obj(d) for d in r.json()]
 
     # fetch label assignments waiting for annotation task
     r = client.get(
@@ -81,9 +77,7 @@ def test_step0_create_annotation_task(client: TestClient, db: Session):
 
 @pytest.mark.order(after="test_step0_create_annotation_task")
 def test_step1_upload_data_for_annotations(client: TestClient, db: Session):
-    _, annotator_2_headers = auth_data_for_test_user(
-        db, client, schemas.RoleType.annotator, 2
-    )
+    _, annotator_2_headers = auth_data_for_test_user(db, client, schemas.RoleType.annotator, 2)
 
     # fetch annotation tasks on behalf annotator_1
     r = client.get(
@@ -120,9 +114,7 @@ def test_step1_upload_data_for_annotations(client: TestClient, db: Session):
             r = client.post(
                 f"{settings.API_V1_STR}/annotation_data/{annotation.id}",
                 headers=annotator_2_headers,
-                files={
-                    "annotation_data": randbytes(random.randint(1024 * 50, 1024 * 100))
-                },
+                files={"annotation_data": randbytes(random.randint(1024 * 50, 1024 * 100))},
             )
             assert 200 <= r.status_code < 300, f"{r.status_code}: {r.content}"
 
@@ -150,9 +142,7 @@ def test_step1_upload_data_for_annotations(client: TestClient, db: Session):
 
 @pytest.mark.order(after="test_step1_upload_data_for_annotations")
 def test_step2_close_annotation_task(client: TestClient, db: Session):
-    _, annotator_2_headers = auth_data_for_test_user(
-        db, client, schemas.RoleType.annotator, 2
-    )
+    _, annotator_2_headers = auth_data_for_test_user(db, client, schemas.RoleType.annotator, 2)
 
     annotation_task: schemas.TaskApiOut = TEST_OUTPUTS["step1"]["annotation_task"]
 

@@ -12,18 +12,10 @@ class QueryLabel(QueryBase[models.Label]):
         return self.query(db).filter(models.Label.name == name)
 
     def query_by_type_name(self, db: Session, name: str) -> Query:
-        return (
-            self.query(db)
-            .join(models.Label.types)
-            .filter(models.LabelType.name == name)
-        )
+        return self.query(db).join(models.Label.types).filter(models.LabelType.name == name)
 
     def query_by_allowed_annotation_type_name(self, db: Session, name: str) -> Query:
-        return (
-            self.query(db)
-            .join(models.AnnotationType)
-            .filter(models.AnnotationType.name == name)
-        )
+        return self.query(db).join(models.AnnotationType).filter(models.AnnotationType.name == name)
 
 
 label = QueryLabel(models.Label)

@@ -36,9 +36,7 @@ api_router.include_router(
     prefix="/annotation_types",
     tags=["annotation_types"],
 )
-api_router.include_router(
-    endpoint_annotations.router, prefix="/annotations", tags=["annotations"]
-)
+api_router.include_router(endpoint_annotations.router, prefix="/annotations", tags=["annotations"])
 api_router.include_router(
     endpoint_annotation_data.router, prefix="/annotation_data", tags=["annotation_data"]
 )
@@ -47,9 +45,7 @@ api_router.include_router(
     prefix="/annotation_reviews",
     tags=["annotation_reviews"],
 )
-api_router.include_router(
-    endpoint_label_types.router, prefix="/label_types", tags=["label_types"]
-)
+api_router.include_router(endpoint_label_types.router, prefix="/label_types", tags=["label_types"])
 api_router.include_router(endpoint_roles.router, prefix="/roles", tags=["roles"])
 api_router.include_router(endpoint_tasks.router, prefix="/tasks", tags=["tasks"])
 api_router.include_router(endpoint_utils.router, prefix="/utils", tags=["utils"])

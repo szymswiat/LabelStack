@@ -13,9 +13,9 @@ def create_annotation_task(
     assert task_in.image_instance_ids
     task_in.label_assignment_ids = task_in.label_assignment_ids or []
 
-    task_label_assignments: list[
-        models.LabelAssignment
-    ] = crud.label_assignment.get_multi_by_ids(db, ids=task_in.label_assignment_ids)
+    task_label_assignments: list[models.LabelAssignment] = crud.label_assignment.get_multi_by_ids(
+        db, ids=task_in.label_assignment_ids
+    )
 
     if len(task_label_assignments) > 0:
         for label_assignment in task_label_assignments:
@@ -42,10 +42,7 @@ def create_annotation_task(
         init_status = schemas.TaskStatus.open
 
     task_obj_in = schemas.TaskCreateCrud(
-        **task_in.dict(),
-        status=init_status,
-        total_time=0,
-        submitter_user_id=current_user.id
+        **task_in.dict(), status=init_status, total_time=0, submitter_user_id=current_user.id
     )
 
     created_task = crud.task.create(db, obj_in=task_obj_in)
@@ -53,24 +50,18 @@ def create_annotation_task(
     return created_task
 
 
-def _status_unassigned_to_open(
-    db: Session, task: models.Task, **kwargs: Any
-) -> models.Task:
+def _status_unassigned_to_open(db: Session, task: models.Task, **kwargs: Any) -> models.Task:
     if task.assigned_user_id is None:
         raise core.LogicError(core.LogicErrorCode.task_missing_assigned_user)
     return task
 
 
-def _status_unassigned_to_cancelled(
-    db: Session, task: models.Task, **kwargs: Any
-) -> models.Task:
+def _status_unassigned_to_cancelled(db: Session, task: models.Task, **kwargs: Any) -> models.Task:
     # just change status
     return task
 
 
-def _status_open_to_in_progress(
-    db: Session, task: models.Task, **kwargs: Any
-) -> models.Task:
+def _status_open_to_in_progress(db: Session, task: models.Task, **kwargs: Any) -> models.Task:
     # create annotation object for each label and dicom combination
 
     assert task.assigned_user_id is not None
@@ -101,36 +92,26 @@ def _status_open_to_in_progress(
     return task
 
 
-def _status_open_to_cancelled(
-    db: Session, task: models.Task, **kwargs: Any
-) -> models.Task:
+def _status_open_to_cancelled(db: Session, task: models.Task, **kwargs: Any) -> models.Task:
     # just change status
     return task
 
 
-def _status_in_progress_to_cancelled(
-    db: Session, task: models.Task, **kwargs: Any
-) -> models.Task:
+def _status_in_progress_to_cancelled(db: Session, task: models.Task, **kwargs: Any) -> models.Task:
     raise NotImplementedError()
     # TODO: remove annotations without data blobs
     # TODO: change status of annotation with data blobs to done
     return task
 
 
-def _status_in_progress_to_done(
-    db: Session, task: models.Task, **kwargs: Any
-) -> models.Task:
+def _status_in_progress_to_done(db: Session, task: models.Task, **kwargs: Any) -> models.Task:
     remove_draft_data = kwargs.get("remove_draft_data", False)
-    task_annotations: list[models.Annotation] = query.annotation.query_by_task(
-        db, task.id
-    ).all()
+    task_annotations: list[models.Annotation] = query.annotation.query_by_task(db, task.id).all()
 
     # check if each annotation has at least one data blob
     for annotation in task_annotations:
         if len(annotation.data_list) == 0:
-            raise core.LogicError(
-                core.LogicErrorCode.annotation_missing_data_blob, id=annotation.id
-            )
+            raise core.LogicError(core.LogicErrorCode.annotation_missing_data_blob, id=annotation.id)
 
         if remove_draft_data:
             annotation.data_list = [annotation.data_list[-1]]
@@ -147,9 +128,7 @@ def _status_in_progress_to_done(
     return task
 
 
-annotation_task_status_flows: dict[
-    schemas.TaskStatus, dict[schemas.TaskStatus, Any]
-] = {
+annotation_task_status_flows: dict[schemas.TaskStatus, dict[schemas.TaskStatus, Any]] = {
     schemas.TaskStatus.unassigned: {
         schemas.TaskStatus.open: _status_unassigned_to_open,
         schemas.TaskStatus.cancelled: _status_unassigned_to_cancelled,

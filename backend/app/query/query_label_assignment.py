@@ -20,9 +20,7 @@ class QueryLabelAssignment(QueryBase[models.LabelAssignment]):
         ).subquery()
 
         return self.query(db, query_in).filter(
-            models.LabelAssignment.id.notin_(
-                db.query(done_annotations.c.label_assignment_id)
-            )
+            models.LabelAssignment.id.notin_(db.query(done_annotations.c.label_assignment_id))
         )
 
     def query_without_active_task(

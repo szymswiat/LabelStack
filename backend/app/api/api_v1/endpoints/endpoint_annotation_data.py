@@ -18,9 +18,7 @@ def create_annotation_data(
     db: Session = Depends(deps.get_db),
     annotation_id: int,
     annotation_data: bytes = File(...),
-    current_user: models.User = Depends(
-        deps.get_current_user_with_role([schemas.RoleType.annotator])
-    ),
+    current_user: models.User = Depends(deps.get_current_user_with_role([schemas.RoleType.annotator])),
 ) -> models.AnnotationData:
     """
     Create new instance of annotation data bound to annotation object.
@@ -48,14 +46,11 @@ def create_annotation_data(
         )
 
     annotation_has_data = len(existing_annotation.data_list) > 0
-    new_sequence = (
-        0 if not annotation_has_data else existing_annotation.data_list[-1].sequence + 1
-    )
+    new_sequence = 0 if not annotation_has_data else existing_annotation.data_list[-1].sequence + 1
 
     if (
         annotation_has_data
-        and existing_annotation.data_list[-1].md5_hash
-        == hashlib.md5(annotation_data).hexdigest()
+        and existing_annotation.data_list[-1].md5_hash == hashlib.md5(annotation_data).hexdigest()
     ):
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
@@ -81,9 +76,7 @@ def read_annotation_data(
     sequence: int,
     task_id: int | None = None,
     current_user: models.User = Depends(
-        deps.get_current_user_with_role(
-            [schemas.RoleType.annotator, schemas.RoleType.data_admin]
-        )
+        deps.get_current_user_with_role([schemas.RoleType.annotator, schemas.RoleType.data_admin])
     ),
 ):
     """
@@ -100,9 +93,7 @@ def read_annotation_data(
         assert task
 
         all_allowed_annotations = logic.annotation.get_all_annotations_from_task(task)
-        if annotation_id not in {
-            annotation.id for annotation in all_allowed_annotations
-        }:
+        if annotation_id not in {annotation.id for annotation in all_allowed_annotations}:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="User does not have access to requested image instance.",
@@ -133,9 +124,7 @@ def get_latest_blob_hash_for_annotation(
     db: Session = Depends(deps.get_db),
     annotation_id: int,
     current_user: models.User = Depends(
-        deps.get_current_user_with_role(
-            [schemas.RoleType.annotator, schemas.RoleType.data_admin]
-        )
+        deps.get_current_user_with_role([schemas.RoleType.annotator, schemas.RoleType.data_admin])
     ),
 ) -> models.AnnotationData:
     """

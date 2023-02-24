@@ -15,9 +15,7 @@ def test_get_access_token(client: TestClient) -> None:
     assert tokens["access_token"]
 
 
-def test_use_access_token(
-    client: TestClient, superuser_token_headers: dict[str, str]
-) -> None:
+def test_use_access_token(client: TestClient, superuser_token_headers: dict[str, str]) -> None:
     r = client.post(
         f"{settings.API_V1_STR}/login/test-token",
         headers=superuser_token_headers,

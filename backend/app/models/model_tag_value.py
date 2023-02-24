@@ -12,12 +12,8 @@ if TYPE_CHECKING:
 class DicomTagValue(Base):
     __tablename__ = "dicom_tag_value"
 
-    dicom_id: Mapped[int] = mapped_column(
-        sa.Integer, sa.ForeignKey("dicom.id"), primary_key=True
-    )
-    tag_id: Mapped[int] = mapped_column(
-        sa.Integer, sa.ForeignKey("tag.id"), primary_key=True
-    )
+    dicom_id: Mapped[int] = mapped_column(sa.Integer, sa.ForeignKey("dicom.id"), primary_key=True)
+    tag_id: Mapped[int] = mapped_column(sa.Integer, sa.ForeignKey("tag.id"), primary_key=True)
 
     value: Mapped[str] = mapped_column(sa.String, nullable=False)
 
@@ -30,9 +26,7 @@ class ImageInstanceTagValue(Base):
     image_instance_id: Mapped[int] = mapped_column(
         sa.Integer, sa.ForeignKey("image_instance.id"), primary_key=True
     )
-    tag_id: Mapped[int] = mapped_column(
-        sa.Integer, sa.ForeignKey("tag.id"), primary_key=True
-    )
+    tag_id: Mapped[int] = mapped_column(sa.Integer, sa.ForeignKey("tag.id"), primary_key=True)
 
     value: Mapped[str] = mapped_column(sa.String, nullable=False)
 

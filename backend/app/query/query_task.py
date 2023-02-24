@@ -17,11 +17,7 @@ class QueryTask(QueryBase[models.Task]):
         return (
             self.query(db, query_in)
             .filter(models.Task.task_type == schemas.TaskType.label_assignment)
-            .filter(
-                models.Task.status.notin_(
-                    [schemas.TaskStatus.done, schemas.TaskStatus.cancelled]
-                )
-            )
+            .filter(models.Task.status.notin_([schemas.TaskStatus.done, schemas.TaskStatus.cancelled]))
             .join(models.Task.image_instances)
             .filter(models.ImageInstance.id.in_(image_instance_ids))
         )
@@ -46,9 +42,7 @@ class QueryTask(QueryBase[models.Task]):
         annotation_ids: list[int],
         task_statuses: list[schemas.TaskStatus],
     ) -> Query:
-        q = db.query(models.Annotation.parent_task_id).filter(
-            models.Annotation.id.in_(annotation_ids)
-        )
+        q = db.query(models.Annotation.parent_task_id).filter(models.Annotation.id.in_(annotation_ids))
 
         return (
             self.query(db)
@@ -75,9 +69,7 @@ class QueryTask(QueryBase[models.Task]):
     ) -> Query:
         return self.query(db, query_in).filter(models.Task.task_type == task_type)
 
-    def query_by_user(
-        self, db: Session, *, user_id: int, query_in: Query | None = None
-    ) -> Query:
+    def query_by_user(self, db: Session, *, user_id: int, query_in: Query | None = None) -> Query:
         query = self.query(db, query_in)
         query = query.filter(models.Task.assigned_user_id == user_id)
 

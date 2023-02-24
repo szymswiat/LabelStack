@@ -35,9 +35,7 @@ def validate_annotation_task_input(db: Session, task_in: schemas.TaskCreateApiIn
         )
 
 
-def validate_annotation_review_task_input(
-    db: Session, task_in: schemas.TaskCreateApiIn
-):
+def validate_annotation_review_task_input(db: Session, task_in: schemas.TaskCreateApiIn):
     # TODO: verify if assigned user is not an author of at least one of dicom annotations
     if (
         task_in.image_instance_ids is not None

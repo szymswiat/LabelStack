@@ -7,27 +7,19 @@ from app import models, schemas, query
 
 
 class CRUDUser(CRUDBase[models.User, schemas.UserCreate, schemas.UserUpdate]):
-    def schema_to_model_create(
-        self, db: Session, *, create_obj: schemas.UserCreate
-    ) -> models.User:
+    def schema_to_model_create(self, db: Session, *, create_obj: schemas.UserCreate) -> models.User:
         role_ids = create_obj.role_ids if create_obj.role_ids else []
         roles = db.query(models.Role).filter(models.Role.id.in_(role_ids)).all()
 
         user_attrs = create_obj.dict(exclude={"role_ids", "password"})
 
         user = models.User(
-            **user_attrs,
-            hashed_password=get_password_hash(create_obj.password),
-            roles=roles
+            **user_attrs, hashed_password=get_password_hash(create_obj.password), roles=roles
         )
         return user
 
     def schema_to_model_update(
-        self,
-        db: Session,
-        *,
-        db_obj: models.User,
-        update_obj: schemas.UserUpdate | dict[str, Any]
+        self, db: Session, *, db_obj: models.User, update_obj: schemas.UserUpdate | dict[str, Any]
     ):
         if isinstance(update_obj, dict):
             update_data = update_obj
@@ -49,9 +41,7 @@ class CRUDUser(CRUDBase[models.User, schemas.UserCreate, schemas.UserUpdate]):
         self.set_matching_fields(update_data, db_obj)
         return db_obj
 
-    def authenticate(
-        self, db: Session, *, email: str, password: str
-    ) -> models.User | None:
+    def authenticate(self, db: Session, *, email: str, password: str) -> models.User | None:
         user = query.user.query_by_email(db, email=email).first()
         if not user:
             return None

@@ -8,9 +8,7 @@ from app.utils import DicomWebQidoInstance, DicomTags
 from app import resources
 
 
-def has_labels(
-    image_instance: models.ImageInstance, labels: list[models.Label]
-) -> bool:
+def has_labels(image_instance: models.ImageInstance, labels: list[models.Label]) -> bool:
     image_label_ids = [la.label_id for la in image_instance.label_assignments]
     for label in labels:
         if label.id not in image_label_ids:
@@ -61,9 +59,7 @@ def sync_pacs_with_image_instances(
             continue
 
         image_instance_create = schemas.ImageInstanceCreateCrud(id_ref=id_ref)
-        image_instance = crud.image_instance.create(
-            db, obj_in=image_instance_create, commit=commit
-        )
+        image_instance = crud.image_instance.create(db, obj_in=image_instance_create, commit=commit)
 
         for tag_keyword in tag_keywords_for_image_instance:
             tag = tags.get_by_keyword(tag_keyword)
@@ -84,21 +80,17 @@ def get_all_image_instances_for_task(task: models.Task) -> list[models.ImageInst
         image_instances = task.image_instances
     elif task.task_type == schemas.TaskType.annotation:
         image_instances = [
-            label_assignment.image_instance
-            for label_assignment in task.label_assignments
+            label_assignment.image_instance for label_assignment in task.label_assignments
         ]
         image_instances = [
-            next(group)
-            for _, group in groupby(image_instances, key=lambda instance: instance.id)
+            next(group) for _, group in groupby(image_instances, key=lambda instance: instance.id)
         ]
     elif task.task_type == schemas.TaskType.annotation_review:
         image_instances = [
-            annotation.label_assignment.image_instance
-            for annotation in task.annotations
+            annotation.label_assignment.image_instance for annotation in task.annotations
         ]
         image_instances = [
-            next(group)
-            for _, group in groupby(image_instances, key=lambda instance: instance.id)
+            next(group) for _, group in groupby(image_instances, key=lambda instance: instance.id)
         ]
     else:
         raise ValueError("Invalid task type.")
@@ -177,8 +169,7 @@ def group_instances_by_series(
 ) -> dict[str, list[DicomWebQidoInstance]]:
 
     instances_by_series = [
-        (instance.get_tag_by_keyword("SeriesInstanceUID"), instance)
-        for instance in instances
+        (instance.get_tag_by_keyword("SeriesInstanceUID"), instance) for instance in instances
     ]
 
     return utils.build_grouped_dict(instances_by_series)

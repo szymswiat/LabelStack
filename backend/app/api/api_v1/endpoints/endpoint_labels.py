@@ -14,9 +14,7 @@ def create_label(
     *,
     db: Session = Depends(deps.get_db),
     label_in: schemas.LabelCreateApiIn,
-    current_user: models.User = Depends(
-        deps.get_current_user_with_role([schemas.RoleType.data_admin])
-    ),
+    current_user: models.User = Depends(deps.get_current_user_with_role([schemas.RoleType.data_admin])),
 ) -> Any:
     """
     Create a label.
@@ -39,9 +37,7 @@ def read_labels(
     db: Session = Depends(deps.get_db),
     with_label_type_name: str | None = None,
     with_allowed_annotation_type_name: str | None = None,
-    current_user: models.User = Depends(
-        deps.get_current_user_with_role(schemas.RoleType.all_roles())
-    ),
+    current_user: models.User = Depends(deps.get_current_user_with_role(schemas.RoleType.all_roles())),
 ):
     """
     Read all labels.
@@ -69,9 +65,7 @@ def update_label(
     db: Session = Depends(deps.get_db),
     label_in: schemas.LabelUpdateApiIn,
     id: int,
-    current_user: models.User = Depends(
-        deps.get_current_user_with_role([schemas.RoleType.data_admin])
-    ),
+    current_user: models.User = Depends(deps.get_current_user_with_role([schemas.RoleType.data_admin])),
 ):
     """
     Update a label.

@@ -9,9 +9,7 @@ from app.tests.utils.utils import random_email, random_lower_string
 # TODO: include roles
 
 
-def test_get_users_superuser_me(
-    client: TestClient, superuser_token_headers: dict[str, str]
-) -> None:
+def test_get_users_superuser_me(client: TestClient, superuser_token_headers: dict[str, str]) -> None:
     r = client.get(f"{settings.API_V1_STR}/users/me", headers=superuser_token_headers)
     assert 200 <= r.status_code < 300
 
@@ -40,9 +38,7 @@ def test_create_user_new_email(
 ) -> None:
     username = random_email()
     password = random_lower_string()
-    data = schemas.UserCreate.parse_obj(
-        {"email": username, "password": password, "role_ids": []}
-    )
+    data = schemas.UserCreate.parse_obj({"email": username, "password": password, "role_ids": []})
     r = client.post(
         f"{settings.API_V1_STR}/users/",
         headers=superuser_token_headers,
@@ -82,9 +78,7 @@ def test_create_user_existing_username(
     password = random_lower_string()
     user_in = schemas.UserCreate(email=username, password=password)
     crud.user.create(db, obj_in=user_in)
-    data = schemas.UserCreate.parse_obj(
-        {"email": username, "password": password, "role_ids": []}
-    )
+    data = schemas.UserCreate.parse_obj({"email": username, "password": password, "role_ids": []})
     r = client.post(
         f"{settings.API_V1_STR}/users/",
         headers=superuser_token_headers,
@@ -100,9 +94,7 @@ def test_create_user_by_normal_user(
 ) -> None:
     username = random_email()
     password = random_lower_string()
-    data = schemas.UserCreate.parse_obj(
-        {"email": username, "password": password, "role_ids": []}
-    )
+    data = schemas.UserCreate.parse_obj({"email": username, "password": password, "role_ids": []})
     r = client.post(
         f"{settings.API_V1_STR}/users/",
         headers=normal_user_token_headers,

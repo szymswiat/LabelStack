@@ -15,9 +15,7 @@ def read_annotation_reviews(
     db: Session = Depends(deps.get_db),
     by_task_id: int,
     current_user: models.User = Depends(
-        deps.get_current_user_with_role(
-            [schemas.RoleType.annotator, schemas.RoleType.task_admin]
-        )
+        deps.get_current_user_with_role([schemas.RoleType.annotator, schemas.RoleType.task_admin])
     ),
 ) -> list[models.AnnotationReview]:
     """
@@ -39,9 +37,7 @@ def update_annotation_review(
     annotation_review_id: int,
     annotation_review_in: schemas.AnnotationReviewUpdateApiIn,
     current_user: models.User = Depends(
-        deps.get_current_user_with_role(
-            [schemas.RoleType.annotator, schemas.RoleType.task_admin]
-        )
+        deps.get_current_user_with_role([schemas.RoleType.annotator, schemas.RoleType.task_admin])
     ),
 ) -> models.AnnotationReview:
     """
@@ -61,9 +57,7 @@ def update_annotation_review(
         db, review, new_result=annotation_review_in.result, commit_changes=False
     )
 
-    annotation_review_in = schemas.AnnotationReviewUpdateCrud(
-        **annotation_review_in.dict()
-    )
+    annotation_review_in = schemas.AnnotationReviewUpdateCrud(**annotation_review_in.dict())
     updated_annotation_review = crud.annotation_review.update(
         db, db_obj=review, obj_in=annotation_review_in
     )

@@ -33,18 +33,14 @@ def read_dicom(
     return dicom
 
 
-@router.get(
-    "/for_image_instance/{image_instance_id}", response_model=list[schemas.DicomApiOut]
-)
+@router.get("/for_image_instance/{image_instance_id}", response_model=list[schemas.DicomApiOut])
 def read_dicoms_for_image_instance(
     *,
     db: Session = Depends(deps.get_db),
     image_instance_id: int,
     task_id: int | None = None,
     current_user: models.User = Depends(
-        deps.get_current_user_with_role(
-            [schemas.RoleType.annotator, schemas.RoleType.data_admin]
-        )
+        deps.get_current_user_with_role([schemas.RoleType.annotator, schemas.RoleType.data_admin])
     ),
 ) -> list[models.Dicom]:
     """
@@ -85,9 +81,7 @@ def read_dicoms_for_image_instance(
 def sync_dicomweb(
     *,
     db: Session = Depends(deps.get_db),
-    current_user: models.User = Depends(
-        deps.get_current_user_with_role([schemas.RoleType.data_admin])
-    ),
+    current_user: models.User = Depends(deps.get_current_user_with_role([schemas.RoleType.data_admin])),
 ) -> list[models.Dicom]:
     """
     Sync internal backend database with attached pacs using dicomweb.

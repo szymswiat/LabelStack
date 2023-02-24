@@ -20,18 +20,12 @@ def test_step0_create_label_task(client: TestClient, db: Session):
     """
     Create label task for annotator_0 with 50 dicoms. This task will be finished in below tests.
     """
-    _, task_admin_0_headers = auth_data_for_test_user(
-        db, client, schemas.RoleType.task_admin, 0
-    )
-    annotator_0, _ = auth_data_for_test_user(
-        db, client, schemas.RoleType.annotator, 0
-    )
+    _, task_admin_0_headers = auth_data_for_test_user(db, client, schemas.RoleType.task_admin, 0)
+    annotator_0, _ = auth_data_for_test_user(db, client, schemas.RoleType.annotator, 0)
 
     # fetch image instances waiting for labels
     r = client.get(
-        f"{settings.API_V1_STR}/image_instances/?"
-        f"waiting_for=label&"
-        f"without_active_task=true",
+        f"{settings.API_V1_STR}/image_instances/?" f"waiting_for=label&" f"without_active_task=true",
         headers=task_admin_0_headers,
     )
     assert 200 <= r.status_code < 300, f"{r.status_code}: {r.content}"
@@ -43,8 +37,7 @@ def test_step0_create_label_task(client: TestClient, db: Session):
         name="First label task",
         description="Label all images in the database.",
         image_instance_ids=[
-            image_instance.id
-            for image_instance in image_instances[:ANNOTATOR_0_LABEL_TASK_DICOM_COUNT]
+            image_instance.id for image_instance in image_instances[:ANNOTATOR_0_LABEL_TASK_DICOM_COUNT]
         ],
     )
 
@@ -63,16 +56,10 @@ def test_step0_1_create_additional_label_task(client: TestClient, db: Session):
     """
     Create label task for annotator_1 with 25 dicoms. Below tests will not finish it. It will just hang in open state.
     """
-    _, task_admin_0_headers = auth_data_for_test_user(
-        db, client, schemas.RoleType.task_admin, 0
-    )
-    annotator_1, _ = auth_data_for_test_user(
-        db, client, schemas.RoleType.annotator, 1
-    )
+    _, task_admin_0_headers = auth_data_for_test_user(db, client, schemas.RoleType.task_admin, 0)
+    annotator_1, _ = auth_data_for_test_user(db, client, schemas.RoleType.annotator, 1)
 
-    image_instances: list[schemas.ImageInstanceApiOut] = TEST_OUTPUTS["step0"][
-        "image_instances"
-    ]
+    image_instances: list[schemas.ImageInstanceApiOut] = TEST_OUTPUTS["step0"]["image_instances"]
 
     task_create = schemas.TaskCreateApiIn(
         assigned_user_id=annotator_1.id,
@@ -98,9 +85,7 @@ def test_step0_1_create_additional_label_task(client: TestClient, db: Session):
 
 @pytest.mark.order(after="test_step0_create_label_task")
 def test_step1_assign_labels(client: TestClient, db: Session):
-    _, annotator_0_headers = auth_data_for_test_user(
-        db, client, schemas.RoleType.annotator, 0
-    )
+    _, annotator_0_headers = auth_data_for_test_user(db, client, schemas.RoleType.annotator, 0)
 
     # fetch label tasks on behalf annotator_0
     r = client.get(
@@ -155,9 +140,7 @@ def test_step1_assign_labels(client: TestClient, db: Session):
 
 @pytest.mark.order(after="test_step1_assign_labels")
 def test_step2_finish_label_task(client: TestClient, db: Session):
-    _, annotator_0_headers = auth_data_for_test_user(
-        db, client, schemas.RoleType.annotator, 0
-    )
+    _, annotator_0_headers = auth_data_for_test_user(db, client, schemas.RoleType.annotator, 0)
 
     label_task: schemas.TaskApiOut = TEST_OUTPUTS["step1"]["label_task"]
 

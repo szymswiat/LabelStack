@@ -3,9 +3,7 @@ from app.crud.base import CRUDBase
 
 
 class CRUDAnnotation(
-    CRUDBase[
-        models.Annotation, schemas.AnnotationCreateCrud, schemas.AnnotationUpdateCrud
-    ]
+    CRUDBase[models.Annotation, schemas.AnnotationCreateCrud, schemas.AnnotationUpdateCrud]
 ):
     pass
 

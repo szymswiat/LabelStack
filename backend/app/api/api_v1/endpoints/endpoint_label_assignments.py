@@ -52,9 +52,7 @@ def add_label_assignments(
             image_instance_id=image_instance_id,
             author_id=current_user.id,
         )
-        label_assignment = crud.label_assignment.create(
-            db, obj_in=label_assignment_in, commit=False
-        )
+        label_assignment = crud.label_assignment.create(db, obj_in=label_assignment_in, commit=False)
         label_assignments_out.append(label_assignment)
 
     db.commit()
@@ -67,9 +65,7 @@ def modify_label_assignments(
     *,
     db: Session = Depends(deps.get_db),
     label_assignments_in: schemas.LabelAssignmentsModifyApiIn,
-    current_user: models.User = Depends(
-        deps.get_current_user_with_role([schemas.RoleType.annotator])
-    ),
+    current_user: models.User = Depends(deps.get_current_user_with_role([schemas.RoleType.annotator])),
 ) -> list[models.LabelAssignment]:
     """
     Create group of label annotations for image_instance.
@@ -86,9 +82,7 @@ def modify_label_assignments(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Selected image_instance is not in task.",
         )
-    image_instance = crud.image_instance.get(
-        db, id=label_assignments_in.image_instance_id
-    )
+    image_instance = crud.image_instance.get(db, id=label_assignments_in.image_instance_id)
 
     if image_instance is None:
         raise HTTPException(
@@ -97,9 +91,7 @@ def modify_label_assignments(
         )
 
     # this will ignore invalid label_ids
-    labels_to_create = crud.label.get_multi_by_ids(
-        db, label_assignments_in.label_ids_to_create
-    )
+    labels_to_create = crud.label.get_multi_by_ids(db, label_assignments_in.label_ids_to_create)
     label_assignments_out: list[models.LabelAssignment] = []
     for label in labels_to_create:
         if logic.image_instance.has_labels(image_instance, [label]):
@@ -111,14 +103,10 @@ def modify_label_assignments(
             parent_task_id=label_assignments_in.parent_task_id,
             author_id=current_user.id,
         )
-        label_assignment = crud.label_assignment.create(
-            db, obj_in=label_assignment_in, commit=False
-        )
+        label_assignment = crud.label_assignment.create(db, obj_in=label_assignment_in, commit=False)
         label_assignments_out.append(label_assignment)
 
-    logic.image_instance.clear_labels(
-        image_instance, label_assignments_in.label_ids_to_remove
-    )
+    logic.image_instance.clear_labels(image_instance, label_assignments_in.label_ids_to_remove)
 
     db.commit()
 
@@ -132,9 +120,7 @@ def read_label_assignments(
     waiting_for_annotations: bool | None = False,
     without_active_task: bool | None = False,
     current_user: models.User = Depends(
-        deps.get_current_user_with_role(
-            [schemas.RoleType.data_admin, schemas.RoleType.task_admin]
-        )
+        deps.get_current_user_with_role([schemas.RoleType.data_admin, schemas.RoleType.task_admin])
     ),
 ) -> list[models.LabelAssignment]:
     """
@@ -145,13 +131,9 @@ def read_label_assignments(
     query_out = query.label_assignment.query_for_finished(db=db)
 
     if without_active_task:
-        query_out = query.label_assignment.query_without_active_task(
-            db=db, query_in=query_out
-        )
+        query_out = query.label_assignment.query_without_active_task(db=db, query_in=query_out)
 
     if waiting_for_annotations:
-        query_out = query.label_assignment.query_for_not_annotated(
-            db, query_in=query_out
-        )
+        query_out = query.label_assignment.query_for_not_annotated(db, query_in=query_out)
 
     return query_out.all()

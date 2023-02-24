@@ -13,9 +13,7 @@ def read_all_roles(
     db: Session = Depends(deps.get_db),
     skip: int = 0,
     limit: int = 100,
-    current_user: models.User = Depends(
-        deps.get_current_user_with_role(schemas.RoleType.all_roles())
-    ),
+    current_user: models.User = Depends(deps.get_current_user_with_role(schemas.RoleType.all_roles())),
 ):
     """
     Read all labels.

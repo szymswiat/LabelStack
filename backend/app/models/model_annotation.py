@@ -18,12 +18,8 @@ class Annotation(Base):
         sa.Integer, sa.ForeignKey("label_assignment.id"), nullable=False
     )
 
-    author_id: Mapped[int] = mapped_column(
-        sa.Integer, sa.ForeignKey("user.id"), nullable=False
-    )
-    parent_task_id: Mapped[int] = mapped_column(
-        sa.Integer, sa.ForeignKey("task.id"), nullable=False
-    )
+    author_id: Mapped[int] = mapped_column(sa.Integer, sa.ForeignKey("user.id"), nullable=False)
+    parent_task_id: Mapped[int] = mapped_column(sa.Integer, sa.ForeignKey("task.id"), nullable=False)
 
     version: Mapped[int] = mapped_column(sa.Integer, nullable=False)
     spent_time: Mapped[int] = mapped_column(sa.BigInteger, default=0, nullable=False)

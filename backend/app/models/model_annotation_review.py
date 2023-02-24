@@ -20,12 +20,8 @@ class AnnotationReview(Base):
         sa.Integer, sa.ForeignKey("annotation.id"), nullable=True
     )
 
-    author_id: Mapped[int] = mapped_column(
-        sa.Integer, sa.ForeignKey("user.id"), nullable=False
-    )
-    parent_task_id: Mapped[int] = mapped_column(
-        sa.Integer, sa.ForeignKey("task.id"), nullable=False
-    )
+    author_id: Mapped[int] = mapped_column(sa.Integer, sa.ForeignKey("user.id"), nullable=False)
+    parent_task_id: Mapped[int] = mapped_column(sa.Integer, sa.ForeignKey("task.id"), nullable=False)
     status: Mapped[int] = mapped_column(sa.Integer, nullable=False)
     result: Mapped[str | None] = mapped_column(sa.String, nullable=True)
     comment: Mapped[str | None] = mapped_column(sa.String, nullable=True)

@@ -19,9 +19,7 @@ from app.db.init.dev_data import (
 from app.tests.utils.gen_test_users import test_users_meta
 
 
-def create_user(
-    db: Session, email: str, password: str, roles: list[models.Role]
-) -> models.User:
+def create_user(db: Session, email: str, password: str, roles: list[models.Role]) -> models.User:
     user = query.user.query_by_email(db, email=email).first()
     if not user:
         user_in = schemas.UserCreate(
@@ -47,9 +45,7 @@ def init_db(db: Session) -> None:
         for role_type in schemas.RoleType:
             crud.role.create(db, obj_in=schemas.RoleCreateCrud(type=role_type))
 
-    superuser_role = query.role.query_by_type(
-        db, type=schemas.RoleType.superuser
-    ).first()
+    superuser_role = query.role.query_by_type(db, type=schemas.RoleType.superuser).first()
     assert superuser_role
 
     superuser = create_user(

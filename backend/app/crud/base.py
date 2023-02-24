@@ -29,14 +29,10 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
     def get_multi_by_ids(self, db: Session, ids: list[int]) -> list[ModelType]:
         return db.query(self.model).filter(self.model.id.in_(ids)).all()
 
-    def get_multi(
-        self, db: Session, *, skip: int = 0, limit: int = 100
-    ) -> list[ModelType]:
+    def get_multi(self, db: Session, *, skip: int = 0, limit: int = 100) -> list[ModelType]:
         return db.query(self.model).offset(skip).limit(limit).all()
 
-    def create(
-        self, db: Session, *, obj_in: CreateSchemaType, commit: bool = True
-    ) -> ModelType:
+    def create(self, db: Session, *, obj_in: CreateSchemaType, commit: bool = True) -> ModelType:
         db_obj = self.schema_to_model_create(db, create_obj=obj_in)
         db.add(db_obj)
         db.flush([db_obj])
@@ -45,24 +41,16 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         db.refresh(db_obj)
         return db_obj
 
-    def create_bulk(
-        self, db: Session, *, objs_in: list[CreateSchemaType], commit: bool = True
-    ):
-        db_objs = [
-            self.schema_to_model_create(db, create_obj=obj_in) for obj_in in objs_in
-        ]
+    def create_bulk(self, db: Session, *, objs_in: list[CreateSchemaType], commit: bool = True):
+        db_objs = [self.schema_to_model_create(db, create_obj=obj_in) for obj_in in objs_in]
 
         db.bulk_save_objects(db_objs)
         db.flush(db_objs)
         if commit:
             db.commit()
 
-    def create_many(
-        self, db: Session, *, objs_in: list[CreateSchemaType], commit: bool = True
-    ):
-        db_objs = [
-            self.schema_to_model_create(db, create_obj=obj_in) for obj_in in objs_in
-        ]
+    def create_many(self, db: Session, *, objs_in: list[CreateSchemaType], commit: bool = True):
+        db_objs = [self.schema_to_model_create(db, create_obj=obj_in) for obj_in in objs_in]
 
         # db.bulk_save_objects(db_objs)
         for db_obj in db_objs:
@@ -71,9 +59,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         if commit:
             db.commit()
 
-    def schema_to_model_create(
-        self, db: Session, *, create_obj: CreateSchemaType
-    ) -> ModelType:
+    def schema_to_model_create(self, db: Session, *, create_obj: CreateSchemaType) -> ModelType:
         obj_in_data = self.get_update_data(create_obj)
         return self.model(**obj_in_data)
 
@@ -85,12 +71,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         return db_obj
 
     def update(
-        self,
-        db: Session,
-        *,
-        db_obj: ModelType,
-        obj_in: UpdateSchemaType,
-        commit: bool = True
+        self, db: Session, *, db_obj: ModelType, obj_in: UpdateSchemaType, commit: bool = True
     ) -> ModelType:
         db_obj = self.schema_to_model_update(db, db_obj=db_obj, update_obj=obj_in)
 

@@ -30,9 +30,7 @@ def superuser_token_headers(client: TestClient) -> dict[str, str]:
 
 @pytest.fixture(scope="module")
 def normal_user_token_headers(client: TestClient, db: Session) -> dict[str, str]:
-    return authentication_token_from_email(
-        client=client, email=settings.TEST_USER_EMAIL, db=db
-    )
+    return authentication_token_from_email(client=client, email=settings.TEST_USER_EMAIL, db=db)
 
 
 @pytest.fixture(scope="session", autouse=True)

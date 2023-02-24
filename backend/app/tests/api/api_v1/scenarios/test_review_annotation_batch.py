@@ -16,16 +16,12 @@ TEST_OUTPUTS = {}
 
 @pytest.mark.order(after="test_label_dicom_batch.py::test_step2_finish_label_task")
 def test_step0_create_annotation_review_task(client: TestClient, db: Session):
-    _, task_admin_0_headers = auth_data_for_test_user(
-        db, client, schemas.RoleType.task_admin, 0
-    )
+    _, task_admin_0_headers = auth_data_for_test_user(db, client, schemas.RoleType.task_admin, 0)
     annotator_3, _ = auth_data_for_test_user(db, client, schemas.RoleType.annotator, 3)
 
     # fetch annotation waiting for review
     r = client.get(
-        f"{settings.API_V1_STR}/annotations/?"
-        f"waiting_for_review=true&"
-        f"without_active_task=true",
+        f"{settings.API_V1_STR}/annotations/?" f"waiting_for_review=true&" f"without_active_task=true",
         headers=task_admin_0_headers,
     )
     assert 200 <= r.status_code < 300
@@ -51,9 +47,7 @@ def test_step0_create_annotation_review_task(client: TestClient, db: Session):
 
 @pytest.mark.order(after="test_step0_create_annotation_review_task")
 def test_step1_change_task_status(client: TestClient, db: Session):
-    _, annotator_3_headers = auth_data_for_test_user(
-        db, client, schemas.RoleType.annotator, 3
-    )
+    _, annotator_3_headers = auth_data_for_test_user(db, client, schemas.RoleType.annotator, 3)
 
     # fetch annotation tasks on behalf annotator_1
     r = client.get(
@@ -63,9 +57,7 @@ def test_step1_change_task_status(client: TestClient, db: Session):
         headers=annotator_3_headers,
     )
     assert 200 <= r.status_code < 300
-    annotator_tasks: list[schemas.TaskApiOut] = [
-        schemas.TaskApiOut.parse_obj(d) for d in r.json()
-    ]
+    annotator_tasks: list[schemas.TaskApiOut] = [schemas.TaskApiOut.parse_obj(d) for d in r.json()]
     # pick first annotator task
     review_task = annotator_tasks[0]
 
@@ -83,9 +75,7 @@ def test_step1_change_task_status(client: TestClient, db: Session):
 
 @pytest.mark.order(after="test_step1_change_task_status")
 def test_step2_fill_reviews_with_data(client: TestClient, db: Session):
-    _, annotator_3_headers = auth_data_for_test_user(
-        db, client, schemas.RoleType.annotator, 3
-    )
+    _, annotator_3_headers = auth_data_for_test_user(db, client, schemas.RoleType.annotator, 3)
 
     review_task: schemas.TaskApiOut = TEST_OUTPUTS["step1"]["review_task"]
 
@@ -143,18 +133,14 @@ def test_step2_fill_reviews_with_data(client: TestClient, db: Session):
             r = client.post(
                 f"{settings.API_V1_STR}/annotation_data/{changed_review.resulting_annotation_id}",
                 headers=annotator_3_headers,
-                files={
-                    "annotation_data": randbytes(random.randint(1024 * 50, 1024 * 100))
-                },
+                files={"annotation_data": randbytes(random.randint(1024 * 50, 1024 * 100))},
             )
             assert 200 <= r.status_code < 300
 
 
 @pytest.mark.order(after="test_step2_fill_reviews_with_data")
 def test_step3_close_annotation_review_task(client: TestClient, db: Session):
-    _, annotator_3_headers = auth_data_for_test_user(
-        db, client, schemas.RoleType.annotator, 3
-    )
+    _, annotator_3_headers = auth_data_for_test_user(db, client, schemas.RoleType.annotator, 3)
 
     review_task: schemas.TaskApiOut = TEST_OUTPUTS["step1"]["review_task"]
 

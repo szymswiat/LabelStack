@@ -69,9 +69,7 @@ def test_check_if_user_is_superuser_normal_user(db: Session) -> None:
     password = random_lower_string()
     annotator_role = query.role.query_by_type(db, type=RoleType.annotator).first()
     assert annotator_role
-    user_in = UserCreate(
-        email=username, password=password, role_ids=[annotator_role.id]
-    )
+    user_in = UserCreate(email=username, password=password, role_ids=[annotator_role.id])
     user = crud.user.create(db, obj_in=user_in)
     has_superuser_role = logic.user.has_role_one_of(user, [RoleType.superuser])
     assert has_superuser_role is False
@@ -82,9 +80,7 @@ def test_get_user(db: Session) -> None:
     username = random_email()
     superuser_role = query.role.query_by_type(db, type=RoleType.superuser).first()
     assert superuser_role
-    user_in = UserCreate(
-        email=username, password=password, role_ids=[superuser_role.id]
-    )
+    user_in = UserCreate(email=username, password=password, role_ids=[superuser_role.id])
     user = crud.user.create(db, obj_in=user_in)
     user_2 = crud.user.get(db, id=user.id)
     assert user_2

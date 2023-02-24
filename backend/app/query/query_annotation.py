@@ -13,16 +13,10 @@ class QueryAnnotation(QueryBase[models.Annotation]):
         db: Session,
         label_assignment_id: int,
     ) -> Query:
-        return self.query(db).filter(
-            models.Annotation.label_assignment_id == label_assignment_id
-        )
+        return self.query(db).filter(models.Annotation.label_assignment_id == label_assignment_id)
 
     def query_for_annotations_with_status(
-        self,
-        db: Session,
-        *,
-        annotation_ids: list[int] | None = None,
-        status: schemas.AnnotationStatus
+        self, db: Session, *, annotation_ids: list[int] | None = None, status: schemas.AnnotationStatus
     ) -> Query:
         q = self.query(db).filter(models.Annotation.status == status)
 
@@ -34,9 +28,7 @@ class QueryAnnotation(QueryBase[models.Annotation]):
     def query_by_task(self, db: Session, task_id: int) -> Query:
         return self.query(db).filter(models.Annotation.parent_task_id == task_id)
 
-    def query_without_active_task(
-        self, db: Session, query_in: Query | None = None
-    ) -> Query:
+    def query_without_active_task(self, db: Session, query_in: Query | None = None) -> Query:
         active_tasks_by_type = (
             db.query(models.Task.id)
             .filter(models.Task.task_type == schemas.TaskType.annotation_review)
@@ -50,9 +42,7 @@ class QueryAnnotation(QueryBase[models.Annotation]):
         ).subquery()
 
         return self.query(db, query_in).filter(
-            models.Annotation.id.notin_(
-                db.query(annotations_with_active_task.c.annotation_id)
-            )
+            models.Annotation.id.notin_(db.query(annotations_with_active_task.c.annotation_id))
         )
 
 

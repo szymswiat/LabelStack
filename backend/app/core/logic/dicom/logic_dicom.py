@@ -19,9 +19,7 @@ def sync_pacs_with_dicoms(
 
     for instance in instances:
 
-        patient_id = instance.get_tag_by_keyword(
-            "PatientID", pop=True, allow_empty=True
-        )
+        patient_id = instance.get_tag_by_keyword("PatientID", pop=True, allow_empty=True)
         study_id = instance.get_tag_by_keyword("StudyInstanceUID", pop=True)
         series_id = instance.get_tag_by_keyword("SeriesInstanceUID", pop=True)
         instance_id = instance.get_tag_by_keyword("SOPInstanceUID", pop=True)
@@ -48,9 +46,7 @@ def sync_pacs_with_dicoms(
                 continue
 
             dicom.tags.append(
-                models.DicomTagValue(
-                    dicom_id=dicom.id, tag_id=tag.id, value=tag_value["Value"][0]
-                )
+                models.DicomTagValue(dicom_id=dicom.id, tag_id=tag.id, value=tag_value["Value"][0])
             )
         synced_dicoms.append(dicom)
 

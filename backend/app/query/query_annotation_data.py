@@ -16,9 +16,7 @@ class QueryAnnotationData(QueryBase[models.AnnotationData]):
         )
 
     def query_by_annotation(self, db: Session, annotation_id: int) -> Query:
-        return self.query(db).filter(
-            models.AnnotationData.annotation_id == annotation_id
-        )
+        return self.query(db).filter(models.AnnotationData.annotation_id == annotation_id)
 
 
 annotation_data = QueryAnnotationData(models.AnnotationData)

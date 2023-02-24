@@ -22,10 +22,7 @@ def create_label_task(
         init_status = schemas.TaskStatus.open
 
     obj_in = schemas.TaskCreateCrud(
-        **task_in.dict(),
-        status=init_status,
-        total_time=0,
-        submitter_user_id=current_user.id
+        **task_in.dict(), status=init_status, total_time=0, submitter_user_id=current_user.id
     )
 
     task = crud.task.create(db, obj_in=obj_in)
@@ -39,16 +36,12 @@ def _status_unassigned_to_open(db: Session, task: models.Task, **kwargs: Any) ->
     return task
 
 
-def _status_unassigned_to_cancelled(
-    db: Session, task: models.Task, **kwargs: Any
-) -> models.Task:
+def _status_unassigned_to_cancelled(db: Session, task: models.Task, **kwargs: Any) -> models.Task:
     # just change status
     return task
 
 
-def _status_open_to_in_progress(
-    db: Session, task: models.Task, **kwargs: Any
-) -> models.Task:
+def _status_open_to_in_progress(db: Session, task: models.Task, **kwargs: Any) -> models.Task:
     # just change status
     return task
 
@@ -58,16 +51,12 @@ def _status_open_to_cancelled(db: Session, task: models.Task, **kwargs: Any) -> 
     return task
 
 
-def _status_in_progress_to_cancelled(
-    db: Session, task: models.Task, **kwargs: Any
-) -> models.Task:
+def _status_in_progress_to_cancelled(db: Session, task: models.Task, **kwargs: Any) -> models.Task:
     # TODO: add a way to check which images have assigned labels
     return task
 
 
-def _status_in_progress_to_done(
-    db: Session, task: models.Task, **kwargs: Any
-) -> models.Task:
+def _status_in_progress_to_done(db: Session, task: models.Task, **kwargs: Any) -> models.Task:
     for image_instance in task.image_instances:
         image_instance.visited = True
 

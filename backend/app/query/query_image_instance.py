@@ -18,9 +18,7 @@ class QueryImageInstance(QueryBase[models.ImageInstance]):
 
         return query_in.filter(models.ImageInstance.visited == visited)
 
-    def query_without_active_task(
-        self, *, db: Session, query_in: Query | None = None
-    ) -> Query:
+    def query_without_active_task(self, *, db: Session, query_in: Query | None = None) -> Query:
         active_tasks_by_type = (
             db.query(models.Task.id)
             .filter(models.Task.task_type == schemas.TaskType.label_assignment)
@@ -34,9 +32,7 @@ class QueryImageInstance(QueryBase[models.ImageInstance]):
         ).subquery()
 
         return self.query(db, query_in).filter(
-            models.ImageInstance.id.notin_(
-                db.query(images_with_active_task.c.image_instance_id)
-            )
+            models.ImageInstance.id.notin_(db.query(images_with_active_task.c.image_instance_id))
         )
 
 

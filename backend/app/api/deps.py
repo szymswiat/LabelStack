@@ -12,9 +12,7 @@ from app.core.config import settings
 from app.db.session import SessionLocal
 from app.schemas.schema_role import RoleType
 
-reusable_oauth2 = OAuth2PasswordBearer(
-    tokenUrl=f"{settings.API_V1_STR}/login/access-token"
-)
+reusable_oauth2 = OAuth2PasswordBearer(tokenUrl=f"{settings.API_V1_STR}/login/access-token")
 
 
 def get_db() -> Generator[Session, None, None]:
@@ -31,9 +29,7 @@ def get_current_user(
     db: Session = Depends(get_db), token: str = Depends(reusable_oauth2)
 ) -> models.User:
     try:
-        payload = jwt.decode(
-            token, settings.SECRET_KEY, algorithms=[security.ALGORITHM]
-        )
+        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[security.ALGORITHM])
         token_data = schemas.TokenPayload(**payload)
     except (JWTError, ValidationError):
         raise HTTPException(
@@ -65,8 +61,6 @@ def get_current_user_with_role(
             return current_user
         if logic.user.has_role_one_of(current_user, role_types):
             return current_user
-        raise HTTPException(
-            status_code=400, detail="The user doesn't have enough privileges."
-        )
+        raise HTTPException(status_code=400, detail="The user doesn't have enough privileges.")
 
     return func

@@ -23,9 +23,7 @@ class Task(Base):
     assigned_user_id: Mapped[int | None] = mapped_column(
         sa.Integer, sa.ForeignKey("user.id"), nullable=True
     )
-    submitter_user_id: Mapped[int] = mapped_column(
-        sa.Integer, sa.ForeignKey("user.id"), nullable=False
-    )
+    submitter_user_id: Mapped[int] = mapped_column(sa.Integer, sa.ForeignKey("user.id"), nullable=False)
 
     task_type: Mapped[int] = mapped_column(sa.Integer, nullable=False)
     name: Mapped[str] = mapped_column(sa.String, nullable=False)

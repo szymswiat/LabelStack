@@ -38,9 +38,7 @@ def read_image_instances(
     unvisited: bool | None = False,
     without_active_task: bool | None = False,
     current_user: models.User = Depends(
-        deps.get_current_user_with_role(
-            [schemas.RoleType.data_admin, schemas.RoleType.task_admin]
-        )
+        deps.get_current_user_with_role([schemas.RoleType.data_admin, schemas.RoleType.task_admin])
     ),
 ) -> list[models.ImageInstance]:
     """
@@ -59,14 +57,10 @@ def read_image_instances(
     query_out = query.image_instance.query(db)
 
     if without_active_task:
-        query_out = query.image_instance.query_without_active_task(
-            db=db, query_in=query_out
-        )
+        query_out = query.image_instance.query_without_active_task(db=db, query_in=query_out)
 
     if unvisited:
-        query_out = query.image_instance.query_for_visited(
-            db, query_in=query_out, visited=False
-        )
+        query_out = query.image_instance.query_for_visited(db, query_in=query_out, visited=False)
 
     return query_out.all()
 
@@ -76,9 +70,7 @@ def read_image_instances_for_task(
     *,
     db: Session = Depends(deps.get_db),
     task_id: int,
-    current_user: models.User = Depends(
-        deps.get_current_user_with_role([schemas.RoleType.annotator])
-    ),
+    current_user: models.User = Depends(deps.get_current_user_with_role([schemas.RoleType.annotator])),
 ) -> list[models.ImageInstance] | list[schemas.ImageInstance]:
     """
     Read list of image_instances bound to task.

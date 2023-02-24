@@ -15,9 +15,7 @@ def update_annotation(
     db: Session = Depends(deps.get_db),
     id: int,
     obj_in: schemas.AnnotationUpdateApiIn,
-    current_user: models.User = Depends(
-        deps.get_current_user_with_role([schemas.RoleType.annotator])
-    ),
+    current_user: models.User = Depends(deps.get_current_user_with_role([schemas.RoleType.annotator])),
 ):
     """
     Update existing annotation.
@@ -43,9 +41,7 @@ def read_annotations(
     without_active_task: bool | None = None,
     required_accepted_reviews: int = 1,
     current_user: models.User = Depends(
-        deps.get_current_user_with_role(
-            [schemas.RoleType.annotator, schemas.RoleType.task_admin]
-        )
+        deps.get_current_user_with_role([schemas.RoleType.annotator, schemas.RoleType.task_admin])
     ),
 ) -> list[schemas.Annotation] | list[models.Annotation]:
     """
@@ -88,9 +84,7 @@ def read_annotations(
             db, status=schemas.AnnotationStatus.done
         )
         if without_active_task:
-            query_out = query.annotation.query_without_active_task(
-                db, query_in=query_out
-            )
+            query_out = query.annotation.query_without_active_task(db, query_in=query_out)
 
         annotations_out = [schemas.Annotation.from_orm(a) for a in query_out.all()]
         annotations_out = logic.annotation.filter_annotations_waiting_for_review(

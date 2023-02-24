@@ -21,9 +21,7 @@ class Label(Base):
         sa.Integer, sa.ForeignKey("annotation_type.id"), nullable=True
     )
 
-    allowed_annotation_type: Mapped["models.AnnotationType"] = relationship(
-        "AnnotationType"
-    )
+    allowed_annotation_type: Mapped["models.AnnotationType"] = relationship("AnnotationType")
     types: Mapped[list["models.LabelType"]] = relationship(
         "LabelType", secondary=LabelLabelType.__table__
     )

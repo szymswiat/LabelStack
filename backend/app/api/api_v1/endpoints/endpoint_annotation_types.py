@@ -14,16 +14,12 @@ def create_annotation_type(
     *,
     db: Session = Depends(deps.get_db),
     annotation_type_in: schemas.AnnotationTypeCreateApiIn,
-    current_user: models.User = Depends(
-        deps.get_current_user_with_role([schemas.RoleType.data_admin])
-    ),
+    current_user: models.User = Depends(deps.get_current_user_with_role([schemas.RoleType.data_admin])),
 ) -> Any:
     """
     Create an annotation type.
     """
-    annotation_type = query.annotation_type.query_by_name(
-        db, name=annotation_type_in.name
-    ).first()
+    annotation_type = query.annotation_type.query_by_name(db, name=annotation_type_in.name).first()
     if annotation_type:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
@@ -41,9 +37,7 @@ def read_all_annotation_types(
     db: Session = Depends(deps.get_db),
     skip: int = 0,
     limit: int = 100,
-    current_user: models.User = Depends(
-        deps.get_current_user_with_role(schemas.RoleType.all_roles())
-    ),
+    current_user: models.User = Depends(deps.get_current_user_with_role(schemas.RoleType.all_roles())),
 ):
     """
     Read all annotation types.
@@ -59,9 +53,7 @@ def update_annotation_type(
     db: Session = Depends(deps.get_db),
     annotation_type_in: schemas.AnnotationTypeUpdateApiIn,
     id: int,
-    current_user: models.User = Depends(
-        deps.get_current_user_with_role([schemas.RoleType.data_admin])
-    ),
+    current_user: models.User = Depends(deps.get_current_user_with_role([schemas.RoleType.data_admin])),
 ):
     """
     Update an annotation type.
@@ -74,9 +66,7 @@ def update_annotation_type(
             detail=f"AnnotationType with id={id} does not exist.",
         )
 
-    annotation_type_update = schemas.AnnotationTypeUpdateCrud.parse_obj(
-        annotation_type_in
-    )
+    annotation_type_update = schemas.AnnotationTypeUpdateCrud.parse_obj(annotation_type_in)
 
     annotation_type = crud.annotation_type.update(
         db, db_obj=annotation_type, obj_in=annotation_type_update

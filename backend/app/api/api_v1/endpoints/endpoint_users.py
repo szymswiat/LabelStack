@@ -54,9 +54,7 @@ def update_user_me(
     password: str | None = Body(None),
     full_name: str | None = Body(None),
     email: EmailStr | None = Body(None),
-    current_user: models.User = Depends(
-        deps.get_current_user_with_role(allow_no_roles=True)
-    ),
+    current_user: models.User = Depends(deps.get_current_user_with_role(allow_no_roles=True)),
 ) -> Any:
     """
     Update own user.
@@ -76,9 +74,7 @@ def update_user_me(
 @router.get("/me", response_model=schemas.UserResponse)
 def read_user_me(
     db: Session = Depends(deps.get_db),
-    current_user: models.User = Depends(
-        deps.get_current_user_with_role(allow_no_roles=True)
-    ),
+    current_user: models.User = Depends(deps.get_current_user_with_role(allow_no_roles=True)),
 ) -> Any:
     """
     Get current user.

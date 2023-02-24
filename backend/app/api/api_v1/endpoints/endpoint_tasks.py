@@ -16,9 +16,7 @@ def create_task(
     *,
     db: Session = Depends(deps.get_db),
     task_in: schemas.TaskCreateApiIn,
-    current_user: models.User = Depends(
-        deps.get_current_user_with_role([schemas.RoleType.task_admin])
-    ),
+    current_user: models.User = Depends(deps.get_current_user_with_role([schemas.RoleType.task_admin])),
 ) -> models.Task:
     """
     Create a task. Task can be created with one of following types:
@@ -46,10 +44,7 @@ def create_task(
                 status_code=status.HTTP_409_CONFLICT,
                 detail="At least one of dicoms is already assigned in other active task.",
             ) from error
-        if (
-            error.error_code
-            == core.LogicErrorCode.dicom_and_label_combo_already_in_task
-        ):
+        if error.error_code == core.LogicErrorCode.dicom_and_label_combo_already_in_task:
             raise HTTPException(
                 status_code=status.HTTP_409_CONFLICT,
                 detail="Some of selected combination of dicom and label is "
@@ -84,9 +79,7 @@ def read_tasks(
     task_type: schemas.TaskType | None = None,
     for_me: bool | None = None,
     for_user_id: int | None = None,
-    current_user: models.User = Depends(
-        deps.get_current_user_with_role([schemas.RoleType.annotator])
-    ),
+    current_user: models.User = Depends(deps.get_current_user_with_role([schemas.RoleType.annotator])),
 ) -> list[models.Task | schemas.Task]:
     """
     Read list of tasks filtered by following options:
@@ -110,26 +103,18 @@ def read_tasks(
     query_out = query.task.query(db)
 
     if for_me:
-        query_out = query.task.query_by_user(
-            db, user_id=current_user.id, query_in=query_out
-        )
+        query_out = query.task.query_by_user(db, user_id=current_user.id, query_in=query_out)
     if for_user_id is not None:
         if not logic.user.has_role_one_of(current_user, [schemas.RoleType.superuser]):
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="User is not permitted to use option 'for_user_id'.",
             )
-        query_out = query.task.query_by_user(
-            db, user_id=for_user_id, query_in=query_out
-        )
+        query_out = query.task.query_by_user(db, user_id=for_user_id, query_in=query_out)
     if task_status is not None:
-        query_out = query.task.query_by_status(
-            db, status_list=[task_status], query_in=query_out
-        )
+        query_out = query.task.query_by_status(db, status_list=[task_status], query_in=query_out)
     if task_type is not None:
-        query_out = query.task.query_by_type(
-            db, task_type=task_type, query_in=query_out
-        )
+        query_out = query.task.query_by_type(db, task_type=task_type, query_in=query_out)
 
     return [helpers.convert_task_nested_to_ids(task) for task in query_out.all()]
 
@@ -141,9 +126,7 @@ def change_task_status(
     new_status: schemas.TaskStatus,
     task_id: int,
     current_user: models.User = Depends(
-        deps.get_current_user_with_role(
-            [schemas.RoleType.annotator, schemas.RoleType.task_admin]
-        )
+        deps.get_current_user_with_role([schemas.RoleType.annotator, schemas.RoleType.task_admin])
     ),
 ) -> models.Task | schemas.Task:
     """
@@ -221,9 +204,7 @@ def change_task_owner(
     new_owner_id: int,
     task_id: int,
     current_user: models.User = Depends(
-        deps.get_current_user_with_role(
-            [schemas.RoleType.annotator, schemas.RoleType.task_admin]
-        )
+        deps.get_current_user_with_role([schemas.RoleType.annotator, schemas.RoleType.task_admin])
     ),
 ) -> models.Task | schemas.Task:
     """
@@ -236,10 +217,7 @@ def change_task_owner(
             detail="Task does not exist.",
         )
 
-    if not (
-        task.status == schemas.TaskStatus.unassigned
-        or task.status == schemas.TaskStatus.open
-    ):
+    if not (task.status == schemas.TaskStatus.unassigned or task.status == schemas.TaskStatus.open):
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
             detail="Cannot change owner of modified task.",
@@ -247,9 +225,7 @@ def change_task_owner(
 
     new_owner = crud.user.get(db, id=new_owner_id)
     if new_owner is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="User does not exist."
-        )
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User does not exist.")
 
     task.assigned_user_id = new_owner_id  # type: ignore
     task.status = schemas.TaskStatus.open  # type: ignore
@@ -267,9 +243,7 @@ def get_available_statuses_for_task(
     db: Session = Depends(deps.get_db),
     task_id: int,
     current_user: models.User = Depends(
-        deps.get_current_user_with_role(
-            [schemas.RoleType.annotator, schemas.RoleType.task_admin]
-        )
+        deps.get_current_user_with_role([schemas.RoleType.annotator, schemas.RoleType.task_admin])
     ),
 ):
     task = crud.task.get(db, id=task_id)
@@ -283,9 +257,7 @@ def get_available_statuses_for_task(
         schemas.TaskType.annotation_review: logic.task.annotation_review_task_status_flows,
     }
 
-    available_statuses_for_task_type = available_statuses[
-        schemas.TaskType(task.task_type)
-    ]
+    available_statuses_for_task_type = available_statuses[schemas.TaskType(task.task_type)]
 
     return schemas.AvailableStatusesForTaskApiOut(
         statuses=[

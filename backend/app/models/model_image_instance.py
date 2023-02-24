@@ -23,6 +23,4 @@ class ImageInstance(Base):
         cascade="delete, delete-orphan",
     )
 
-    tags: Mapped[list["models.ImageInstanceTagValue"]] = relationship(
-        "ImageInstanceTagValue"
-    )
+    tags: Mapped[list["models.ImageInstanceTagValue"]] = relationship("ImageInstanceTagValue")

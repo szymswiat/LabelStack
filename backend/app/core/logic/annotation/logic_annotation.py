@@ -54,9 +54,7 @@ def change_annotation_review_result(
 
     if new_result == Result.denied_corrected:
         # create new resulting annotation
-        parent_annotation = crud.annotation.get(
-            db, annotation_review.annotation_id
-        )
+        parent_annotation = crud.annotation.get(db, annotation_review.annotation_id)
         assert parent_annotation
         new_annotation = schemas.AnnotationCreateCrud(
             label_assignment_id=parent_annotation.label_assignment_id,
@@ -66,9 +64,7 @@ def change_annotation_review_result(
             status=schemas.AnnotationStatus.open,
             spent_time=0,
         )
-        new_annotation = crud.annotation.create(
-            db, obj_in=new_annotation, commit=commit_changes
-        )
+        new_annotation = crud.annotation.create(db, obj_in=new_annotation, commit=commit_changes)
         annotation_review.resulting_annotation_id = new_annotation.id
 
     if annotation_review.result == Result.denied_corrected:
