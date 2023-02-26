@@ -7,5 +7,5 @@ export enum RoleType {
 
 export interface Role {
   id: number;
-  type: string;
+  type: RoleType;
 }

@@ -95,6 +95,18 @@ const menuItems: MenuSection[] = [
     role: [RoleType.superuser, RoleType.dataAdmin, RoleType.taskAdmin, RoleType.annotator],
     items: [
       {
+        name: 'Unassigned',
+        link: '/tasks/unassigned',
+        icon: MdAddTask,
+        role: [RoleType.superuser, RoleType.dataAdmin, RoleType.taskAdmin, RoleType.annotator]
+      },
+      {
+        name: 'All',
+        link: '/tasks/all',
+        icon: FaTasks,
+        role: [RoleType.superuser, RoleType.dataAdmin, RoleType.taskAdmin]
+      },
+      {
         name: 'To Label',
         link: '/tasks/to-label',
         icon: MdNewLabel,
@@ -111,18 +123,6 @@ const menuItems: MenuSection[] = [
         link: '/tasks/to-review',
         icon: MdRateReview,
         role: [RoleType.superuser, RoleType.dataAdmin, RoleType.taskAdmin, RoleType.annotator]
-      },
-      {
-        name: 'Unassigned',
-        link: '/tasks/unassigned',
-        icon: MdAddTask,
-        role: [RoleType.superuser, RoleType.dataAdmin, RoleType.taskAdmin, RoleType.annotator]
-      },
-      {
-        name: 'All',
-        link: '/tasks/all',
-        icon: FaTasks,
-        role: [RoleType.superuser, RoleType.dataAdmin, RoleType.taskAdmin]
       }
     ]
   }

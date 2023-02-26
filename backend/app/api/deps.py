@@ -56,11 +56,11 @@ def get_current_user_with_role(
     def func(current_user: models.User = Depends(get_current_user)) -> models.User:
         if check_active:
             if not logic.user.is_active(current_user):
-                raise HTTPException(status_code=400, detail="The user is not active.")
+                raise HTTPException(status_code=403, detail="The user is not active.")
         if allow_no_roles:
             return current_user
         if logic.user.has_role_one_of(current_user, role_types):
             return current_user
-        raise HTTPException(status_code=400, detail="The user doesn't have enough privileges.")
+        raise HTTPException(status_code=403, detail="The user doesn't have enough privileges.")
 
     return func

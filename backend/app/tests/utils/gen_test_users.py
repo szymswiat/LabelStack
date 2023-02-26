@@ -17,7 +17,7 @@ def generate_test_users() -> dict[schemas.RoleType, list[schemas.UserCreate]]:
             role_users.append(
                 schemas.UserCreate.parse_obj(
                     {
-                        "email": f"{username}@app.com",
+                        "email": f"{username}@labelstack.com",
                         "password": username,
                     }
                 )

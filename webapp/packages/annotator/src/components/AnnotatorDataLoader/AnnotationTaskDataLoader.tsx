@@ -26,7 +26,6 @@ const AnnotationTaskDataLoader: React.FC = () => {
   const prevImageInstanceId = useRef<number | null>(null);
 
   function buildTaskObjects() {
-
     const taskLabelAssignments: LabelAssignmentsObject = {};
     const taskAnnotations: AnnotationsObject = {};
 
@@ -80,7 +79,12 @@ const AnnotationTaskDataLoader: React.FC = () => {
 
       let labelMapData: vtkImageData;
       if (annotationData) {
-        const { data: encodedLabelMap } = await api.readAnnotationData(token, annotation, annotationData.sequence);
+        const { data: encodedLabelMap } = await api.readAnnotationData(
+          token,
+          annotation,
+          annotationData.sequence,
+          task.id
+        );
         labelMapData = await decodeLabelMap(imageData.vtkImage, encodedLabelMap);
       } else {
         labelMapData = await buildLabelMap(imageData.vtkImage);

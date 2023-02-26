@@ -35,11 +35,6 @@ def validate_access_to_task(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="User is not permitted to access selected task.",
             )
-        if task.status not in with_one_of_statuses:
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail="User is not permitted to read the data. Task is not in required status.",
-            )
 
 
 def validate_access_by_role(
@@ -53,7 +48,7 @@ def validate_access_by_role(
     if not logic.user.has_role_one_of(user, roles_bypassing_access):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="User is not permitted to modify selected annotation.",
+            detail="User is not permitted access requested content.",
         )
 
 
@@ -69,13 +64,13 @@ def validate_access_to_annotation(
     if annotation is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="Segment annotation with id does not exist.",
+            detail="Annotation with specified id does not exist.",
         )
     if not logic.user.has_role_one_of(user, roles_bypassing_access):
         if annotation.author_id != user.id:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
-                detail="User is not permitted to modify selected annotation.",
+                detail="User is not permitted to access selected annotation.",
             )
 
 

@@ -76,15 +76,8 @@ def sync_pacs_with_image_instances(
 
 
 def get_all_image_instances_for_task(task: models.Task) -> list[models.ImageInstance]:
-    if task.task_type == schemas.TaskType.label_assignment:
+    if task.task_type in [schemas.TaskType.label_assignment, schemas.TaskType.annotation]:
         image_instances = task.image_instances
-    elif task.task_type == schemas.TaskType.annotation:
-        image_instances = [
-            label_assignment.image_instance for label_assignment in task.label_assignments
-        ]
-        image_instances = [
-            next(group) for _, group in groupby(image_instances, key=lambda instance: instance.id)
-        ]
     elif task.task_type == schemas.TaskType.annotation_review:
         image_instances = [
             annotation.label_assignment.image_instance for annotation in task.annotations

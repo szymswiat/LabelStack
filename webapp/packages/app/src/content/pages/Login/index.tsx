@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
-import { api, requestErrorMessageKey } from '@labelstack/api';
+import { api, requestErrorMessageKey, RoleType } from '@labelstack/api';
 import { useUserDataContext } from '../../../contexts/UserDataContext';
 import { showDangerNotification, showSuccessNotification } from '../../../utils';
 import { useDocumentTitle } from '../../../utils/hooks';
@@ -8,7 +8,7 @@ import LayoutCard from '@labelstack/viewer/src/components/LayoutCard';
 import { useLocation, useNavigate } from 'react-router';
 
 function Login() {
-  const [{ updatingUser }, { setToken }] = useUserDataContext();
+  const [{ updatingUser, user }, { setToken }] = useUserDataContext();
 
   const [username, setUsername] = useState<string>();
   const [password, setPassword] = useState<string>();
@@ -17,6 +17,18 @@ function Login() {
   const navigate = useNavigate();
 
   useDocumentTitle('LabelStack');
+
+  useEffect(() => {
+    if (user) {
+      if (
+        user.roles.map((role) => role.type).containsAny([RoleType.dataAdmin, RoleType.superuser, RoleType.taskAdmin])
+      ) {
+        navigate(state ? state['from'] : '/images/all');
+      } else {
+        navigate(state ? state['from'] : '/tasks/unassigned');
+      }
+    }
+  }, [user]);
 
   const isFormValid = () => {
     if (!username || username === '' || !password || password === '') {
@@ -33,7 +45,6 @@ function Login() {
         const tokenResponse = await api.logInGetToken(username, password);
         const token = tokenResponse.data.access_token as string;
         setToken(token);
-        navigate(state ? state['from'] : '/images/all');
         showSuccessNotification(undefined, 'Successfully logged in!');
       } catch (error) {
         showDangerNotification(undefined, error.response.data[requestErrorMessageKey]);

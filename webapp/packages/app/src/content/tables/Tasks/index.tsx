@@ -35,15 +35,15 @@ const TasksTable = ({ taskType, unassigned }: TasksTableParams) => {
   const [users, setUsers] = useState<User[]>([]);
   const [columnDefs, setColumnDefs] = useState<ColDef[]>([]);
 
-  const loadUsers = () => {
-    const allUsersRequest = api.getUsers(token);
-    if (allUsersRequest) {
-      allUsersRequest.then((response) => {
-        const responseUsers = response.data as User[];
-        setUsers(responseUsers);
-      });
+  async function loadUsers() {
+    const currentUserRoleTypes = user.roles.map((role) => role.type);
+    if (!currentUserRoleTypes.containsAny([RoleType.dataAdmin, RoleType.superuser, RoleType.taskAdmin])) {
+      setUsers([user]);
+    } else {
+      const { data: allUsers } = await api.getUsers(token);
+      setUsers(allUsers);
     }
-  };
+  }
 
   const loadTasks = () => {
     const userRoles: string[] = user.roles.map((role: Role) => role.type);
