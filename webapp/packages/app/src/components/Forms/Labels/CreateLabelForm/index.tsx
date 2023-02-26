@@ -121,7 +121,7 @@ const CreateLabelForm = ({ annotationTypes, labelTypes, reloadLabels }: CreateLa
 
   return (
     <>
-      <p className="w-full py-4 mt-2 text-center text-xl font-bold">Create Label</p>
+      <div className="w-full py-2 text-center text-xl font-bold">Create Label</div>
       <Divider />
       <form className="w-full text-sm font-medium px-6 flex flex-col gap-y-2" onSubmit={createLabel}>
         <div className="w-full flex flex-col items-center">

@@ -8,9 +8,11 @@ export interface RightBarLayoutProps {
 
 const RightBarLayout: React.FC<RightBarLayoutProps> = ({ children, rightBarComponent }) => {
   return (
-    <div className="flex flex-row h-full w-full overflow-auto gap-x-4">
+    <div className="flex flex-row h-full w-full gap-x-4">
       <div className="basis-3/4 py-1">{children}</div>
-      <LayoutCard className="h-full basis-1/4 overflow-auto px-4">{rightBarComponent}</LayoutCard>
+      <LayoutCard className="h-full basis-1/4 p-4">
+        <div className="h-full overflow-y-scroll no-scrollbar">{rightBarComponent}</div>
+      </LayoutCard>
     </div>
   );
 };

@@ -40,16 +40,18 @@ export const labelTypesCellRenderer = (params: ICellRendererParams) => {
   return '';
 };
 
-export const imageInstanceTagCellRenderer = (params: ICellRendererParams) => {
-  const imageInstanceTags = params.value as ImageInstanceTagValue[];
-
-  if (imageInstanceTags) {
-    const tagNames = imageInstanceTags.map((imageInstanceTag) => imageInstanceTag.tag.name);
-
-    return tagNames.join(', ');
+export function imageInstanceTagRenderer(tagKeyword: string): (params: ICellRendererParams) => string {
+  return (params: ICellRendererParams) => {
+    const tags = params.value as ImageInstanceTagValue[];
+    if (tags) {
+      const tag = tags.find((tag) => tag.tag.keyword === tagKeyword);
+      if (tag) {
+        return tag.value;
+      }
+    }
+    return '';
   }
-  return '';
-};
+}
 
 export const taskTypeCellRenderer = (params: ICellRendererParams) => {
   const taskType = params.value as TaskType;

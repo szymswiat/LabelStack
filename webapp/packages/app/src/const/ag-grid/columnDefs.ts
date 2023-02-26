@@ -5,7 +5,7 @@ import {
   annotationReviewsCellRenderer,
   annotationsCellRenderer,
   dicomIsLabeledCellRenderer,
-  imageInstanceTagCellRenderer,
+  imageInstanceTagRenderer,
   labelAllowedAnnotationTypesCellRenderer,
   labelAssignmentsCellRenderer,
   labelCellRenderer,
@@ -43,6 +43,20 @@ export const imageInstancesColumnDefs: ColDef[] = [
     width: 100,
     minWidth: 100,
     resizable: true
+  },
+  {
+    field: 'tags',
+    headerName: 'Patient ID',
+    cellRenderer: imageInstanceTagRenderer('PatientID'),
+    width: 150,
+    minWidth: 100
+  },
+  {
+    field: 'tags',
+    headerName: 'Modality',
+    cellRenderer: imageInstanceTagRenderer('Modality'),
+    width: 150,
+    minWidth: 50
   }
 ];
 

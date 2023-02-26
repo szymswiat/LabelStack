@@ -26,8 +26,8 @@ const SelectedItemsTable: React.FC<SelectedItemsTableProps> = ({
   }
 
   return (
-    <div className="h-full px-4">
-      <p className="w-full p-2 flex flex-row justify-center text-l font-bold">
+    <div className="flex flex-col h-full px-4 gap-y-2">
+      <div className="w-full p-2 flex flex-row justify-center text-l font-bold">
         {isImageList && (
           <PanelButton
             name="Open selected images"
@@ -41,31 +41,33 @@ const SelectedItemsTable: React.FC<SelectedItemsTableProps> = ({
         <span className={classNames({ 'pl-2': isImageList })}>
           {header} ({data.length}):
         </span>
-      </p>
-      <table className="w-full h-full table-fixed text-center">
-        <thead className="bg-dark-card-bg rounded-lg">
-          <tr key="images_header">
-            {tableColumnInfo.map((columnInfo) => {
-              return <th key={'header_' + columnInfo.header}>{columnInfo.header}</th>;
-            })}
-          </tr>
-        </thead>
-        <tbody>
-          {data.map((row, rowIndex) => {
-            return (
-              <tr className="hover:bg-gray-200 dark:hover:bg-secondary-dark" key={'data_row_' + rowIndex}>
-                {tableColumnInfo.map((cell, cellIndex) => {
-                  return (
-                    <td className="truncate" key={'data_cell_' + rowIndex + '_' + cellIndex}>
-                      {cell.cellRenderer ? cell.cellRenderer(row[cell.field]) : row[cell.field]}
-                    </td>
-                  );
-                })}
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+      </div>
+
+      <div className="flex flex-row bg-dark-bg rounded-lg h-8 items-center mb-2">
+        {tableColumnInfo.map((columnInfo, index) => (
+          <div
+            key={`header_${index}`}
+            className="text-center font-bold overflow-hidden whitespace-nowrap text-ellipsis"
+            style={{ width: `${100 / tableColumnInfo.length}%` }}
+          >
+            {columnInfo.header}
+          </div>
+        ))}
+      </div>
+
+      {data.map((row, rowIndex) => (
+        <div key={`row_${rowIndex}`} className="flex flex-row h-6 items-center divide-x">
+          {tableColumnInfo.map((cell, cellIndex) => (
+            <div
+              key={`header_${cellIndex}`}
+              className="text-center overflow-hidden whitespace-nowrap text-ellipsis"
+              style={{ width: `${100 / tableColumnInfo.length}%` }}
+            >
+              {cell.cellRenderer ? cell.cellRenderer({ value: row[cell.field] }) : row[cell.field]}
+            </div>
+          ))}
+        </div>
+      ))}
     </div>
   );
 };

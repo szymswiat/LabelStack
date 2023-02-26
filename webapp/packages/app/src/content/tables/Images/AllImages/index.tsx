@@ -47,7 +47,7 @@ const AllImages: React.FC = () => {
 
   function renderRightBar(): React.ReactNode {
     return (
-      <div className="grow-0 pt-4">
+      <div className="grow-0">
         <SelectedItemsTable
           header="Selected Images"
           tableColumnInfo={selectedImagesTableHeaders}

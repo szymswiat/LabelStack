@@ -103,7 +103,7 @@ const ViewerLayout: React.FC<ViewerLayoutProps> = ({ toolBarElements, leftPanels
               />
             </div>
           )}
-          <LayoutCard className={classNames('flex-grow w-full')}>
+          <LayoutCard className={classNames('flex-grow h-auto')}>
             {children}
           </LayoutCard>
         </div>
