@@ -14,7 +14,7 @@ import {
 import Divider from '../../../../components/Divider';
 import { useUserDataContext } from '../../../../contexts/UserDataContext';
 import { showSuccessNotification } from '../../../../utils';
-import { showNotificationWithApiError } from '../../../../utils/notifications';
+import { showDangerNotification, showNotificationWithApiError } from '../../../../utils/notifications';
 import { ifUserHasRole } from '../../../../utils/user';
 import { BsFillCheckSquareFill, BsFillXSquareFill } from 'react-icons/bs';
 
@@ -58,42 +58,53 @@ const ManageUserForm = ({ mode, roles, userToUpdate }: ManageUserFormParams) => 
   };
 
   const createUser = () => {
-    //if (isFormValid()) {
-    let newUser = Object.assign({}, formUser);
-    api
-      .createUser(token, newUser)
-      .then(() => {
-        navigate('/users/all');
-        showSuccessNotification(undefined, 'User created successfully!');
-      })
-      .catch((error: any) => {
-        showNotificationWithApiError(error);
-      });
-    //}
+    if (isFormValid()) {
+      let newUser = Object.assign({}, formUser);
+      api
+        .createUser(token, newUser)
+        .then(() => {
+          navigate('/users/all');
+          showSuccessNotification(undefined, 'User created successfully!');
+        })
+        .catch((error: any) => {
+          showNotificationWithApiError(error);
+        });
+    }
   };
 
   const updateUser = () => {
-    //if (isFormValid()) {
-    let modifiedUser: UserUpdate = {};
+    if (isFormValid()) {
+      let modifiedUser: UserUpdate = {};
 
-    if (passwordUpdate) modifiedUser.password = formUser.password;
-    if (formUser.full_name != userToUpdate.full_name) modifiedUser.full_name = formUser.full_name;
-    if (formUser.email != userToUpdate.email) modifiedUser.email = formUser.email;
-    if (checkIfRolesChanged()) modifiedUser.role_ids = formUser.role_ids;
+      if (passwordUpdate) modifiedUser.password = formUser.password;
+      if (formUser.full_name != userToUpdate.full_name) modifiedUser.full_name = formUser.full_name;
+      if (formUser.email != userToUpdate.email) modifiedUser.email = formUser.email;
+      if (checkIfRolesChanged()) modifiedUser.role_ids = formUser.role_ids;
 
-    api
-      .updateUser(token, userToUpdate.id, modifiedUser)
-      .then(() => {
-        navigate('/users/all');
-        showSuccessNotification(undefined, 'User updated successfully!');
-      })
-      .catch((error: any) => {
-        showNotificationWithApiError(error);
-      });
-    //}
+      api
+        .updateUser(token, userToUpdate.id, modifiedUser)
+        .then(() => {
+          navigate('/users/all');
+          showSuccessNotification(undefined, 'User updated successfully!');
+        })
+        .catch((error: any) => {
+          showNotificationWithApiError(error);
+        });
+    }
   };
 
-  const isFormValid = () => {};
+  const isFormValid = () => {
+    if (emailRegex.test(formUser.email) == false) {
+      setEmailValid(false);
+      showDangerNotification(undefined, 'Valid email is required!');
+      return false;
+    } else if (passwordUpdate == true && (formUser.password == null || formUser.password == '')) {
+      setPasswordValid(false);
+      showDangerNotification(undefined, 'Password cannot be empty!');
+      return false;
+    }
+    return true;
+  };
 
   const checkIfRolesChanged = () => {
     const userRoles = userToUpdate.roles.map((role) => role.id);
