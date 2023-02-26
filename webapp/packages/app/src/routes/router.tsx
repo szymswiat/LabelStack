@@ -31,9 +31,7 @@ const TasksTable = Loader(lazy(() => import('../content/tables/Tasks')));
 
 // Users
 const AllUsers = Loader(lazy(() => import('../content/users/AllUsers')));
-
-// Users
-const AllUsers = Loader(lazy(() => import('../content/users/AllUsers')));
+const EditUser = Loader(lazy(() => import('../content/users/EditUser')));
 
 const ViewerApp = Loader(lazy(() => import('@labelstack/viewer')));
 const AnnotatorApp = Loader(lazy(() => import('@labelstack/annotator')));
@@ -196,7 +194,23 @@ const routes: RouteObject[] = [
       },
       {
         path: 'all',
-        element: <AllUsers />
+        element: (
+          <PrivateWrapper roles={[RoleType.superuser]}>
+            <AllUsers />
+          </PrivateWrapper>
+        )
+      },
+      {
+        path: 'edit',
+        element: (
+          <PrivateWrapper roles={[RoleType.superuser]}>
+            <EditUser />
+          </PrivateWrapper>
+        )
+      },
+      {
+        path: 'create'
+        //element: <PrivateWrapper  roles={[RoleType.superuser]}><CreateUser /></PrivateWrapper>
       }
     ]
   },

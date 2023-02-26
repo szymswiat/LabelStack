@@ -44,6 +44,9 @@ export const api = {
   async updateMe(token: string, data: UserUpdate) {
     return axios.put<User>(`${apiUrl}${apiV1}/users/me`, data, authHeaders(token));
   },
+  async getUser(token: string, userId: number) {
+    return axios.get<User>(`${apiUrl}${apiV1}/users/${userId}`, authHeaders(token));
+  },
   async getUsers(token: string) {
     return axios.get<User[]>(`${apiUrl}${apiV1}/users/`, authHeaders(token));
   },
@@ -265,5 +268,9 @@ export const api = {
       ...authHeaders(token),
       params: { new_owner_id: newOwnerId }
     });
+  },
+
+  async checkBackendStatus() {
+    return axios.get<AvailableStatusesForTaskApiOut>(`${apiUrl}${apiV1}/utils/backend_status`);
   }
 };

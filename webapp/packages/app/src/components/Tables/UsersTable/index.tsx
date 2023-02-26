@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router';
 import { User } from '@labelstack/api';
 import { usersTableHeader } from '../../../const/tableHeaders';
 
@@ -6,11 +7,13 @@ interface UsersTableParams {
   users: User[];
 }
 
-const editUser = (e: React.MouseEvent<HTMLButtonElement>) => {
-  console.log(e.target['value']);
-};
-
 const UsersTable = ({ users }: UsersTableParams) => {
+  const navigate = useNavigate();
+
+  const editUser = (e: React.MouseEvent<HTMLButtonElement>) => {
+    navigate(`/users/edit?userId=${e.target['value']}`);
+  };
+
   return (
     <div className="h-full overflow-y-auto">
       <p className="w-full p-2 text-center text-l font-bold dark:text-primary-light">Users</p>
