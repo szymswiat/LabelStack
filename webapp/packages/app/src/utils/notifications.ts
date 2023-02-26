@@ -1,3 +1,5 @@
+import { requestErrorMessageKey } from '@labelstack/api';
+import axios, { AxiosError } from 'axios';
 import { iNotification, Store } from 'react-notifications-component';
 
 const notificationProps: iNotification = {
@@ -42,4 +44,14 @@ export function showDangerNotification(title: string = 'ERROR', message: string)
     message,
     ...notificationProps
   });
+}
+
+export function showNotificationWithApiError(error: any) {
+  let errorMessage = 'Unknown Error';
+  if (axios.isAxiosError(error)) {
+    const axiosError: AxiosError = error;
+    errorMessage = axiosError.response.data[requestErrorMessageKey];
+  }
+
+  showDangerNotification(undefined, errorMessage);
 }

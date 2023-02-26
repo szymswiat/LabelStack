@@ -204,7 +204,7 @@ const routes: RouteObject[] = [
       {
         path: 'edit',
         element: (
-          <PrivateWrapper roles={[RoleType.superuser]}>
+          <PrivateWrapper roles={[RoleType.superuser, RoleType.dataAdmin, RoleType.taskAdmin, RoleType.annotator]}>
             <EditUser />
           </PrivateWrapper>
         )
