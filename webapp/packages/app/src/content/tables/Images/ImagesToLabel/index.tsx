@@ -13,7 +13,7 @@ import { defaultColDef, imageInstancesColumnDefs } from '../../../../const/ag-gr
 import { selectedImagesTableHeaders } from '../../../../const/tableHeaders';
 import { useUserDataContext } from '../../../../contexts/UserDataContext';
 import { ImageInstanceTagValue, Tag } from '@labelstack/api/src/schemas/tag';
-import { FilterEntry } from 'src/const/ag-grid/filters/FilterEntry';
+import { FilterEntry } from '../../../../const/ag-grid/filters/FilterEntry';
 import RightBarLayout from '../../../../layouts/RightBarLayout';
 
 const ImagesToLabel = () => {

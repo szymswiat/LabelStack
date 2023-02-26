@@ -12,7 +12,7 @@ import {
   MdRateReview
 } from 'react-icons/md';
 
-import { FaTasks } from 'react-icons/fa';
+import { FaTasks, FaUsers } from 'react-icons/fa';
 
 declare global {
   interface Array<T> {
@@ -48,6 +48,18 @@ export interface MenuSection {
 }
 
 const menuItems: MenuSection[] = [
+  {
+    heading: 'Users',
+    role: [RoleType.superuser],
+    items: [
+      {
+        name: 'All Users',
+        link: '/users/all',
+        icon: FaUsers,
+        role: [RoleType.superuser]
+      }
+    ]
+  },
   {
     heading: 'Images',
     role: [RoleType.superuser, RoleType.dataAdmin, RoleType.taskAdmin],

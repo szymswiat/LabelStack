@@ -29,6 +29,12 @@ const AllLabels = Loader(lazy(() => import('../content/tables/Labels/AllLabels')
 // Tasks
 const TasksTable = Loader(lazy(() => import('../content/tables/Tasks')));
 
+// Users
+const AllUsers = Loader(lazy(() => import('../content/users/AllUsers')));
+
+// Users
+const AllUsers = Loader(lazy(() => import('../content/users/AllUsers')));
+
 const ViewerApp = Loader(lazy(() => import('@labelstack/viewer')));
 const AnnotatorApp = Loader(lazy(() => import('@labelstack/annotator')));
 
@@ -173,6 +179,24 @@ const routes: RouteObject[] = [
       {
         path: 'all',
         element: <TasksTable taskType={undefined} />
+      }
+    ]
+  },
+  {
+    path: 'users',
+    element: (
+      <PrivateWrapper>
+        <SidebarLayout />
+      </PrivateWrapper>
+    ),
+    children: [
+      {
+        path: '',
+        element: <Navigate to="users/all" replace />
+      },
+      {
+        path: 'all',
+        element: <AllUsers />
       }
     ]
   },

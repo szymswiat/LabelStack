@@ -6,7 +6,7 @@ export interface ErrorPageProps {
 }
 
 const ErrorPage: React.FC = () => {
-  const { message } = useLocation().state as ErrorPageProps;
+  const { message } = useLocation().state ? (useLocation().state as ErrorPageProps) : { message: 'Unknown Error' };
 
   return (
     <div className={'w-full h-full bg-primary-dark text-primary-light grid'}>
