@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { AxiosResponse } from 'axios';
 
 import { AgGridReact } from 'ag-grid-react';
+import { ColDef } from 'ag-grid-community';
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine-dark.css';
 
@@ -10,7 +11,7 @@ import { AnnotationType, api, Label, LabelType } from '@labelstack/api';
 import CreateLabelForm from '../../../../components/Forms/Labels/CreateLabelForm';
 import { defaultColDef, labelColumnDefs } from '../../../../const/ag-grid/columnDefs';
 import { useUserDataContext } from '../../../../contexts/UserDataContext';
-import { ColDef } from 'ag-grid-community';
+import { useEffectNonNull } from '../../../../utils/hooks';
 import RightBarLayout from '../../../../layouts/RightBarLayout';
 
 const AllLabels = () => {
@@ -84,11 +85,15 @@ const AllLabels = () => {
     loadLabels();
   }, []);
 
-  useEffect(() => {
-    if (annotationTypes && annotationTypes.length > 0 && labelTypes && labelTypes.length > 0) {
-      setColumnDefinitions();
-    }
-  }, [annotationTypes, labelTypes]);
+  useEffectNonNull(
+    () => {
+      if (annotationTypes.length > 0 && labelTypes.length > 0) {
+        setColumnDefinitions();
+      }
+    },
+    [],
+    [annotationTypes, labelTypes]
+  );
 
   function renderRightBar() {
     return (

@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { AxiosError, AxiosResponse } from 'axios';
+import { AxiosResponse } from 'axios';
 
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine-dark.css';
 
-import { api, ImageInstance, requestErrorMessageKey } from '@labelstack/api';
+import { api, ImageInstance } from '@labelstack/api';
 
 import { defaultColDef, imageInstancesColumnDefs } from '../../../../const/ag-grid/columnDefs';
 import { useUserDataContext } from '../../../../contexts/UserDataContext';
-import { showDangerNotification } from '../../../../utils';
+import { showNotificationWithApiError } from '../../../../utils';
 import RightBarLayout from '../../../../layouts/RightBarLayout';
 import { GridApi } from 'ag-grid-community';
 import SelectedItemsTable from '../../../../components/Tables/SelectedItemsTable';
@@ -29,8 +29,8 @@ const AllImages: React.FC = () => {
         const responseImages = response.data as ImageInstance[];
         setImages(responseImages);
       })
-      .catch((error: AxiosError) => {
-        showDangerNotification(undefined, error.response.data[requestErrorMessageKey]);
+      .catch((error) => {
+        showNotificationWithApiError(error);
       });
   }, []);
 

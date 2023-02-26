@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 import { api, requestErrorMessageKey, RoleType } from '@labelstack/api';
 import { useUserDataContext } from '../../../contexts/UserDataContext';
-import { showDangerNotification, showSuccessNotification } from '../../../utils';
+import { showDangerNotification, showSuccessNotification, showNotificationWithApiError } from '../../../utils';
 import { useDocumentTitle } from '../../../utils/hooks';
 import LayoutCard from '@labelstack/viewer/src/components/LayoutCard';
 import { useLocation, useNavigate } from 'react-router';
@@ -47,7 +47,7 @@ function Login() {
         setToken(token);
         showSuccessNotification(undefined, 'Successfully logged in!');
       } catch (error) {
-        showDangerNotification(undefined, error.response.data[requestErrorMessageKey]);
+        showNotificationWithApiError(error);
       }
     }
   }

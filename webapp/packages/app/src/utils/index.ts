@@ -3,7 +3,8 @@ import {
   showDangerNotification,
   showInfoNotification,
   showSuccessNotification,
-  showWarningNotification
+  showWarningNotification,
+  showNotificationWithApiError
 } from './notifications';
 
 function delay(ms: number) {
@@ -21,5 +22,6 @@ export {
   showSuccessNotification,
   showInfoNotification,
   showWarningNotification,
-  showDangerNotification
+  showDangerNotification,
+  showNotificationWithApiError
 };

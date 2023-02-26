@@ -14,6 +14,7 @@ import { selectedImagesTableHeaders } from '../../../../const/tableHeaders';
 import { useUserDataContext } from '../../../../contexts/UserDataContext';
 import { ImageInstanceTagValue, Tag } from '@labelstack/api/src/schemas/tag';
 import { FilterEntry } from '../../../../const/ag-grid/filters/FilterEntry';
+import { useEffectNonNull } from '../../../../utils/hooks';
 import RightBarLayout from '../../../../layouts/RightBarLayout';
 
 const ImagesToLabel = () => {
@@ -103,11 +104,15 @@ const ImagesToLabel = () => {
     loadImages();
   }, []);
 
-  useEffect(() => {
-    if (images && images.length > 0) {
-      setColumnDefinitions();
-    }
-  }, [images]);
+  useEffectNonNull(
+    () => {
+      if (images.length > 0) {
+        setColumnDefinitions();
+      }
+    },
+    [],
+    [images]
+  );
 
   function renderRightBar(): React.ReactNode {
     return (

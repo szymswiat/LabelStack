@@ -1,17 +1,9 @@
 import React from 'react';
-import axios, { AxiosError } from 'axios';
 
 import { GridApi } from 'ag-grid-community';
 import { useUserDataContext } from '../../../../contexts/UserDataContext';
-import {
-  User,
-  api,
-  Task,
-  TaskStatus,
-  TaskType,
-  requestErrorMessageKey,
-  Annotation} from '@labelstack/api';
-import { showDangerNotification, showSuccessNotification } from '../../../../utils';
+import { User, api, Task, TaskStatus, TaskType, Annotation } from '@labelstack/api';
+import { showNotificationWithApiError, showSuccessNotification } from '../../../../utils';
 import CreateTaskForm, { CreateTaskFunction } from '../CreateTaskForm';
 
 interface CreateAnnotationReviewTaskFormParams {
@@ -66,13 +58,7 @@ const CreateAnnotationReviewTaskForm = ({
           if (gridApi) gridApi.deselectAll();
         })
         .catch((error) => {
-          if (axios.isAxiosError(error)) {
-            const axiosError: AxiosError = error;
-            showDangerNotification(
-              undefined,
-              axiosError.response ? axiosError.response.data[requestErrorMessageKey] : ''
-            );
-          }
+          showNotificationWithApiError(error);
         });
     }
   };

@@ -1,12 +1,12 @@
 import React from 'react';
 import { useState } from 'react';
-import axios, { AxiosError } from 'axios';
 
-import { AnnotationType, api, LabelCreateApiIn, LabelType, requestErrorMessageKey } from '@labelstack/api';
+import { AnnotationType, api, LabelCreateApiIn, LabelType } from '@labelstack/api';
 
 import Divider from '../../../Divider';
 import { useUserDataContext } from '../../../../contexts/UserDataContext';
 import { showDangerNotification, showSuccessNotification } from '../../../../utils';
+import { showNotificationWithApiError } from '../../../../utils/notifications';
 
 interface CreateLabelFormParams {
   annotationTypes: AnnotationType[];
@@ -44,14 +44,8 @@ const CreateLabelForm = ({ annotationTypes, labelTypes, reloadLabels }: CreateLa
           showSuccessNotification(undefined, 'Label created successfully!');
           reloadLabels();
         })
-        .catch((error: AxiosError) => {
-          if (axios.isAxiosError(error)) {
-            const axiosError: AxiosError = error;
-            showDangerNotification(
-              undefined,
-              axiosError.response ? axiosError.response.data[requestErrorMessageKey] : ''
-            );
-          }
+        .catch((error) => {
+          showNotificationWithApiError(error);
         });
     }
   };

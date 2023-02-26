@@ -1,10 +1,10 @@
 import React from 'react';
-import axios, { AxiosError } from 'axios';
 import { ICellRendererParams } from 'ag-grid-community';
 
-import { api, requestErrorMessageKey, Task } from '@labelstack/api';
+import { api, Task } from '@labelstack/api';
 import { useUserDataContext } from '../../../contexts/UserDataContext';
-import { showDangerNotification, showSuccessNotification } from '../../../utils';
+import { showSuccessNotification } from '../../../utils';
+import { showNotificationWithApiError } from '../../../utils/notifications';
 
 interface TakeTaskButtonParams extends ICellRendererParams {
   reloadData: () => void;
@@ -23,13 +23,7 @@ export const TakeTaskButton = (params: TakeTaskButtonParams) => {
         params.reloadData();
       })
       .catch((error) => {
-        if (axios.isAxiosError(error)) {
-          const axiosError: AxiosError = error;
-          showDangerNotification(
-            undefined,
-            axiosError.response ? axiosError.response.data[requestErrorMessageKey] : ''
-          );
-        }
+        showNotificationWithApiError(error);
       });
   };
 

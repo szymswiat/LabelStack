@@ -1,10 +1,9 @@
 import React from 'react';
-import axios, { AxiosError } from 'axios';
 
 import { GridApi } from 'ag-grid-community';
 import { useUserDataContext } from '../../../../contexts/UserDataContext';
-import { api, User, LabelAssignment, Task, TaskStatus, TaskType, requestErrorMessageKey } from '@labelstack/api';
-import { showDangerNotification, showSuccessNotification } from '../../../../utils';
+import { api, User, LabelAssignment, Task, TaskStatus, TaskType } from '@labelstack/api';
+import { showSuccessNotification, showNotificationWithApiError } from '../../../../utils';
 import CreateTaskForm, { CreateTaskFunction } from '../CreateTaskForm';
 
 interface CreateAnnotateTaskFormProps {
@@ -59,13 +58,7 @@ const CreateAnnotateTaskForm: React.FC<CreateAnnotateTaskFormProps> = ({
           if (gridApi) gridApi.deselectAll();
         })
         .catch((error) => {
-          if (axios.isAxiosError(error)) {
-            const axiosError: AxiosError = error;
-            showDangerNotification(
-              undefined,
-              axiosError.response ? axiosError.response.data[requestErrorMessageKey] : ''
-            );
-          }
+          showNotificationWithApiError(error);
         });
     }
   };

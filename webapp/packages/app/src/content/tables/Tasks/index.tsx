@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { AxiosResponse } from 'axios';
 
 import { AgGridReact } from 'ag-grid-react';
+import { ColDef } from 'ag-grid-community';
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine-dark.css';
@@ -22,7 +23,7 @@ import {
 
 import { defaultColDef, taskColumnDefs, unassignedTaskColumnDefs } from '../../../const/ag-grid/columnDefs';
 import { useUserDataContext } from '../../../contexts/UserDataContext';
-import { ColDef } from 'ag-grid-community';
+import { useEffectNonNull } from '../../../utils/hooks';
 
 interface TasksTableParams {
   taskType: TaskType;
@@ -121,11 +122,15 @@ const TasksTable = ({ taskType, unassigned }: TasksTableParams) => {
     loadUsers();
   }, [taskType, unassigned]);
 
-  useEffect(() => {
-    if (users && users.length > 0) {
-      setColumnDefinitions();
-    }
-  }, [users]);
+  useEffectNonNull(
+    () => {
+      if (users.length > 0) {
+        setColumnDefinitions();
+      }
+    },
+    [],
+    [users]
+  );
 
   return (
     <div className="flex flex-row h-full w-full overflow-auto">

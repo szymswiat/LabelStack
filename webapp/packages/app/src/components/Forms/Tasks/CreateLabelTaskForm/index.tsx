@@ -1,9 +1,8 @@
 import React from 'react';
-import axios, { AxiosError } from 'axios';
 
 import { GridApi } from 'ag-grid-community';
-import { User, api, ImageInstance, Task, TaskStatus, TaskType, requestErrorMessageKey } from '@labelstack/api';
-import { showDangerNotification, showSuccessNotification } from '../../../../utils';
+import { User, api, ImageInstance, Task, TaskStatus, TaskType } from '@labelstack/api';
+import { showNotificationWithApiError, showSuccessNotification } from '../../../../utils';
 import CreateTaskForm, { CreateTaskFunction } from '../CreateTaskForm';
 import { useUserDataContext } from '../../../../contexts/UserDataContext';
 
@@ -57,13 +56,7 @@ const CreateLabelTaskForm: React.FC<CreateLabelTaskFormProps> = ({
           if (gridApi) gridApi.deselectAll();
         })
         .catch((error) => {
-          if (axios.isAxiosError(error)) {
-            const axiosError: AxiosError = error;
-            showDangerNotification(
-              undefined,
-              axiosError.response ? axiosError.response.data[requestErrorMessageKey] : ''
-            );
-          }
+          showNotificationWithApiError(error);
         });
     }
   };

@@ -12,6 +12,7 @@ import SelectedItemsTable from '../../../../components/Tables/SelectedItemsTable
 import { defaultColDef, annotationColumnDefs } from '../../../../const/ag-grid/columnDefs';
 import { selectedAnnotationsTableHeaders } from '../../../../const/tableHeaders';
 import { useUserDataContext } from '../../../../contexts/UserDataContext';
+import { useEffectNonNull } from '../../../../utils/hooks';
 import RightBarLayout from '../../../../layouts/RightBarLayout';
 
 const ImagesToReview = () => {
@@ -109,11 +110,15 @@ const ImagesToReview = () => {
     loadAnnotations();
   }, []);
 
-  useEffect(() => {
-    if (users && users.length > 0) {
-      setColumnDefinitions();
-    }
-  }, [users]);
+  useEffectNonNull(
+    () => {
+      if (users.length > 0) {
+        setColumnDefinitions();
+      }
+    },
+    [],
+    [users]
+  );
 
   function renderRightBar(): React.ReactNode {
     return (

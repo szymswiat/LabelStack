@@ -1,32 +1,41 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 
-import {
-  api,
-  User,
-  UserCreate,
-  UserUpdate,
-  Role,
-  RoleType,
-  userRoleRepresentation
-} from '@labelstack/api';
+import { api, User, UserCreate, UserUpdate, Role, RoleType, userRoleRepresentation } from '@labelstack/api';
 
 import Divider from '../../../../components/Divider';
 import { useUserDataContext } from '../../../../contexts/UserDataContext';
 import { showSuccessNotification } from '../../../../utils';
 import { showDangerNotification, showNotificationWithApiError } from '../../../../utils/notifications';
 import { ifUserHasRole } from '../../../../utils/user';
+import { useEffectNonNull } from '../../../../utils/hooks';
 import { BsFillCheckSquareFill, BsFillXSquareFill } from 'react-icons/bs';
 
 export enum ManageUserFormMode {
   CREATE,
   UPDATE
 }
+
 interface ManageUserFormParams {
   mode: ManageUserFormMode;
   roles: Role[];
   userToUpdate?: User;
 }
+
+const getNewUserObject = (existingUser?: User): UserCreate | UserUpdate => {
+  let newUser: UserCreate | UserUpdate = {};
+
+  const fullName = existingUser ? existingUser.full_name : '';
+  const userRoles = existingUser ? existingUser.roles.map((role) => role.id) : [];
+
+  newUser.email = existingUser ? existingUser.email : '';
+  newUser.is_active = existingUser ? existingUser.is_active : false;
+  newUser.full_name = fullName ? fullName : '';
+  newUser.role_ids = userRoles ? userRoles : [];
+  newUser.password = '';
+
+  return newUser;
+};
 
 const ManageUserForm = ({ mode, roles, userToUpdate }: ManageUserFormParams) => {
   const navigate = useNavigate();
@@ -36,12 +45,7 @@ const ManageUserForm = ({ mode, roles, userToUpdate }: ManageUserFormParams) => 
   const [passwordUpdate, setPasswordUpdate] = useState<boolean>(false);
   const [passwordValid, setPasswordValid] = useState<boolean>(undefined);
   const [emailValid, setEmailValid] = useState<boolean>(undefined);
-  const [formUser, setFormUser] = useState<UserCreate>({
-    email: '',
-    full_name: '',
-    role_ids: [],
-    is_active: false
-  } as UserCreate);
+  const [formUser, setFormUser] = useState<UserCreate | UserUpdate>(getNewUserObject);
 
   const emailRegex = new RegExp(
     "([!#-'*+/-9=?A-Z^-~-]+(.[!#-'*+/-9=?A-Z^-~-]+)*|\"([]!#-[^-~ \t]|(\\[\t -~]))+\")@([!#-'*+/-9=?A-Z^-~-]+(.[!#-'*+/-9=?A-Z^-~-]+)*|[[\t -Z^-~]*])"
@@ -61,7 +65,7 @@ const ManageUserForm = ({ mode, roles, userToUpdate }: ManageUserFormParams) => 
     if (isFormValid()) {
       let newUser = Object.assign({}, formUser);
       api
-        .createUser(token, newUser)
+        .createUser(token, newUser as UserCreate)
         .then(() => {
           navigate('/users/all');
           showSuccessNotification(undefined, 'User created successfully!');
@@ -130,7 +134,7 @@ const ManageUserForm = ({ mode, roles, userToUpdate }: ManageUserFormParams) => 
 
   const deactivateUser = () => {
     api
-      .updateUser(token, userToUpdate.id, { is_active: false } as any)
+      .updateUser(token, userToUpdate.id, { is_active: false } as UserUpdate)
       .then(() => {
         location.reload();
       })
@@ -167,19 +171,16 @@ const ManageUserForm = ({ mode, roles, userToUpdate }: ManageUserFormParams) => 
     setFormUser(modifiedUser);
   };
 
-  useEffect(() => {
-    if (userToUpdate != null && mode == ManageUserFormMode.UPDATE) {
-      const userRoles = userToUpdate.roles.map((role) => role.id);
-      const tempUser: UserUpdate = {
-        email: userToUpdate.email,
-        password: '',
-        full_name: userToUpdate.full_name ? userToUpdate.full_name : '',
-        is_active: userToUpdate.is_active,
-        role_ids: userRoles ? userRoles : []
-      };
-      setFormUser(tempUser as UserCreate);
-    }
-  }, [userToUpdate]);
+  useEffectNonNull(
+    () => {
+      if (mode == ManageUserFormMode.UPDATE) {
+        const tempUser = getNewUserObject(userToUpdate);
+        setFormUser(tempUser);
+      }
+    },
+    [],
+    [userToUpdate]
+  );
 
   useEffect(() => {
     setIsLoggedInUserSuperAdmin(ifUserHasRole(user, RoleType.superuser));

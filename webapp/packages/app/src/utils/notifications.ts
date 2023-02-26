@@ -50,7 +50,13 @@ export function showNotificationWithApiError(error: any) {
   let errorMessage = 'Unknown Error';
   if (axios.isAxiosError(error)) {
     const axiosError: AxiosError = error;
-    errorMessage = axiosError.response.data[requestErrorMessageKey];
+    const errorData = axiosError.response.data[requestErrorMessageKey];
+
+    if (typeof errorData === 'string') {
+      errorMessage = errorData;
+    } else if (errorData[0] != null && errorData[0].msg != null) {
+      errorMessage = errorData[0].msg;
+    }
   }
 
   showDangerNotification(undefined, errorMessage);
