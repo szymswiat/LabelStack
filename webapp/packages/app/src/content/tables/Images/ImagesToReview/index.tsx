@@ -5,13 +5,14 @@ import { ColDef, GridApi } from 'ag-grid-community';
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine-dark.css';
 
-import { Annotation, api, IUserProfile, RoleType, taskStatusRepresentation } from '@labelstack/api';
+import { Annotation, api, User, RoleType, taskStatusRepresentation } from '@labelstack/api';
 
 import CreateAnnotationReviewTaskForm from '../../../../components/Forms/Tasks/CreateAnnotationReviewTaskForm';
 import SelectedItemsTable from '../../../../components/Tables/SelectedItemsTable';
 import { defaultColDef, annotationColumnDefs } from '../../../../const/ag-grid/columnDefs';
 import { selectedAnnotationsTableHeaders } from '../../../../const/tableHeaders';
 import { useUserDataContext } from '../../../../contexts/UserDataContext';
+import LayoutCard from '@labelstack/viewer/src/components/LayoutCard';
 
 const ImagesToReview = () => {
   const [{ token }] = useUserDataContext();
@@ -19,9 +20,9 @@ const ImagesToReview = () => {
   const [gridApi, setGridApi] = useState<GridApi>();
 
   const [columnDefs, setColumnDefs] = useState<ColDef[]>([]);
-  const [users, setUsers] = useState<IUserProfile[]>([]);
-  const [allAnnotators, setAllAnnotators] = useState<IUserProfile[]>([]);
-  const [availableAnnotators, setAvailableAnnotators] = useState<IUserProfile[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
+  const [allAnnotators, setAllAnnotators] = useState<User[]>([]);
+  const [availableAnnotators, setAvailableAnnotators] = useState<User[]>([]);
   const [annotations, setAnnotations] = useState<Annotation[]>();
   const [selectedAnnotations, setSelectedAnnotations] = useState<Annotation[]>([]);
 
@@ -29,7 +30,7 @@ const ImagesToReview = () => {
     const allUsersRequest = api.getUsers(token);
     if (allUsersRequest) {
       allUsersRequest.then((response) => {
-        const responseUsers = response.data as IUserProfile[];
+        const responseUsers = response.data as User[];
         setUsers(responseUsers);
 
         const responseAnnotators = users.filter((user) => {
@@ -55,7 +56,7 @@ const ImagesToReview = () => {
       return annotation.author_id;
     });
     const uniqueIds = new Set(idsFromSelectedAnnotations);
-    const annotators = allAnnotators.filter((annotator: IUserProfile) => {
+    const annotators = allAnnotators.filter((annotator: User) => {
       return !uniqueIds.has(annotator.id);
     });
     setAvailableAnnotators(annotators);
@@ -115,8 +116,8 @@ const ImagesToReview = () => {
   }, [users]);
 
   return (
-    <div className="flex flex-row h-full w-full overflow-auto">
-      <div className="basis-3/4 ag-theme-alpine-dark">
+    <div className="flex flex-row h-full w-full overflow-auto gap-x-4">
+      <div className="basis-3/4 ag-theme-alpine-dark py-1">
         <AgGridReact
           onGridReady={onGridReady}
           onSelectionChanged={onSelectionChanged}
@@ -126,7 +127,7 @@ const ImagesToReview = () => {
           columnDefs={columnDefs}
         />
       </div>
-      <div className="flex-col h-full basis-1/4 overflow-auto">
+      <LayoutCard className="flex-col h-full basis-1/4 overflow-auto px-4">
         <div className="grow-0 shrink-0 w-full">
           <CreateAnnotationReviewTaskForm
             annotators={availableAnnotators}
@@ -135,14 +136,14 @@ const ImagesToReview = () => {
             reloadAnnotations={loadAnnotations}
           />
         </div>
-        <div className="grow-0 shrink-0 w-full">
+        <div className="grow-0 shrink-0 w-full px-4">
           <SelectedItemsTable
             header="Selected Annotations"
             tableColumnInfo={selectedAnnotationsTableHeaders}
             data={selectedAnnotations}
           />
         </div>
-      </div>
+      </LayoutCard>
     </div>
   );
 };

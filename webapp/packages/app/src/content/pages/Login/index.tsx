@@ -1,20 +1,20 @@
-import React from 'react';
-import { useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { AxiosError } from 'axios';
+import React, { useState } from 'react';
 
-import { api, IUserProfile, requestErrorMessageKey } from '@labelstack/api';
+import { api, requestErrorMessageKey } from '@labelstack/api';
 import { useUserDataContext } from '../../../contexts/UserDataContext';
 import { showDangerNotification, showSuccessNotification } from '../../../utils';
 import { useDocumentTitle } from '../../../utils/hooks';
+import LayoutCard from '@labelstack/viewer/src/components/LayoutCard';
+import { useLocation, useNavigate } from 'react-router';
 
 function Login() {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const [, { setUser, setToken }] = useUserDataContext();
+  const [{ updatingUser }, { setToken }] = useUserDataContext();
 
   const [username, setUsername] = useState<string>();
   const [password, setPassword] = useState<string>();
+
+  const { state } = useLocation();
+  const navigate = useNavigate();
 
   useDocumentTitle('LabelStack');
 
@@ -26,36 +26,20 @@ function Login() {
     return true;
   };
 
-  const fetchUserData = (access_token: string) => {
-    api
-      .getMe(access_token)
-      .then((meResponse) => {
-        setUser(meResponse.data);
-        navigate(location.state['from']);
-      })
-      .catch((error: AxiosError) => {
-        setToken('');
-        setUser({} as IUserProfile);
-        showDangerNotification(undefined, error.response.data[requestErrorMessageKey]);
-      });
-  };
-
-  const authenticate = () => {
+  async function authenticate() {
     if (isFormValid()) {
-      api
-        .logInGetToken(username, password)
-        .then((tokenResponse) => {
-          const access_token = tokenResponse.data.access_token as string;
-          setToken(access_token);
-
-          fetchUserData(access_token);
-          showSuccessNotification(undefined, 'Successfully logged in!');
-        })
-        .catch((error: AxiosError) => {
-          showDangerNotification(undefined, error.response.data[requestErrorMessageKey]);
-        });
+      try {
+        updatingUser.current = true;
+        const tokenResponse = await api.logInGetToken(username, password);
+        const token = tokenResponse.data.access_token as string;
+        setToken(token);
+        navigate(state ? state['from'] : '/images/to-label');
+        showSuccessNotification(undefined, 'Successfully logged in!');
+      } catch (error) {
+        showDangerNotification(undefined, error.response.data[requestErrorMessageKey]);
+      }
     }
-  };
+  }
 
   const handleEnterPress = (event: any) => {
     if (event.key === 'Enter') {
@@ -64,51 +48,38 @@ function Login() {
   };
 
   return (
-    <>
-      <div className="flex justify-center items-center flex-wrap h-full">
-        <div className="block bg-white shadow-lg rounded-lg p-10">
-          <div className="px-6 h-full text-gray-800">
-            <div className="flex xl:justify-center lg:justify-between justify-center items-center flex-wrap h-full g-6">
-              <form onKeyPress={handleEnterPress}>
-                <div className="mb-6">
-                  <input
-                    type="text"
-                    className="form-control block w-full px-4 py-2 text-xl font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600"
-                    id="username_input"
-                    placeholder="username/email"
-                    onChange={(e) => {
-                      setUsername(e.target.value);
-                    }}
-                  />
-                </div>
-
-                <div className="mb-6">
-                  <input
-                    type="password"
-                    className="form-control block w-full px-4 py-2 text-xl font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600"
-                    id="password_input"
-                    placeholder="password"
-                    onChange={(e) => {
-                      setPassword(e.target.value);
-                    }}
-                  />
-                </div>
-
-                <div className="text-center lg:text-left">
-                  <button
-                    type="button"
-                    onClick={authenticate}
-                    className="w-full inline-block px-7 py-3 bg-blue-600 text-white font-medium text-sm uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 active:bg-blue-800 active:shadow-lg"
-                  >
-                    Login
-                  </button>
-                </div>
-              </form>
+    <div className="w-full h-full bg-dark-bg text-dark-text grid place-items-center">
+      <form onKeyUp={handleEnterPress}>
+        <LayoutCard className="w-[30rem] h-[20rem] px-20 flex flex-col gap-y-3">
+          <input
+            className="w-full h-12 rounded-lg bg-dark-bg pl-6 mt-12"
+            type="text"
+            placeholder="username/email"
+            id="username_input"
+            onChange={(e) => {
+              setUsername(e.target.value);
+            }}
+          />
+          <input
+            className="w-full h-12 rounded-lg bg-dark-bg pl-6 text-dark-text"
+            type="password"
+            placeholder="password"
+            id="password_input"
+            onChange={(e) => {
+              setPassword(e.target.value);
+            }}
+          />
+          <div className="grid place-items-center flex-grow -mt-3">
+            <div
+              className="w-2/3 h-12 bg-dark-bg text-dark-accent font-bold grid place-items-center rounded-lg cursor-pointer select-none"
+              onClick={authenticate}
+            >
+              Login
             </div>
           </div>
-        </div>
-      </div>
-    </>
+        </LayoutCard>
+      </form>
+    </div>
   );
 }
 

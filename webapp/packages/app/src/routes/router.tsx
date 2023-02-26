@@ -4,7 +4,6 @@ import { Navigate, RouteObject } from 'react-router-dom';
 import SidebarLayout from '../layouts/SidebarLayout';
 import BaseLayout from '../layouts/BaseLayout';
 import PrivateWrapper from './PrivateWrapper';
-import LoggedOutOnlyWrapper from './LoggedOutWrapper';
 import ErrorPage from '../content/pages/ErrorPage';
 import { RoleType, TaskType } from '@labelstack/api';
 
@@ -44,11 +43,7 @@ const routes: RouteObject[] = [
       },
       {
         path: 'login',
-        element: (
-          <LoggedOutOnlyWrapper>
-            <Login />
-          </LoggedOutOnlyWrapper>
-        )
+        element: <Login />
       },
       {
         path: 'status',

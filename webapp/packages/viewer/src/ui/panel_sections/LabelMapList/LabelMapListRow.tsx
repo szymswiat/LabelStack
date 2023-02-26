@@ -43,7 +43,7 @@ const LabelMapListRow: React.FC<LabelMapListRowProps> = ({
     const BrushComponent = editedLabelMapId === labelMap.id.uniqueId ? BsBrushFill : BsBrush;
     return (
       <BrushComponent
-        className={classNames('w-[1.1rem] h-[1.1rem]', { 'opacity-40': disableTools })}
+        className={classNames('w-[1.1rem] h-[1.1rem]', { 'opacity-40': disableTools, 'cursor-default': disableTools })}
         onClick={disableTools ? undefined : activateLabelMap(labelMap)}
       />
     );

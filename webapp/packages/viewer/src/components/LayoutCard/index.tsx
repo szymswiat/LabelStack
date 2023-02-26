@@ -1,18 +1,22 @@
 import classNames from 'classnames';
-import React, { ReactNode } from 'react';
+import React from 'react';
+import { hasClassName } from '../../utils';
 
-export interface LayoutCardProps {
-  children?: ReactNode;
-  className?: string;
-  disableDefaultSize?: boolean;
-}
+export interface LayoutCardProps extends React.HTMLAttributes<HTMLDivElement> {}
 
-const LayoutCard: React.FC<LayoutCardProps> = ({ children, className, disableDefaultSize = false }) => {
+const LayoutCard: React.FC<LayoutCardProps> = (props) => {
+  const { children, className } = props;
+
   return (
     <div
+      {...props}
       className={classNames(
-        'bg-dark-card-bg rounded-lg shadow-layout-custom-dark',
-        { 'w-full h-full': !disableDefaultSize },
+        {
+          'bg-dark-card-bg': !hasClassName(className, 'bg-'),
+          'w-full': !hasClassName(className, 'w-'),
+          'h-full': !hasClassName(className, 'h-')
+        },
+        'rounded-lg shadow-layout-custom-dark',
         className
       )}
     >

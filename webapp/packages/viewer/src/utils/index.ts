@@ -9,6 +9,16 @@ function capitalize(str: string) {
   return str[0].toUpperCase() + str.slice(1);
 }
 
+function hasClassName(className: string, classNameStart): boolean {
+  if (className == null) {
+    return false;
+  }
+
+  const classNameParts = className.split(' ');
+
+  return classNameParts.reduce((prev, cn) => cn.trim().startsWith(classNameStart) || prev, false);
+}
+
 async function createItkWebWorker(worker: Worker | null) {
   const smallPng = new Uint8Array([
     137, 80, 78, 71, 13, 10, 26, 10, 0, 0, 0, 13, 73, 72, 68, 82, 0, 0, 0, 6, 0, 0, 0, 6, 8, 6, 0, 0, 0, 224, 204, 239,
@@ -21,4 +31,4 @@ async function createItkWebWorker(worker: Worker | null) {
   return webWorker;
 }
 
-export { delay, capitalize, createItkWebWorker, db };
+export { delay, capitalize, createItkWebWorker, db, hasClassName };

@@ -5,7 +5,7 @@ import { ColDef, GridApi } from 'ag-grid-community';
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine-dark.css';
 
-import { api, IUserProfile, RoleType, ImageInstance } from '@labelstack/api';
+import { api, User, RoleType, ImageInstance } from '@labelstack/api';
 
 import CreateLabelTaskForm from '../../../../components/Forms/Tasks/CreateLabelTaskForm';
 import SelectedItemsTable from '../../../../components/Tables/SelectedItemsTable';
@@ -14,6 +14,7 @@ import { selectedImagesTableHeaders } from '../../../../const/tableHeaders';
 import { useUserDataContext } from '../../../../contexts/UserDataContext';
 import { ImageInstanceTagValue, Tag } from '@labelstack/api/src/schemas/tag';
 import { FilterEntry } from 'src/const/ag-grid/filters/FilterEntry';
+import LayoutCard from '@labelstack/viewer/src/components/LayoutCard';
 
 const ImagesToLabel = () => {
   const [{ token }] = useUserDataContext();
@@ -23,13 +24,13 @@ const ImagesToLabel = () => {
   const [columnDefs, setColumnDefs] = useState<ColDef[]>([]);
   const [imageTags, setImageTags] = useState<Tag[]>([]);
 
-  const [annotators, setAnnotators] = useState<IUserProfile[]>([]);
+  const [annotators, setAnnotators] = useState<User[]>([]);
   const [images, setImages] = useState<ImageInstance[]>([]);
   const [selectedImages, setSelectedImages] = useState<ImageInstance[]>([]);
 
   const loadAnnotators = () => {
     api.getUsers(token).then((response) => {
-      const users = response.data as IUserProfile[];
+      const users = response.data as User[];
       const reponseAnnotators = users.filter((user) => {
         return user.roles.some((role) => {
           return role.type === RoleType.annotator;
@@ -109,8 +110,8 @@ const ImagesToLabel = () => {
   }, [images]);
 
   return (
-    <div className="flex flex-row h-full w-full overflow-auto">
-      <div className="basis-3/4 ag-theme-alpine-dark">
+    <div className="flex flex-row h-full w-full overflow-auto gap-x-4">
+      <div className="basis-3/4 ag-theme-alpine-dark py-1">
         <AgGridReact
           onGridReady={onGridReady}
           onSelectionChanged={onSelectionChanged}
@@ -120,7 +121,7 @@ const ImagesToLabel = () => {
           columnDefs={columnDefs}
         />
       </div>
-      <div className="flex-col h-full basis-1/4 overflow-auto">
+      <LayoutCard className="flex-col h-full basis-1/4 overflow-auto px-4">
         <div className="grow-0 shrink-0 w-full">
           <CreateLabelTaskForm
             annotators={annotators}
@@ -129,14 +130,14 @@ const ImagesToLabel = () => {
             reloadImages={loadImages}
           />
         </div>
-        <div className="grow-0 shrink-0 w-full">
+        <div className="grow-0 shrink-0 w-full px-4">
           <SelectedItemsTable
             header="Selected Images"
             tableColumnInfo={selectedImagesTableHeaders}
             data={selectedImages}
           />
         </div>
-      </div>
+      </LayoutCard>
     </div>
   );
 };

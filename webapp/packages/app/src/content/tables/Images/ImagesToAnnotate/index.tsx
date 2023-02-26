@@ -5,13 +5,14 @@ import { ColDef, GridApi } from 'ag-grid-community';
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine-dark.css';
 
-import { api, IUserProfile, Label, LabelAssignment, RoleType } from '@labelstack/api';
+import { api, User, Label, LabelAssignment, RoleType } from '@labelstack/api';
 
 import CreateAnnotateTaskForm from '../../../../components/Forms/Tasks/CreateAnnotateTaskForm';
 import SelectedItemsTable from '../../../../components/Tables/SelectedItemsTable';
 import { defaultColDef, labelAssignmentColumnDefs } from '../../../../const/ag-grid/columnDefs';
 import { selectedLabelAssignmentsTableHeaders } from '../../../../const/tableHeaders';
 import { useUserDataContext } from '../../../../contexts/UserDataContext';
+import LayoutCard from '@labelstack/viewer/src/components/LayoutCard';
 
 const ImagesToAnnotate = () => {
   const [{ token }] = useUserDataContext();
@@ -19,8 +20,8 @@ const ImagesToAnnotate = () => {
   const [gridApi, setGridApi] = useState<GridApi>();
 
   const [columnDefs, setColumnDefs] = useState<ColDef[]>([]);
-  const [users, setUsers] = useState<IUserProfile[]>([]);
-  const [annotators, setAnnotators] = useState<IUserProfile[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
+  const [annotators, setAnnotators] = useState<User[]>([]);
   const [labels, setLabels] = useState<Label[]>();
   const [labelAssignments, setLabelAssignments] = useState<LabelAssignment[]>();
   const [selectedLabelAssignments, setSelectedLabelAssignments] = useState<LabelAssignment[]>([]);
@@ -29,7 +30,7 @@ const ImagesToAnnotate = () => {
     const allUsersRequest = api.getUsers(token);
     if (allUsersRequest) {
       allUsersRequest.then((response) => {
-        const responseUsers = response.data as IUserProfile[];
+        const responseUsers = response.data as User[];
         setUsers(responseUsers);
 
         const responseAnnotators = responseUsers.filter((user) => {
@@ -122,8 +123,8 @@ const ImagesToAnnotate = () => {
   }, [users, labels]);
 
   return (
-    <div className="flex flex-row h-full w-full overflow-auto">
-      <div className="basis-3/4 ag-theme-alpine-dark">
+    <div className="flex flex-row h-full w-full overflow-auto gap-x-4">
+      <div className="basis-3/4 ag-theme-alpine-dark py-1">
         <AgGridReact
           onGridReady={onGridReady}
           onSelectionChanged={onSelectionChanged}
@@ -133,7 +134,7 @@ const ImagesToAnnotate = () => {
           columnDefs={columnDefs}
         />
       </div>
-      <div className="flex-col h-full basis-1/4 overflow-auto">
+      <LayoutCard className="flex-col h-full basis-1/4 overflow-auto px-4">
         <div className="grow-0 shrink-0 w-full">
           <CreateAnnotateTaskForm
             annotators={annotators}
@@ -142,14 +143,14 @@ const ImagesToAnnotate = () => {
             reloadLabelAssignments={loadLabelAssignments}
           />
         </div>
-        <div className="grow-0 shrink-0 w-full">
+        <div className="grow-0 shrink-0 w-full px-4">
           <SelectedItemsTable
             header="Selected Label Assignments"
             tableColumnInfo={selectedLabelAssignmentsTableHeaders}
             data={selectedLabelAssignments}
           />
         </div>
-      </div>
+      </LayoutCard>
     </div>
   );
 };

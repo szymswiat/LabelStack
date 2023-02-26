@@ -121,11 +121,11 @@ const CreateLabelForm = ({ annotationTypes, labelTypes, reloadLabels }: CreateLa
 
   return (
     <>
-      <p className="w-full p-4 text-center text-xl font-bold dark:text-primary-light">Create Label</p>
+      <p className="w-full py-4 mt-2 text-center text-xl font-bold">Create Label</p>
       <Divider />
-      <form className="w-full" onSubmit={createLabel}>
-        <div className="w-full mb-2 flex flex-col items-center">
-          <label htmlFor="label-name" className="w-10/12 p-2 block mb-1 text-sm font-medium dark:text-primary-light">
+      <form className="w-full text-sm font-medium px-6 flex flex-col gap-y-2" onSubmit={createLabel}>
+        <div className="w-full flex flex-col items-center">
+          <label htmlFor="label-name" className="w-full py-1 pb-2 ml-2">
             Label Name
           </label>
           <input
@@ -133,21 +133,20 @@ const CreateLabelForm = ({ annotationTypes, labelTypes, reloadLabels }: CreateLa
             id="label-name"
             value={labelName}
             onChange={(e) => handleLabelNameChange(e)}
-            className="w-10/12 block rounded-lg p-2 text-sm border dark:border-primary-light dark:focus:ring-primary-light dark:focus:border-primary-light dark:bg-secondary-active dark:placeholder-primary-light dark:text-primary-light"
+            className="w-full block rounded-lg p-2 text-sm border bg-dark-bg"
           />
-          {labelNameValid === false && <p className="w-10/12 text-xs dark:text-red-500">label name is required!</p>}
+          {labelNameValid === false && (
+            <p className="w-full mt-1 mr-3 text-xs text-right dark:text-red-500">Label name is required!</p>
+          )}
         </div>
-        <div className="w-full mb-2 flex flex-col items-center">
-          <label
-            htmlFor="allowed-annotation-type"
-            className="w-10/12 p-2 block mb-1 text-sm font-medium dark:text-primary-light"
-          >
+        <div className="w-full flex flex-col items-center">
+          <label htmlFor="allowed-annotation-type" className="w-full py-1 pb-2 ml-2">
             Allowed Annotation Type
           </label>
           <select
             id="allowed-annotation-type"
             onChange={(e) => handleAllowedAnnotationTypeChange(e)}
-            className="w-10/12 block rounded-lg p-2 text-sm border dark:border-primary-light dark:focus:ring-primary-light dark:focus:border-primary-light dark:bg-secondary-active dark:placeholder-primary-light dark:text-primary-light"
+            className="w-full block rounded-lg p-2 text-sm border bg-dark-bg"
           >
             <option hidden value={undefined} key="allowed_annotation_type_none">
               ---
@@ -159,18 +158,20 @@ const CreateLabelForm = ({ annotationTypes, labelTypes, reloadLabels }: CreateLa
             ))}
           </select>
           {allowedAnnotationTypeIdValid === false && (
-            <p className="w-10/12 text-xs dark:text-red-500">allowed annotation type is required!</p>
+            <p className="w-full mt-1 mr-3 text-xs text-right dark:text-red-500">
+              Allowed annotation type is required!
+            </p>
           )}
         </div>
-        <div className="w-full mb-2 flex flex-col items-center">
-          <label htmlFor="label-types" className="w-10/12 p-2 block mb-1 text-sm font-medium dark:text-primary-light">
+        <div className="w-full flex flex-col items-center">
+          <label htmlFor="label-types" className="w-full py-1 pb-2 ml-2">
             Label Types
           </label>
           <select
             multiple
             id="label-types"
             onChange={(e) => handleLabelTypesChange(e)}
-            className="w-10/12 block rounded-lg p-2 text-sm border dark:border-primary-light dark:focus:ring-primary-light dark:focus:border-primary-light dark:bg-secondary-active dark:placeholder-primary-light dark:text-primary-light"
+            className="w-full block rounded-lg p-2 text-sm border bg-dark-bg"
           >
             <option hidden value={undefined} key="label_type_none">
               ---
@@ -182,14 +183,11 @@ const CreateLabelForm = ({ annotationTypes, labelTypes, reloadLabels }: CreateLa
             ))}
           </select>
           {labelTypesIdsValid === false && (
-            <p className="w-10/12 text-xs dark:text-red-500">label types are required!</p>
+            <p className="w-full mt-1 mr-3 text-xs text-right dark:text-red-500">Label types are required!</p>
           )}
         </div>
-        <div className="w-full mb-2 flex flex-col items-center">
-          <button
-            type="submit"
-            className="w-10/12 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-          >
+        <div className="w-full px-8 flex my-3">
+          <button type="submit" className="w-full bg-dark-bg h-8 rounded-lg text-sm font-medium">
             Submit
           </button>
         </div>

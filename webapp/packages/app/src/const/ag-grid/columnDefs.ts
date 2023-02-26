@@ -43,24 +43,6 @@ export const imageInstancesColumnDefs: ColDef[] = [
     width: 100,
     minWidth: 100,
     resizable: true
-  },
-  { field: 'id_ref', headerName: 'ID Ref', width: 400, minWidth: 400, resizable: true },
-  {
-    field: 'label_assignments',
-    headerName: 'Label Assignments',
-    cellRenderer: (params: ICellRendererParams) => labelAssignmentsCellRenderer(params),
-    width: 200,
-    minWidth: 200,
-    resizable: true
-  },
-  {
-    field: 'tags',
-    headerName: 'Tags',
-    cellRenderer: imageInstanceTagCellRenderer,
-    filter: CustomFilter,
-    width: 300,
-    minWidth: 300,
-    resizable: true
   }
 ];
 
@@ -177,7 +159,7 @@ export const labelAssignmentColumnDefs: ColDef[] = [
     minWidth: 200,
     resizable: true
   },
-  { field: 'image_instance_id', headerName: 'Image Instance ID', width: 100, minWidth: 100, resizable: true },
+  { field: 'image_instance_id', headerName: 'Image Instance ID', width: 200, minWidth: 180, resizable: true },
   {
     field: 'author_id',
     headerName: 'Author',
@@ -187,20 +169,11 @@ export const labelAssignmentColumnDefs: ColDef[] = [
     minWidth: 250,
     resizable: true
   },
-  { field: 'parent_task_id', headerName: 'Parent Task ID', width: 200, minWidth: 200, resizable: true },
-  {
-    field: 'annotations',
-    headerName: 'Annotations',
-    cellRenderer: (params: ICellRendererParams) => annotationsCellRenderer(params),
-    width: 250,
-    minWidth: 250,
-    resizable: true
-  }
+  { field: 'parent_task_id', headerName: 'Parent Task ID', width: 200, minWidth: 200, resizable: true }
 ];
 
 export const annotationColumnDefs: ColDef[] = [
   { field: 'id', headerName: 'ID', width: 100, minWidth: 100, resizable: true },
-  { field: 'label_assignment_id', headerName: 'Label Assignment ID', width: 200, minWidth: 200, resizable: true },
   {
     field: 'author_id',
     headerName: 'Author',
@@ -220,14 +193,6 @@ export const annotationColumnDefs: ColDef[] = [
     filter: CustomFilter,
     width: 150,
     minWidth: 150,
-    resizable: true
-  },
-  {
-    field: 'reviews',
-    headerName: 'Reviews',
-    cellRenderer: (params: ICellRendererParams) => annotationReviewsCellRenderer(params),
-    width: 200,
-    minWidth: 200,
     resizable: true
   }
 ];

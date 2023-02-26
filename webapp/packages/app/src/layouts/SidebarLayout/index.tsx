@@ -1,15 +1,13 @@
-import React, { ReactNode } from 'react';
+import React from 'react';
 import { Outlet } from 'react-router-dom';
 import Sidebar from './Sidebar';
 
-interface SidebarLayoutProps {
-  children?: ReactNode;
-}
+interface SidebarLayoutProps extends React.HTMLAttributes<HTMLDivElement> {}
 
-const SidebarLayout = ({ children }: SidebarLayoutProps) => {
+const SidebarLayout: React.FC<SidebarLayoutProps> = () => {
   return (
-    <div className="flex flex-row h-screen no-scrollbar bg-white dark:bg-primary-dark">
-      <div className="basis-1/6 overflow-y-auto py-4 px-3 rounded">
+    <div className="flex flex-row gap-4 h-screen no-scrollbar p-4">
+      <div className="basis-1/6 overflow-y-auto">
         <Sidebar />
       </div>
       <div className="basis-5/6">

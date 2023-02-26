@@ -21,7 +21,7 @@ import {
   TaskType,
   taskTypeRepresentation
 } from './schemas/task';
-import { IUserProfile, IUserProfileCreate, IUserProfileUpdate } from './schemas/user';
+import { User, UserCreate, UserUpdate } from './schemas/user';
 import { ImageInstance, ImageInstancesObject } from './schemas/imageInstance';
 
 export {
@@ -58,8 +58,8 @@ export type {
   LabelCreateApiIn,
   Role,
   Task,
-  IUserProfile,
-  IUserProfileUpdate,
-  IUserProfileCreate,
+  User,
+  UserUpdate,
+  UserCreate,
   AvailableStatusesForTaskApiOut
 };

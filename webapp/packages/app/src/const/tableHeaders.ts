@@ -8,12 +8,6 @@ export interface TableColumnInfo {
 
 export const selectedImagesTableHeaders: TableColumnInfo[] = [
   { header: 'ID', field: 'id' },
-  { header: 'ID Ref', field: 'id_ref' },
-  {
-    header: 'Tags',
-    field: 'tags',
-    cellRenderer: (data: ImageInstanceTagValue[]) => data.map((item) => item.tag.name).join(', ')
-  }
 ];
 
 export const selectedLabelAssignmentsTableHeaders = [

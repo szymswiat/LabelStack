@@ -2,7 +2,7 @@ import {
   Annotation,
   AnnotationReview,
   AnnotationType,
-  IUserProfile,
+  User,
   Label,
   LabelAssignment,
   LabelType,
@@ -81,7 +81,7 @@ export const labelAssignmentsCellRenderer = (params: ICellRendererParams) => {
 };
 
 export interface UserCellRendererParams extends ICellRendererParams {
-  users: IUserProfile[];
+  users: User[];
 }
 
 export const userCellRenderer = (params: UserCellRendererParams) => {

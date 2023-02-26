@@ -9,7 +9,7 @@ import 'ag-grid-community/dist/styles/ag-theme-alpine-dark.css';
 
 import {
   api,
-  IUserProfile,
+  User,
   Role,
   RoleType,
   Task,
@@ -32,14 +32,14 @@ interface TasksTableParams {
 const TasksTable = ({ taskType, unassigned }: TasksTableParams) => {
   const [{ user, token }] = useUserDataContext();
   const [tasks, setTasks] = useState<Task[]>();
-  const [users, setUsers] = useState<IUserProfile[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
   const [columnDefs, setColumnDefs] = useState<ColDef[]>([]);
 
   const loadUsers = () => {
     const allUsersRequest = api.getUsers(token);
     if (allUsersRequest) {
       allUsersRequest.then((response) => {
-        const responseUsers = response.data as IUserProfile[];
+        const responseUsers = response.data as User[];
         setUsers(responseUsers);
       });
     }

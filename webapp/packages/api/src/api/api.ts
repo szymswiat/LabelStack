@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { IUserProfile, IUserProfileCreate, IUserProfileUpdate } from '../schemas/user';
+import { User, UserCreate, UserUpdate } from '../schemas/user';
 import { Dicom } from '../schemas/dicom';
 import { Label, LabelCreateApiIn, LabelType } from '../schemas/label';
 import { ImageInstance } from '../schemas/imageInstance';
@@ -39,18 +39,18 @@ export const api = {
     return axios.post(`${apiUrl}${apiV1}/login/access-token`, params);
   },
   async getMe(token: string) {
-    return axios.get<IUserProfile>(`${apiUrl}${apiV1}/users/me`, authHeaders(token));
+    return axios.get<User>(`${apiUrl}${apiV1}/users/me`, authHeaders(token));
   },
-  async updateMe(token: string, data: IUserProfileUpdate) {
-    return axios.put<IUserProfile>(`${apiUrl}${apiV1}/users/me`, data, authHeaders(token));
+  async updateMe(token: string, data: UserUpdate) {
+    return axios.put<User>(`${apiUrl}${apiV1}/users/me`, data, authHeaders(token));
   },
   async getUsers(token: string) {
-    return axios.get<IUserProfile[]>(`${apiUrl}${apiV1}/users/`, authHeaders(token));
+    return axios.get<User[]>(`${apiUrl}${apiV1}/users/`, authHeaders(token));
   },
-  async updateUser(token: string, userId: number, data: IUserProfileUpdate) {
+  async updateUser(token: string, userId: number, data: UserUpdate) {
     return axios.put(`${apiUrl}${apiV1}/users/${userId}`, data, authHeaders(token));
   },
-  async createUser(token: string, data: IUserProfileCreate) {
+  async createUser(token: string, data: UserCreate) {
     return axios.post(`${apiUrl}${apiV1}/users/`, data, authHeaders(token));
   },
   async passwordRecovery(email: string) {

@@ -1,6 +1,6 @@
 import { Role } from './role';
 
-export interface IUserProfile {
+export interface User {
   email: string;
   is_active: boolean;
   roles: Role[];
@@ -8,7 +8,7 @@ export interface IUserProfile {
   id: number;
 }
 
-export interface IUserProfileUpdate {
+export interface UserUpdate {
   email?: string;
   full_name?: string;
   password?: string;
@@ -16,7 +16,7 @@ export interface IUserProfileUpdate {
   type_ids?: number[];
 }
 
-export interface IUserProfileCreate {
+export interface UserCreate {
   email: string;
   full_name?: string;
   password?: string;

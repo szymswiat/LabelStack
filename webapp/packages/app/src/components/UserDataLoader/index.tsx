@@ -4,25 +4,26 @@ import { api } from '@labelstack/api';
 
 import { useUserDataContext } from '@labelstack/app/src/contexts/UserDataContext';
 
-interface UserDataLoaderProps {
-  setUserDataUpdated: (value: boolean) => void;
-}
+interface UserDataLoaderProps {}
 
-const UserDataLoader: React.FC<UserDataLoaderProps> = ({ setUserDataUpdated }) => {
-  const [{ token }, { setUser }] = useUserDataContext();
+const UserDataLoader: React.FC<UserDataLoaderProps> = ({}) => {
+  const [{ token, updatingUser }, { setUser }] = useUserDataContext();
 
   useEffect(() => {
-    api
-      .getMe(token)
-      .then((response) => {
-        if (200 >= response.status && response.status < 300) {
-          setUser(response.data);
-        }
-      })
-      .finally(() => {
-        setUserDataUpdated(true);
-      });
-  }, []);
+    if (!token || token === '') {
+      setUser(null);
+      return;
+    }
+
+    api.getMe(token).then((response) => {
+      if (200 >= response.status && response.status < 300) {
+        setUser(response.data);
+      } else {
+        setUser(null);
+      }
+      updatingUser.current = false;
+    });
+  }, [token]);
 
   return <></>;
 };

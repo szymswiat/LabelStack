@@ -1,31 +1,34 @@
-import React, { createContext, ReactNode, useContext, useState } from 'react';
-import { IUserProfile } from '@labelstack/api';
+import React, { createContext, ReactNode, useContext, useRef, useState } from 'react';
+import { User } from '@labelstack/api';
 import { useLocalStorage } from '../../utils/hooks';
 
-export interface IUserDataContext {
+export interface UserDataContext {
   state: UserDataState;
   api: UserDataApi;
 }
 
 interface UserDataState {
-  user: IUserProfile;
-  token: string;
+  user: User;
+  token: string | undefined;
+  updatingUser: React.MutableRefObject<boolean>;
 }
 
 interface UserDataApi {
-  setUser: (user: IUserProfile) => void;
-  setToken: (token: string) => void;
+  setUser: (user: User | null | undefined) => void;
+  setToken: (token: string | undefined) => void;
 }
 
 export const UserDataContext = createContext<[UserDataState, UserDataApi]>(null);
 
 export const UserDataProvider: React.FC<{ children?: ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<IUserProfile | null>(null);
-  const [token, setTokenState] = useLocalStorage<string>('token', '');
+  const [user, setUser] = useState<User | null | undefined>(undefined);
+  const updatingUser = useRef<boolean>(false);
+  const [token, setTokenState] = useLocalStorage<string | undefined>('token', '');
 
   const state: UserDataState = {
     user,
-    token
+    token,
+    updatingUser
   };
 
   function setToken(token: string) {

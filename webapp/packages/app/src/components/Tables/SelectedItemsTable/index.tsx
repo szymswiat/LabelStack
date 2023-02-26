@@ -10,11 +10,11 @@ interface SelectedItemsTableParams {
 const SelectedItemsTable = ({ header, tableColumnInfo, data }: SelectedItemsTableParams) => {
   return (
     <div className="h-full">
-      <p className="w-full p-2 text-center text-l font-bold dark:text-primary-light">
+      <p className="w-full p-2 text-center text-l font-bold ">
         {header} ({data.length}):
       </p>
-      <table className="w-full h-full table-fixed text-center dark:text-primary-light">
-        <thead className="bg-gray-100 dark:bg-secondary-active">
+      <table className="w-full h-full table-fixed text-center">
+        <thead className="bg-dark-card-bg rounded-lg">
           <tr key="images_header">
             {tableColumnInfo.map((columnInfo) => {
               return <th key={'header_' + columnInfo.header}>{columnInfo.header}</th>;

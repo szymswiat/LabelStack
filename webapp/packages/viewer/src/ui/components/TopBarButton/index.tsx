@@ -16,7 +16,7 @@ const TopBarButton: React.FC<TopBarButtonProps> = (props) => {
     <PanelButton
       containerClassName={classNames('w-10 h-10', containerClassName)}
       iconClassName={classNames('w-5 h-5', iconClassName)}
-      activeClassName='bg-dark-accent border-none'
+      activeClassName='bg-dark-accent text-dark-card-bg border-none'
       {...props}
     ></PanelButton>
   );
