@@ -13,13 +13,13 @@ export interface UserUpdate {
   full_name?: string;
   password?: string;
   is_active?: boolean;
-  type_ids?: number[];
+  role_ids?: number[];
 }
 
 export interface UserCreate {
   email: string;
   full_name?: string;
-  password?: string;
+  password: string;
   is_active?: boolean;
-  type_ids?: number[];
+  role_ids?: number[];
 }

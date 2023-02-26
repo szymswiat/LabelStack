@@ -155,13 +155,13 @@ export const api = {
       waiting_for_review: waitingForReview,
       without_active_task: withoutActiveTask
     };
-    if (byId != undefined) {
+    if (byId != null) {
       params = { ...params, by_id: byId };
     }
-    if (byTaskId != undefined) {
+    if (byTaskId != null) {
       params = { ...params, by_task_id: byTaskId };
     }
-    if (requiredAcceptedReviews != undefined) {
+    if (requiredAcceptedReviews != null) {
       params = { ...params, required_accepted_reviews: requiredAcceptedReviews };
     }
 
@@ -182,7 +182,7 @@ export const api = {
   },
 
   async readAnnotationData(token: string, annotation: Annotation, sequence?: number, taskId?: number) {
-    if (sequence == undefined) {
+    if (sequence == null) {
       sequence = annotation.data_list.at(-1).sequence;
     }
 
@@ -224,13 +224,13 @@ export const api = {
     if (id) {
       params = { ...params, id: id };
     } else {
-      if (taskStatus != undefined) {
+      if (taskStatus != null) {
         params = { ...params, task_status: taskStatus };
       }
-      if (taskType != undefined) {
+      if (taskType != null) {
         params = { ...params, task_type: taskType };
       }
-      if (forUserId != undefined) {
+      if (forUserId != null) {
         params = { ...params, for_user_id: forUserId };
       }
     }
@@ -242,7 +242,7 @@ export const api = {
   },
 
   async createTask(token: string, data: Task) {
-    if (data.assigned_user_id == undefined) {
+    if (data.assigned_user_id == null) {
       delete data.assigned_user_id;
     }
 
