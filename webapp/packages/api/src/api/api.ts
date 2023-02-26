@@ -59,6 +59,27 @@ export const api = {
   async passwordRecovery(email: string) {
     return axios.post(`${apiUrl}${apiV1}/password-recovery/${email}`);
   },
+  async resetPassword(password: string, token: string) {
+    return axios.post(`${apiUrl}${apiV1}/reset-password/`, {
+      new_password: password,
+      token
+    });
+  },
+
+  async getRoles(token: string) {
+    return axios.get(`${apiUrl}${apiV1}/roles/`, authHeaders(token));
+  },
+
+  // TODO: remove
+  async getDicoms(token: string, waitingForLabels = false, withoutActiveTask = false) {
+    return axios.get<Dicom[]>(`${apiUrl}${apiV1}/dicoms/`, {
+      ...authHeaders(token),
+      params: {
+        waiting_for_labels: waitingForLabels,
+        without_active_task: withoutActiveTask
+      }
+    });
+  },
 
   async getDicomsForImageInstance(token: string, imageInstanceId: number, taskId?: number) {
     const params: any = {};

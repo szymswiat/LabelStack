@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
+import axios, { AxiosError } from 'axios';
 
-import { User, userRoleRepresentation, UserCreate, api, UserUpdate } from '@labelstack/api';
+import { api, User, UserCreate, UserUpdate, requestErrorMessageKey, Role, userRoleRepresentation } from '@labelstack/api';
 
 import Divider from '../../../../components/Divider';
 import { useUserDataContext } from '../../../../contexts/UserDataContext';
-import { showSuccessNotification } from '../../../../utils';
+import { showDangerNotification, showSuccessNotification } from '../../../../utils';
+import { BsFillCheckSquareFill, BsFillXSquareFill } from 'react-icons/bs';
 
 export enum ManageUserFormMode {
   CREATE,
@@ -13,10 +15,11 @@ export enum ManageUserFormMode {
 }
 interface ManageUserFormParams {
   mode: ManageUserFormMode;
+  roles: Role[];
   userToUpdate?: User;
 }
 
-const ManageUserForm = ({ mode, userToUpdate }: ManageUserFormParams) => {
+const ManageUserForm = ({ mode, roles, userToUpdate }: ManageUserFormParams) => {
   const navigate = useNavigate();
   const [{ token }] = useUserDataContext();
 
@@ -36,7 +39,6 @@ const ManageUserForm = ({ mode, userToUpdate }: ManageUserFormParams) => {
 
   const submitForm = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(user);
 
     if (mode == ManageUserFormMode.CREATE) {
       createUser();
@@ -48,21 +50,93 @@ const ManageUserForm = ({ mode, userToUpdate }: ManageUserFormParams) => {
   const createUser = () => {
     console.log(user);
     let newUser = Object.assign({}, user);
-    api.createUser(token, newUser).then((response) => {
-      navigate('/users/all');
-      showSuccessNotification(undefined, 'User created successfully!');
-    });
+    api
+      .createUser(token, newUser)
+      .then((response) => {
+        navigate('/users/all');
+        showSuccessNotification(undefined, 'User created successfully!');
+      })
+      .catch((error: AxiosError) => {
+        if (axios.isAxiosError(error)) {
+          const axiosError: AxiosError = error;
+          showDangerNotification(
+            undefined,
+            axiosError.response ? axiosError.response.data[requestErrorMessageKey] : ''
+          );
+        }
+      });
   };
 
   const updateUser = () => {
-    console.log(user);
-    let modifiedUser = Object.assign({}, user);
-    if (!passwordUpdate) delete modifiedUser.password;
+    let modifiedUser: UserUpdate = {};
+    if (passwordUpdate) modifiedUser.password = user.password;
+    if (user.full_name != userToUpdate.full_name) modifiedUser.full_name = user.full_name;
+    if (user.email != userToUpdate.email) modifiedUser.email = user.email;
+    if (checkIfRolesChanged()) modifiedUser.role_ids = user.role_ids;
+
+    api
+      .updateUser(token, userToUpdate.id, modifiedUser)
+      .then((response) => {
+        navigate('/users/all');
+        showSuccessNotification(undefined, 'User updated successfully!');
+      })
+      .catch((error: AxiosError) => {
+        if (axios.isAxiosError(error)) {
+          const axiosError: AxiosError = error;
+          showDangerNotification(
+            undefined,
+            axiosError.response ? axiosError.response.data[requestErrorMessageKey] : ''
+          );
+        }
+      });
   };
 
-  const activateUser = () => {};
+  const checkIfRolesChanged = () => {
+    const userRoles = userToUpdate.roles.map((role) => role.id);
+    const newRoles = user.role_ids;
+    console.log(userRoles);
+    console.log(newRoles);
 
-  const deactivateUser = () => {};
+    if (userRoles.length != newRoles.length) return true;
+    for (let i = 0; i < userRoles.length; i++) {
+      if (!userRoles.includes(newRoles[i])) return true;
+    }
+    return false;
+  };
+
+  const activateUser = () => {
+    api
+      .updateUser(token, userToUpdate.id, { is_active: true } as UserUpdate)
+      .then((response) => {
+        location.reload();
+      })
+      .catch((error: AxiosError) => {
+        if (axios.isAxiosError(error)) {
+          const axiosError: AxiosError = error;
+          showDangerNotification(
+            undefined,
+            axiosError.response ? axiosError.response.data[requestErrorMessageKey] : ''
+          );
+        }
+      });
+  };
+
+  const deactivateUser = () => {
+    api
+      .updateUser(token, userToUpdate.id, { is_active: false } as any)
+      .then((response) => {
+        location.reload();
+      })
+      .catch((error: AxiosError) => {
+        if (axios.isAxiosError(error)) {
+          const axiosError: AxiosError = error;
+          showDangerNotification(
+            undefined,
+            axiosError.response ? axiosError.response.data[requestErrorMessageKey] : ''
+          );
+        }
+      });
+  };
 
   const handleUserFullNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let modifiedUser = Object.assign({}, user);
@@ -101,14 +175,14 @@ const ManageUserForm = ({ mode, userToUpdate }: ManageUserFormParams) => {
   };
 
   useEffect(() => {
-    if (mode == ManageUserFormMode.UPDATE) {
-      const roles = []; //userToUpdate.roles.map((role) => role.id);
+    if (userToUpdate != null && mode == ManageUserFormMode.UPDATE) {
+      const userRoles = userToUpdate.roles.map((role) => role.id);
       const tempUser: UserUpdate = {
         email: userToUpdate.email,
         password: '',
         full_name: userToUpdate.full_name ? userToUpdate.full_name : '',
         is_active: userToUpdate.is_active,
-        role_ids: roles ? roles : []
+        role_ids: userRoles ? userRoles : []
       };
       setUser(tempUser as UserCreate);
     }
@@ -147,20 +221,21 @@ const ManageUserForm = ({ mode, userToUpdate }: ManageUserFormParams) => {
           {userEmailValid === false && <p className="text-xs text-red-500">valid email is required!</p>}
         </div>
         <div className="w-full mb-2 flex flex-col items-center">
-          <label
-            htmlFor="user-password-update"
-            className="w-full mt-2 text-sm font-medium dark:text-primary-light relative inline-flex items-center cursor-pointer"
-          >
-            <input
-              type="checkbox"
-              id="user-password-update"
-              className="sr-only peer"
-              value={'false'}
-              onChange={(e) => setPasswordUpdate(e.target.checked)}
-            />
-            <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
-            <span className="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300">Password Update?</span>
-          </label>
+          {mode == ManageUserFormMode.UPDATE && (
+            <label
+              htmlFor="user-password-update"
+              className="w-full mt-2 text-sm font-medium dark:text-primary-light relative inline-flex items-center cursor-pointer"
+            >
+              <input
+                type="checkbox"
+                id="user-password-update"
+                className="sr-only peer"
+                onChange={(e) => setPasswordUpdate(e.target.checked)}
+              />
+              <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+              <span className="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300">Password Update?</span>
+            </label>
+          )}
           <div className="w-full flex flex-col items-center">
             <label
               htmlFor="user-password"
@@ -172,7 +247,7 @@ const ManageUserForm = ({ mode, userToUpdate }: ManageUserFormParams) => {
               type="password"
               id="user-password"
               value={user.password}
-              disabled={!passwordUpdate}
+              disabled={mode == ManageUserFormMode.UPDATE && !passwordUpdate}
               onChange={(e) => handleUserPasswordChange(e)}
               className="w-full block rounded-lg p-2 text-sm border disabled:dark:border-gray-200 disabled:dark:bg-gray-700 dark:border-primary-light dark:focus:ring-primary-light dark:focus:border-primary-light dark:bg-secondary-active dark:placeholder-primary-light dark:text-primary-light"
             />
@@ -185,45 +260,41 @@ const ManageUserForm = ({ mode, userToUpdate }: ManageUserFormParams) => {
           <label htmlFor="user-roles" className="w-full p-2 block mb-1 text-sm font-medium dark:text-primary-light">
             Roles
           </label>
-          {Object.entries(userRoleRepresentation).map(([key, value]) => (
+          {roles.map((role) => (
             <label
-              key={'label-user-role-' + key}
-              htmlFor={'role-toggle-' + key}
+              key={'label-user-role-' + role.id}
+              htmlFor={'role-toggle-' + role.id}
               className="relative inline-flex items-center mb-4 cursor-pointer"
             >
               <input
-                key={'input-user-role-' + key}
+                key={'input-user-role-' + role.id}
                 type="checkbox"
-                value={key}
-                id={'role-toggle-' + key}
+                value={role.id}
+                id={'role-toggle-' + role.id}
                 className="sr-only peer"
+                checked={user.role_ids.includes(role.id)}
                 onChange={(e) => handleUserRolesChange(e)}
               />
               <div
-                key={'div-user-role-' + key}
+                key={'div-user-role-' + role.id}
                 className="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"
               ></div>
-              <span key={'span-user-role-' + key} className="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300">
-                {value}
+              <span
+                key={'span-user-role-' + role.id}
+                className="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300"
+              >
+                {userRoleRepresentation[role.type]}
               </span>
             </label>
           ))}
         </div>
         {mode == ManageUserFormMode.UPDATE && (
-          <div className="w-full mb-2 flex flex-col">
-            <label
-              htmlFor="user-is-active"
-              className="w-full p-2 block mb-1 text-sm font-medium dark:text-primary-light"
-            >
+          <div className="w-full mb-2 flex">
+            <label htmlFor="user-is-active" className="p-2 mb-1 mr-2 text-sm font-medium dark:text-primary-light">
               Is Active?
             </label>
-            <input
-              type="checkbox"
-              id="user-is-active"
-              checked={user.is_active}
-              readOnly
-              className="block rounded-lg p-2 h-8 w-8 border dark:border-primary-light dark:focus:ring-primary-light dark:focus:border-primary-light dark:bg-secondary-active dark:placeholder-primary-light dark:text-primary-light"
-            />
+            {user.is_active == true && <BsFillCheckSquareFill className="text-3xl mt-1 dark:text-green-700" />}
+            {user.is_active == false && <BsFillXSquareFill className="text-3xl mt-1 dark:text-red-700" />}
           </div>
         )}
         <div className="w-full flex place-content-center">
