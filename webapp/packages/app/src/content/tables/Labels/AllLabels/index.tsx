@@ -11,7 +11,7 @@ import CreateLabelForm from '../../../../components/Forms/Labels/CreateLabelForm
 import { defaultColDef, labelColumnDefs } from '../../../../const/ag-grid/columnDefs';
 import { useUserDataContext } from '../../../../contexts/UserDataContext';
 import { ColDef } from 'ag-grid-community';
-import LayoutCard from '@labelstack/viewer/src/components/LayoutCard';
+import RightBarLayout from '../../../../layouts/RightBarLayout';
 
 const AllLabels = () => {
   const [{ token }] = useUserDataContext();
@@ -90,18 +90,23 @@ const AllLabels = () => {
     }
   }, [annotationTypes, labelTypes]);
 
-  return (
-    <div className="flex flex-row h-full w-full overflow-auto gap-x-4">
-      <div className="basis-3/4 ag-theme-alpine-dark py-1">
-        <AgGridReact rowData={labels} defaultColDef={defaultColDef} columnDefs={columnDefs} />
+  function renderRightBar() {
+    return (
+      <div className="grow-0 shrink-0 w-full">
+        <CreateLabelForm annotationTypes={annotationTypes} labelTypes={labelTypes} reloadLabels={loadLabels} />
       </div>
+    );
+  }
 
-      <LayoutCard className="flex-col h-full basis-1/4 overflow-auto px-4">
-        <div className="grow-0 shrink-0 w-full">
-          <CreateLabelForm annotationTypes={annotationTypes} labelTypes={labelTypes} reloadLabels={loadLabels} />
-        </div>
-      </LayoutCard>
-    </div>
+  return (
+    <RightBarLayout rightBarComponent={renderRightBar()}>
+      <AgGridReact
+        rowData={labels}
+        defaultColDef={defaultColDef}
+        columnDefs={columnDefs}
+        className="ag-theme-alpine-dark"
+      />
+    </RightBarLayout>
   );
 };
 

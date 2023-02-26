@@ -12,7 +12,7 @@ import SelectedItemsTable from '../../../../components/Tables/SelectedItemsTable
 import { defaultColDef, labelAssignmentColumnDefs } from '../../../../const/ag-grid/columnDefs';
 import { selectedLabelAssignmentsTableHeaders } from '../../../../const/tableHeaders';
 import { useUserDataContext } from '../../../../contexts/UserDataContext';
-import LayoutCard from '@labelstack/viewer/src/components/LayoutCard';
+import RightBarLayout from '../../../../layouts/RightBarLayout';
 
 const ImagesToAnnotate = () => {
   const [{ token }] = useUserDataContext();
@@ -122,20 +122,10 @@ const ImagesToAnnotate = () => {
     }
   }, [users, labels]);
 
-  return (
-    <div className="flex flex-row h-full w-full overflow-auto gap-x-4">
-      <div className="basis-3/4 ag-theme-alpine-dark py-1">
-        <AgGridReact
-          onGridReady={onGridReady}
-          onSelectionChanged={onSelectionChanged}
-          rowData={labelAssignments}
-          rowSelection="multiple"
-          defaultColDef={defaultColDef}
-          columnDefs={columnDefs}
-        />
-      </div>
-      <LayoutCard className="flex-col h-full basis-1/4 overflow-auto px-4">
-        <div className="grow-0 shrink-0 w-full">
+  function renderRightBar(): React.ReactNode {
+    return (
+      <div className="flex flex-col">
+        <div className="w-full">
           <CreateAnnotateTaskForm
             annotators={annotators}
             selectedLabelAssignments={selectedLabelAssignments}
@@ -143,15 +133,29 @@ const ImagesToAnnotate = () => {
             reloadLabelAssignments={loadLabelAssignments}
           />
         </div>
-        <div className="grow-0 shrink-0 w-full px-4">
+        <div className="w-full">
           <SelectedItemsTable
             header="Selected Label Assignments"
             tableColumnInfo={selectedLabelAssignmentsTableHeaders}
             data={selectedLabelAssignments}
           />
         </div>
-      </LayoutCard>
-    </div>
+      </div>
+    );
+  }
+
+  return (
+    <RightBarLayout rightBarComponent={renderRightBar()}>
+      <AgGridReact
+        onGridReady={onGridReady}
+        onSelectionChanged={onSelectionChanged}
+        rowData={labelAssignments}
+        rowSelection="multiple"
+        defaultColDef={defaultColDef}
+        columnDefs={columnDefs}
+        className="ag-theme-alpine-dark"
+      />
+    </RightBarLayout>
   );
 };
 

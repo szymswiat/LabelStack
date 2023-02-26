@@ -14,7 +14,7 @@ import { selectedImagesTableHeaders } from '../../../../const/tableHeaders';
 import { useUserDataContext } from '../../../../contexts/UserDataContext';
 import { ImageInstanceTagValue, Tag } from '@labelstack/api/src/schemas/tag';
 import { FilterEntry } from 'src/const/ag-grid/filters/FilterEntry';
-import LayoutCard from '@labelstack/viewer/src/components/LayoutCard';
+import RightBarLayout from '../../../../layouts/RightBarLayout';
 
 const ImagesToLabel = () => {
   const [{ token }] = useUserDataContext();
@@ -109,20 +109,10 @@ const ImagesToLabel = () => {
     }
   }, [images]);
 
-  return (
-    <div className="flex flex-row h-full w-full overflow-auto gap-x-4">
-      <div className="basis-3/4 ag-theme-alpine-dark py-1">
-        <AgGridReact
-          onGridReady={onGridReady}
-          onSelectionChanged={onSelectionChanged}
-          rowData={images}
-          rowSelection="multiple"
-          defaultColDef={defaultColDef}
-          columnDefs={columnDefs}
-        />
-      </div>
-      <LayoutCard className="flex-col h-full basis-1/4 overflow-auto px-4">
-        <div className="grow-0 shrink-0 w-full">
+  function renderRightBar(): React.ReactNode {
+    return (
+      <div className="flex flex-col">
+        <div className="w-full">
           <CreateLabelTaskForm
             annotators={annotators}
             selectedImages={selectedImages}
@@ -130,15 +120,30 @@ const ImagesToLabel = () => {
             reloadImages={loadImages}
           />
         </div>
-        <div className="grow-0 shrink-0 w-full px-4">
+        <div className="w-full">
           <SelectedItemsTable
             header="Selected Images"
             tableColumnInfo={selectedImagesTableHeaders}
             data={selectedImages}
+            isImageList={true}
           />
         </div>
-      </LayoutCard>
-    </div>
+      </div>
+    );
+  }
+
+  return (
+    <RightBarLayout rightBarComponent={renderRightBar()}>
+      <AgGridReact
+        onGridReady={onGridReady}
+        onSelectionChanged={onSelectionChanged}
+        rowData={images}
+        rowSelection="multiple"
+        defaultColDef={defaultColDef}
+        columnDefs={columnDefs}
+        className="ag-theme-alpine-dark"
+      />
+    </RightBarLayout>
   );
 };
 

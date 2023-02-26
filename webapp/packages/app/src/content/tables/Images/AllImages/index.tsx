@@ -10,11 +10,17 @@ import { api, ImageInstance, requestErrorMessageKey } from '@labelstack/api';
 import { defaultColDef, imageInstancesColumnDefs } from '../../../../const/ag-grid/columnDefs';
 import { useUserDataContext } from '../../../../contexts/UserDataContext';
 import { showDangerNotification } from '../../../../utils';
+import RightBarLayout from '../../../../layouts/RightBarLayout';
+import { GridApi } from 'ag-grid-community';
+import SelectedItemsTable from '../../../../components/Tables/SelectedItemsTable';
+import { selectedImagesTableHeaders } from '../../../../const/tableHeaders';
 
 const AllImages: React.FC = () => {
   const [{ token }] = useUserDataContext();
 
   const [images, setImages] = useState<ImageInstance[]>();
+  const [gridApi, setGridApi] = useState<GridApi>();
+  const [selectedImages, setSelectedImages] = useState<ImageInstance[]>([]);
 
   useEffect(() => {
     api
@@ -28,17 +34,42 @@ const AllImages: React.FC = () => {
       });
   }, []);
 
-  return (
-    <div className="flex flex-row h-full w-full overflow-auto">
-      <div className="w-full ag-theme-alpine-dark">
-        <AgGridReact
-          rowData={images}
-          rowSelection="multiple"
-          defaultColDef={defaultColDef}
-          columnDefs={imageInstancesColumnDefs}
+  const onSelectionChanged = () => {
+    if (gridApi) {
+      const selectedRows = gridApi.getSelectedRows();
+      setSelectedImages(selectedRows);
+    }
+  };
+
+  const onGridReady = (params: any) => {
+    setGridApi(params.api);
+  };
+
+  function renderRightBar(): React.ReactNode {
+    return (
+      <div className="grow-0 pt-4">
+        <SelectedItemsTable
+          header="Selected Images"
+          tableColumnInfo={selectedImagesTableHeaders}
+          data={selectedImages}
+          isImageList={true}
         />
       </div>
-    </div>
+    );
+  }
+
+  return (
+    <RightBarLayout rightBarComponent={renderRightBar()}>
+      <AgGridReact
+        rowData={images}
+        rowSelection="multiple"
+        onGridReady={onGridReady}
+        onSelectionChanged={onSelectionChanged}
+        defaultColDef={defaultColDef}
+        columnDefs={imageInstancesColumnDefs}
+        className="ag-theme-alpine-dark"
+      />
+    </RightBarLayout>
   );
 };
 

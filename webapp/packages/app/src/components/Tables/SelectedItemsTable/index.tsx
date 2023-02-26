@@ -1,17 +1,46 @@
 import React from 'react';
 import { TableColumnInfo } from '../../../const/tableHeaders';
+import { IoMdOpen } from 'react-icons/io';
+import classNames from 'classnames';
+import PanelButton from '@labelstack/viewer/src/ui/components/PanelButton';
 
-interface SelectedItemsTableParams {
+interface SelectedItemsTableProps {
   header: string;
   tableColumnInfo: TableColumnInfo[];
   data: any[];
+  isImageList?: boolean;
 }
 
-const SelectedItemsTable = ({ header, tableColumnInfo, data }: SelectedItemsTableParams) => {
+const SelectedItemsTable: React.FC<SelectedItemsTableProps> = ({
+  header,
+  tableColumnInfo,
+  data,
+  isImageList = false
+}) => {
+  function openViewerWithImages() {
+    if (data.length === 0) {
+      return;
+    }
+    const imageIds = data.map((image) => image.id);
+    window.open(`/viewer?imageInstanceIds=${imageIds.join(',')}`);
+  }
+
   return (
-    <div className="h-full">
-      <p className="w-full p-2 text-center text-l font-bold ">
-        {header} ({data.length}):
+    <div className="h-full px-4">
+      <p className="w-full p-2 flex flex-row justify-center text-l font-bold">
+        {isImageList && (
+          <PanelButton
+            name="Open selected images"
+            border={false}
+            icon={IoMdOpen}
+            isActive={false}
+            iconClassName="w-6 h-6 text-dark-accent"
+            onClick={openViewerWithImages}
+          />
+        )}
+        <span className={classNames({ 'pl-2': isImageList })}>
+          {header} ({data.length}):
+        </span>
       </p>
       <table className="w-full h-full table-fixed text-center">
         <thead className="bg-dark-card-bg rounded-lg">

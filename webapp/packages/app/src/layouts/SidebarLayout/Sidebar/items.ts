@@ -53,6 +53,12 @@ const menuItems: MenuSection[] = [
     role: [RoleType.superuser, RoleType.dataAdmin, RoleType.taskAdmin],
     items: [
       {
+        name: 'All Images',
+        link: '/images/all',
+        icon: MdBurstMode,
+        role: [RoleType.superuser, RoleType.dataAdmin, RoleType.taskAdmin]
+      },
+      {
         name: 'To Label',
         link: '/images/to-label',
         icon: MdPhotoAlbum,
@@ -68,12 +74,6 @@ const menuItems: MenuSection[] = [
         name: 'To Review',
         link: '/images/to-review',
         icon: MdCompare,
-        role: [RoleType.superuser, RoleType.dataAdmin, RoleType.taskAdmin]
-      },
-      {
-        name: 'All Images',
-        link: '/images/all',
-        icon: MdBurstMode,
         role: [RoleType.superuser, RoleType.dataAdmin, RoleType.taskAdmin]
       }
     ]

@@ -33,7 +33,7 @@ function Login() {
         const tokenResponse = await api.logInGetToken(username, password);
         const token = tokenResponse.data.access_token as string;
         setToken(token);
-        navigate(state ? state['from'] : '/images/to-label');
+        navigate(state ? state['from'] : '/images/all');
         showSuccessNotification(undefined, 'Successfully logged in!');
       } catch (error) {
         showDangerNotification(undefined, error.response.data[requestErrorMessageKey]);

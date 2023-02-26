@@ -2,7 +2,7 @@ import Dexie, { Table } from 'dexie';
 import { Dicom, ImageInstance } from '@labelstack/api';
 import { showDangerNotification } from '@labelstack/app/src/utils';
 
-const IMAGE_STORE_SIZE_MAX_DEFAULT = 700;
+const IMAGE_STORE_SIZE_MAX_DEFAULT = 5 * 1024;
 
 interface DicomDb {
   id: number;
