@@ -4,7 +4,7 @@ import { Navigate } from 'react-router';
 import { api, User } from '@labelstack/api';
 import { useUserDataContext } from '../../../contexts/UserDataContext';
 import { useQuery } from '../../../utils/hooks';
-import ManageUserForm from '../../../components/Forms/Users/ManageUserForm';
+import ManageUserForm, { ManageUserFormMode } from '../../../components/Forms/Users/ManageUserForm';
 
 const EditUser = () => {
   const [{ token }] = useUserDataContext();
@@ -33,7 +33,7 @@ const EditUser = () => {
     }
   }, [user]);
 
-  return <ManageUserForm createUser={false} userToEdit={user} />;
+  return <ManageUserForm mode={ManageUserFormMode.UPDATE} userToUpdate={user} />;
 };
 
 export default EditUser;
