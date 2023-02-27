@@ -48,7 +48,7 @@ const TasksTable = ({ taskType, unassigned }: TasksTableParams) => {
 
   const loadTasks = () => {
     const userRoles: string[] = user.roles.map((role: Role) => role.type);
-    const forMe = userRoles.includes(RoleType.annotator.toString()) ? true : false;
+    const forMe = !userRoles.containsAny([RoleType.superuser, RoleType.taskAdmin]);
 
     (unassigned
       ? api.getTasks(token, undefined, TaskStatus.unassigned, taskType, false)

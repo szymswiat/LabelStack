@@ -25,6 +25,7 @@ class CRUDUser(CRUDBase[models.User, schemas.UserCreate, schemas.UserUpdate]):
             update_data = update_obj
         else:
             update_data = update_obj.dict(exclude_unset=True)
+
         if "password" in update_data:
             hashed_password = get_password_hash(update_data["password"])
             del update_data["password"]

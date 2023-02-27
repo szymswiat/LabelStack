@@ -1,6 +1,6 @@
 from pydantic import BaseModel, EmailStr
 
-from app.schemas.schema_role import RoleApiOut
+from app.schemas.schema_role import Role
 
 
 class UserCRUDBase(BaseModel):
@@ -25,7 +25,7 @@ class UserInDBBase(BaseModel):
     is_active: bool | None = True
     full_name: str | None = None
 
-    roles: list[RoleApiOut]
+    roles: list[Role]
 
     class Config:
         orm_mode = True
