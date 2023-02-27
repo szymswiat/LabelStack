@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 
 import { api, User, Role } from '@labelstack/api';
-import { useUserDataContext } from '../../../contexts/UserDataContext';
-import { useQuery } from '../../../utils/hooks';
-import ManageUserForm, { ManageUserFormMode } from '../../../components/Forms/Users/ManageUserForm';
+import { useUserDataContext } from '../../../../contexts/UserDataContext';
+import { useQuery } from '../../../../utils/hooks';
+import ManageUserForm, { ManageUserFormMode } from '../../../../components/Forms/Users/ManageUserForm';
 
 const EditUser = () => {
   const [{ user, token }] = useUserDataContext();

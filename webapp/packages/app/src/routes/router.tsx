@@ -4,8 +4,8 @@ import { Navigate, RouteObject } from 'react-router-dom';
 import SidebarLayout from '../layouts/SidebarLayout';
 import BaseLayout from '../layouts/BaseLayout';
 import PrivateWrapper from './PrivateWrapper';
-import ErrorPage from '../content/pages/ErrorPage';
-import { RoleType, TaskType } from '@labelstack/api';
+import Error from '../content/pages/Error';
+import { RoleType } from '@labelstack/api';
 
 const Loader = (Component: ExoticComponent) => (props: any) =>
   (
@@ -18,25 +18,25 @@ const Loader = (Component: ExoticComponent) => (props: any) =>
 const Login = Loader(lazy(() => import('../content/pages/Login')));
 
 // Images
-const ImagesToLabel = Loader(lazy(() => import('../content/pages/ImagesToLabel')));
-const ImagesToAnnotate = Loader(lazy(() => import('../content/pages/ImagesToAnnotate')));
-const ImagesToReview = Loader(lazy(() => import('../content/pages/ImagesToReview')));
-const AllImages = Loader(lazy(() => import('../content/pages/AllImages')));
+const ImagesToLabel = Loader(lazy(() => import('../content/pages/images/ImagesToLabel')));
+const ImagesToAnnotate = Loader(lazy(() => import('../content/pages/images/ImagesToAnnotate')));
+const ImagesToReview = Loader(lazy(() => import('../content/pages/images/ImagesToReview')));
+const AllImages = Loader(lazy(() => import('../content/pages/images/AllImages')));
 
 // Labels
-const AllLabels = Loader(lazy(() => import('../content/pages/AllLabels')));
+const AllLabels = Loader(lazy(() => import('../content/pages/labels/AllLabels')));
 
 // Tasks
-const UnassignedTasks = Loader(lazy(() => import('../content/pages/UnassignedTasks')));
-const AllTasks = Loader(lazy(() => import('../content/pages/AllTasks')));
-const LabelTasks = Loader(lazy(() => import('../content/pages/LabelTasks')));
-const AnnotationTasks = Loader(lazy(() => import('../content/pages/AnnotationTasks')));
-const AnnotationReviewTasks = Loader(lazy(() => import('../content/pages/AnnotationReviewTasks')));
+const UnassignedTasks = Loader(lazy(() => import('../content/pages/tasks/UnassignedTasks')));
+const AllTasks = Loader(lazy(() => import('../content/pages/tasks/AllTasks')));
+const LabelTasks = Loader(lazy(() => import('../content/pages/tasks/LabelTasks')));
+const AnnotationTasks = Loader(lazy(() => import('../content/pages/tasks/AnnotationTasks')));
+const AnnotationReviewTasks = Loader(lazy(() => import('../content/pages/tasks/AnnotationReviewTasks')));
 
 // Users
-const AllUsers = Loader(lazy(() => import('../content/pages/AllUsers')));
-const EditUser = Loader(lazy(() => import('../content/pages/EditUser')));
-const CreateUser = Loader(lazy(() => import('../content/pages/CreateUser')));
+const AllUsers = Loader(lazy(() => import('../content/pages/users/AllUsers')));
+const EditUser = Loader(lazy(() => import('../content/pages/users/EditUser')));
+const CreateUser = Loader(lazy(() => import('../content/pages/users/CreateUser')));
 
 const ViewerApp = Loader(lazy(() => import('@labelstack/viewer')));
 const AnnotatorApp = Loader(lazy(() => import('@labelstack/annotator')));
@@ -63,7 +63,7 @@ const routes: RouteObject[] = [
           },
           {
             path: '404',
-            element: <ErrorPage />
+            element: <Error />
           }
         ]
       },
@@ -73,13 +73,13 @@ const routes: RouteObject[] = [
         children: [
           {
             path: '',
-            element: <ErrorPage />
+            element: <Error />
           }
         ]
       },
       {
         path: '*',
-        element: <ErrorPage />
+        element: <Error />
       }
     ]
   },

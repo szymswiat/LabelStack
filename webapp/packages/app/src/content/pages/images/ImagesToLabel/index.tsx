@@ -7,15 +7,15 @@ import 'ag-grid-community/dist/styles/ag-theme-alpine-dark.css';
 
 import { api, User, RoleType, ImageInstance } from '@labelstack/api';
 
-import CreateLabelTaskForm from '../../../components/Forms/Tasks/CreateLabelTaskForm';
-import SelectedItemsTable from '../../../components/Tables/SelectedItemsTable';
-import { defaultColDef, imageInstancesColumnDefs } from '../../../const/ag-grid/columnDefs';
-import { selectedImagesTableHeaders } from '../../../const/tableHeaders';
-import { useUserDataContext } from '../../../contexts/UserDataContext';
+import CreateLabelTaskForm from '../../../../components/Forms/Tasks/CreateLabelTaskForm';
+import SelectedItemsTable from '../../../../components/Tables/SelectedItemsTable';
+import { defaultColDef, imageInstancesColumnDefs } from '../../../../const/ag-grid/columnDefs';
+import { selectedImagesTableHeaders } from '../../../../const/tableHeaders';
+import { useUserDataContext } from '../../../../contexts/UserDataContext';
 import { ImageInstanceTagValue, Tag } from '@labelstack/api/src/schemas/tag';
-import { FilterEntry } from '../../../const/ag-grid/filters/FilterEntry';
-import { useEffectNonNull } from '../../../utils/hooks';
-import RightBarLayout from '../../../layouts/RightBarLayout';
+import { FilterEntry } from '../../../../const/ag-grid/filters/FilterEntry';
+import { useEffectNonNull } from '../../../../utils/hooks';
+import RightBarLayout from '../../../../layouts/RightBarLayout';
 
 const ImagesToLabel = () => {
   const [{ token }] = useUserDataContext();

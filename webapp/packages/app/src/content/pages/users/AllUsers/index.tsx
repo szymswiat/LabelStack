@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 
 import { api, User } from '@labelstack/api';
-import UsersTable from '../../../components/Tables/UsersTable';
-import { useUserDataContext } from '../../../contexts/UserDataContext';
+import UsersTable from '../../../../components/Tables/UsersTable';
+import { useUserDataContext } from '../../../../contexts/UserDataContext';
 
 const AllUsers = () => {
   const [{ token }] = useUserDataContext();

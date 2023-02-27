@@ -1,12 +1,12 @@
 import React from 'react';
 import { useLocation } from 'react-router';
 
-export interface ErrorPageProps {
+export interface ErrorProps {
   message: string;
 }
 
-const ErrorPage: React.FC = () => {
-  const { message } = useLocation().state ? (useLocation().state as ErrorPageProps) : { message: 'Unknown Error' };
+const Error: React.FC = () => {
+  const { message } = useLocation().state ? (useLocation().state as ErrorProps) : { message: 'Unknown Error' };
 
   return (
     <div className={'w-full h-full bg-primary-dark text-primary-light grid'}>
@@ -18,4 +18,4 @@ const ErrorPage: React.FC = () => {
   );
 };
 
-export default ErrorPage;
+export default Error;

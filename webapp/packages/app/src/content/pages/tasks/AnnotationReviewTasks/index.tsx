@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 
 import { api, Role, RoleType, Task, TaskType } from '@labelstack/api';
-import { useUserDataContext } from '../../../contexts/UserDataContext';
-import RightBarLayout from '../../../layouts/RightBarLayout';
-import TasksTable from '../../../components/Tables/TasksTable';
+import { useUserDataContext } from '../../../../contexts/UserDataContext';
+import RightBarLayout from '../../../../layouts/RightBarLayout';
+import TasksTable from '../../../../components/Tables/TasksTable';
 
-export interface LabelTasksProps {}
+export interface AnnotationReviewTasksProps {}
 
-const LabelTasks: React.FC<LabelTasksProps> = ({}) => {
+const AnnotationReviewTasks: React.FC<AnnotationReviewTasksProps> = ({}) => {
   const [{ user, token }] = useUserDataContext();
   const [tasks, setTasks] = useState<Task[] | null>(null);
 
@@ -15,7 +15,7 @@ const LabelTasks: React.FC<LabelTasksProps> = ({}) => {
     const userRoles: string[] = user.roles.map((role: Role) => role.type);
     const forMe = !userRoles.containsAny([RoleType.superuser, RoleType.taskAdmin]);
 
-    const { data: tasks } = await api.getTasks(token, undefined, undefined, TaskType.labelAssignment, forMe);
+    const { data: tasks } = await api.getTasks(token, undefined, undefined, TaskType.annotationReview, forMe);
     setTasks(tasks);
   }
 
@@ -34,4 +34,4 @@ const LabelTasks: React.FC<LabelTasksProps> = ({}) => {
   );
 };
 
-export default LabelTasks;
+export default AnnotationReviewTasks;

@@ -8,11 +8,11 @@ import 'ag-grid-community/dist/styles/ag-theme-alpine-dark.css';
 
 import { AnnotationType, api, Label, LabelType } from '@labelstack/api';
 
-import CreateLabelForm from '../../../components/Forms/Labels/CreateLabelForm';
-import { defaultColDef, labelColumnDefs } from '../../../const/ag-grid/columnDefs';
-import { useUserDataContext } from '../../../contexts/UserDataContext';
-import { useEffectNonNull } from '../../../utils/hooks';
-import RightBarLayout from '../../../layouts/RightBarLayout';
+import CreateLabelForm from '../../../../components/Forms/Labels/CreateLabelForm';
+import { defaultColDef, labelColumnDefs } from '../../../../const/ag-grid/columnDefs';
+import { useUserDataContext } from '../../../../contexts/UserDataContext';
+import { useEffectNonNull } from '../../../../utils/hooks';
+import RightBarLayout from '../../../../layouts/RightBarLayout';
 
 const AllLabels = () => {
   const [{ token }] = useUserDataContext();

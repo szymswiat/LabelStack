@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 
 import { api, Role, RoleType, Task, TaskType } from '@labelstack/api';
-import { useUserDataContext } from '../../../contexts/UserDataContext';
-import RightBarLayout from '../../../layouts/RightBarLayout';
-import TasksTable from '../../../components/Tables/TasksTable';
+import { useUserDataContext } from '../../../../contexts/UserDataContext';
+import RightBarLayout from '../../../../layouts/RightBarLayout';
+import TasksTable from '../../../../components/Tables/TasksTable';
 
 export interface AnnotationTasksProps {}
 

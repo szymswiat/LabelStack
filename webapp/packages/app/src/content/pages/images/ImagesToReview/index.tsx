@@ -7,13 +7,13 @@ import 'ag-grid-community/dist/styles/ag-theme-alpine-dark.css';
 
 import { Annotation, api, User, RoleType, taskStatusRepresentation } from '@labelstack/api';
 
-import CreateAnnotationReviewTaskForm from '../../../components/Forms/Tasks/CreateAnnotationReviewTaskForm';
-import SelectedItemsTable from '../../../components/Tables/SelectedItemsTable';
-import { defaultColDef, annotationColumnDefs } from '../../../const/ag-grid/columnDefs';
-import { selectedAnnotationsTableHeaders } from '../../../const/tableHeaders';
-import { useUserDataContext } from '../../../contexts/UserDataContext';
-import { useEffectNonNull } from '../../../utils/hooks';
-import RightBarLayout from '../../../layouts/RightBarLayout';
+import CreateAnnotationReviewTaskForm from '../../../../components/Forms/Tasks/CreateAnnotationReviewTaskForm';
+import SelectedItemsTable from '../../../../components/Tables/SelectedItemsTable';
+import { defaultColDef, annotationColumnDefs } from '../../../../const/ag-grid/columnDefs';
+import { selectedAnnotationsTableHeaders } from '../../../../const/tableHeaders';
+import { useUserDataContext } from '../../../../contexts/UserDataContext';
+import { useEffectNonNull } from '../../../../utils/hooks';
+import RightBarLayout from '../../../../layouts/RightBarLayout';
 
 const ImagesToReview = () => {
   const [{ token }] = useUserDataContext();
