@@ -7,13 +7,13 @@ import 'ag-grid-community/dist/styles/ag-theme-alpine-dark.css';
 
 import { api, ImageInstance } from '@labelstack/api';
 
-import { defaultColDef, imageInstancesColumnDefs } from '../../../../const/ag-grid/columnDefs';
-import { useUserDataContext } from '../../../../contexts/UserDataContext';
-import { showNotificationWithApiError } from '../../../../utils';
-import RightBarLayout from '../../../../layouts/RightBarLayout';
+import { defaultColDef, imageInstancesColumnDefs } from '../../../const/ag-grid/columnDefs';
+import { useUserDataContext } from '../../../contexts/UserDataContext';
+import { showNotificationWithApiError } from '../../../utils';
+import RightBarLayout from '../../../layouts/RightBarLayout';
 import { GridApi } from 'ag-grid-community';
-import SelectedItemsTable from '../../../../components/Tables/SelectedItemsTable';
-import { selectedImagesTableHeaders } from '../../../../const/tableHeaders';
+import SelectedItemsTable from '../../../components/Tables/SelectedItemsTable';
+import { selectedImagesTableHeaders } from '../../../const/tableHeaders';
 
 const AllImages: React.FC = () => {
   const [{ token }] = useUserDataContext();

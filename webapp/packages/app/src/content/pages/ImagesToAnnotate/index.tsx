@@ -7,13 +7,13 @@ import 'ag-grid-community/dist/styles/ag-theme-alpine-dark.css';
 
 import { api, User, Label, LabelAssignment, RoleType } from '@labelstack/api';
 
-import CreateAnnotateTaskForm from '../../../../components/Forms/Tasks/CreateAnnotateTaskForm';
-import SelectedItemsTable from '../../../../components/Tables/SelectedItemsTable';
-import { defaultColDef, labelAssignmentColumnDefs } from '../../../../const/ag-grid/columnDefs';
-import { selectedLabelAssignmentsTableHeaders } from '../../../../const/tableHeaders';
-import { useUserDataContext } from '../../../../contexts/UserDataContext';
-import { useEffectNonNull } from '../../../../utils/hooks';
-import RightBarLayout from '../../../../layouts/RightBarLayout';
+import CreateAnnotateTaskForm from '../../../components/Forms/Tasks/CreateAnnotateTaskForm';
+import SelectedItemsTable from '../../../components/Tables/SelectedItemsTable';
+import { defaultColDef, labelAssignmentColumnDefs } from '../../../const/ag-grid/columnDefs';
+import { selectedLabelAssignmentsTableHeaders } from '../../../const/tableHeaders';
+import { useUserDataContext } from '../../../contexts/UserDataContext';
+import { useEffectNonNull } from '../../../utils/hooks';
+import RightBarLayout from '../../../layouts/RightBarLayout';
 
 const ImagesToAnnotate = () => {
   const [{ token }] = useUserDataContext();

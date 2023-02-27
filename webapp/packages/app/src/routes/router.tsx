@@ -18,21 +18,21 @@ const Loader = (Component: ExoticComponent) => (props: any) =>
 const Login = Loader(lazy(() => import('../content/pages/Login')));
 
 // Images
-const ImagesToLabel = Loader(lazy(() => import('../content/tables/Images/ImagesToLabel')));
-const ImagesToAnnotate = Loader(lazy(() => import('../content/tables/Images/ImagesToAnnotate')));
-const ImagesToReview = Loader(lazy(() => import('../content/tables/Images/ImagesToReview')));
-const AllImages = Loader(lazy(() => import('../content/tables/Images/AllImages')));
+const ImagesToLabel = Loader(lazy(() => import('../content/pages/ImagesToLabel')));
+const ImagesToAnnotate = Loader(lazy(() => import('../content/pages/ImagesToAnnotate')));
+const ImagesToReview = Loader(lazy(() => import('../content/pages/ImagesToReview')));
+const AllImages = Loader(lazy(() => import('../content/pages/AllImages')));
 
 // Labels
-const AllLabels = Loader(lazy(() => import('../content/tables/Labels/AllLabels')));
+const AllLabels = Loader(lazy(() => import('../content/pages/AllLabels')));
 
 // Tasks
-const TasksTable = Loader(lazy(() => import('../content/tables/Tasks')));
+const TasksTable = Loader(lazy(() => import('../components/Tables/TasksTable')));
 
 // Users
-const AllUsers = Loader(lazy(() => import('../content/users/AllUsers')));
-const EditUser = Loader(lazy(() => import('../content/users/EditUser')));
-const CreateUser = Loader(lazy(() => import('../content/users/CreateUser')));
+const AllUsers = Loader(lazy(() => import('../content/pages/AllUsers')));
+const EditUser = Loader(lazy(() => import('../content/pages/EditUser')));
+const CreateUser = Loader(lazy(() => import('../content/pages/CreateUser')));
 
 const ViewerApp = Loader(lazy(() => import('@labelstack/viewer')));
 const AnnotatorApp = Loader(lazy(() => import('@labelstack/annotator')));
