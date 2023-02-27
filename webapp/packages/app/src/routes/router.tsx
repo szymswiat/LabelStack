@@ -27,7 +27,11 @@ const AllImages = Loader(lazy(() => import('../content/pages/AllImages')));
 const AllLabels = Loader(lazy(() => import('../content/pages/AllLabels')));
 
 // Tasks
-const TasksTable = Loader(lazy(() => import('../components/Tables/TasksTable')));
+const UnassignedTasks = Loader(lazy(() => import('../content/pages/UnassignedTasks')));
+const AllTasks = Loader(lazy(() => import('../content/pages/AllTasks')));
+const LabelTasks = Loader(lazy(() => import('../content/pages/LabelTasks')));
+const AnnotationTasks = Loader(lazy(() => import('../content/pages/AnnotationTasks')));
+const AnnotationReviewTasks = Loader(lazy(() => import('../content/pages/AnnotationReviewTasks')));
 
 // Users
 const AllUsers = Loader(lazy(() => import('../content/pages/AllUsers')));
@@ -161,23 +165,23 @@ const routes: RouteObject[] = [
       },
       {
         path: 'to-label',
-        element: <TasksTable taskType={TaskType.labelAssignment} />
+        element: <LabelTasks />
       },
       {
         path: 'to-annotate',
-        element: <TasksTable taskType={TaskType.annotation} />
+        element: <AnnotationTasks />
       },
       {
         path: 'to-review',
-        element: <TasksTable taskType={TaskType.annotationReview} />
+        element: <AnnotationReviewTasks />
       },
       {
         path: 'unassigned',
-        element: <TasksTable taskType={undefined} unassigned={true} />
+        element: <UnassignedTasks />
       },
       {
         path: 'all',
-        element: <TasksTable taskType={undefined} />
+        element: <AllTasks />
       }
     ]
   },

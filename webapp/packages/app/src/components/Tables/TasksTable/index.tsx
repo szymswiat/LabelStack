@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react';
 
-import { AxiosResponse } from 'axios';
-
 import { AgGridReact } from 'ag-grid-react';
 import { ColDef } from 'ag-grid-community';
 import 'ag-grid-community/dist/styles/ag-grid.css';
@@ -11,11 +9,9 @@ import 'ag-grid-community/dist/styles/ag-theme-alpine-dark.css';
 import {
   api,
   User,
-  Role,
   RoleType,
   Task,
   taskPriorityRepresentation,
-  TaskStatus,
   taskStatusRepresentation,
   TaskType,
   taskTypeRepresentation
@@ -25,14 +21,14 @@ import { defaultColDef, taskColumnDefs, unassignedTaskColumnDefs } from '../../.
 import { useUserDataContext } from '../../../contexts/UserDataContext';
 import { useEffectNonNull } from '../../../utils/hooks';
 
-interface TasksTableParams {
-  taskType: TaskType;
+interface TasksTableProps {
+  tasks: Task[];
+  refreshTasks: () => void;
   unassigned?: boolean;
 }
 
-const TasksTable = ({ taskType, unassigned }: TasksTableParams) => {
+const TasksTable: React.FC<TasksTableProps> = ({ tasks, unassigned, refreshTasks }) => {
   const [{ user, token }] = useUserDataContext();
-  const [tasks, setTasks] = useState<Task[]>();
   const [users, setUsers] = useState<User[]>([]);
   const [columnDefs, setColumnDefs] = useState<ColDef[]>([]);
 
@@ -46,19 +42,6 @@ const TasksTable = ({ taskType, unassigned }: TasksTableParams) => {
     }
   }
 
-  const loadTasks = () => {
-    const userRoles: string[] = user.roles.map((role: Role) => role.type);
-    const forMe = !userRoles.containsAny([RoleType.superuser, RoleType.taskAdmin]);
-
-    (unassigned
-      ? api.getTasks(token, undefined, TaskStatus.unassigned, taskType, false)
-      : api.getTasks(token, undefined, undefined, taskType, forMe)
-    ).then((response: AxiosResponse) => {
-      const responseTasks = response.data as Task[];
-      setTasks(responseTasks);
-    });
-  };
-
   const setColumnDefinitions = () => {
     let colDefs: ColDef[] = unassigned
       ? unassignedTaskColumnDefs.map((columnDef) => {
@@ -68,7 +51,7 @@ const TasksTable = ({ taskType, unassigned }: TasksTableParams) => {
 
     colDefs = colDefs.map((columnDef) => {
       if (columnDef.field == 'take_task') {
-        columnDef.cellRendererParams = { reloadData: loadTasks };
+        columnDef.cellRendererParams = { reloadData: refreshTasks };
       } else if (columnDef.field == 'assigned_user_id') {
         columnDef.cellRendererParams = { users: users };
         columnDef.filterParams = {
@@ -118,9 +101,8 @@ const TasksTable = ({ taskType, unassigned }: TasksTableParams) => {
   };
 
   useEffect(() => {
-    loadTasks();
     loadUsers();
-  }, [taskType, unassigned]);
+  }, [unassigned]);
 
   useEffectNonNull(
     () => {
