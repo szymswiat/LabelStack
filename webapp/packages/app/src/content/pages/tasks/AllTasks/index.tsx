@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 
 import { api, Role, RoleType, Task } from '@labelstack/api';
 import { useUserDataContext } from '../../../../contexts/UserDataContext';
-import RightBarLayout from '../../../../layouts/RightBarLayout';
-import TasksTable from '../../../../components/Tables/TasksTable';
+import TableLayout from '../../../../layouts/TableLayout';
+import TasksTable from '../../../../components/tables/TasksTable';
 
 export interface AllTasksProps {}
 
@@ -23,14 +23,10 @@ const AllTasks: React.FC<AllTasksProps> = ({}) => {
     loadTasks();
   }, []);
 
-  function renderRightBarComponent(): React.ReactNode {
-    return <></>;
-  }
-
   return (
-    <RightBarLayout rightBarComponent={renderRightBarComponent()}>
+    <TableLayout>
       <TasksTable refreshTasks={loadTasks} tasks={tasks} />
-    </RightBarLayout>
+    </TableLayout>
   );
 };
 

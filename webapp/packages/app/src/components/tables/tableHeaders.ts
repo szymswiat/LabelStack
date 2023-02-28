@@ -1,7 +1,7 @@
 import React from 'react';
 import { Role } from '@labelstack/api';
-import { imageInstanceTagRenderer } from './ag-grid/renderers/CellRenderers';
-import ReadOnlyCheckbox from '../components/Forms/ReadOnlyCheckbox';
+import { imageInstanceTagRenderer } from '../cellRenderers';
+import ReadOnlyCheckbox from '../Forms/ReadOnlyCheckbox';
 
 export interface TableColumnInfo {
   header: string;

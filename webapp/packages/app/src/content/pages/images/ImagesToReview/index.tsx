@@ -8,12 +8,13 @@ import 'ag-grid-community/dist/styles/ag-theme-alpine-dark.css';
 import { Annotation, api, User, RoleType, taskStatusRepresentation } from '@labelstack/api';
 
 import CreateAnnotationReviewTaskForm from '../../../../components/Forms/Tasks/CreateAnnotationReviewTaskForm';
-import SelectedItemsTable from '../../../../components/Tables/SelectedItemsTable';
-import { defaultColDef, annotationColumnDefs } from '../../../../const/ag-grid/columnDefs';
-import { selectedAnnotationsTableHeaders } from '../../../../const/tableHeaders';
+import SelectedItemsTable from '../../../../components/tables/SelectedItemsTable';
+import { annotationColumnDefs } from '../columnDefs';
+import { selectedAnnotationsTableHeaders } from '../../../../components/tables/tableHeaders';
 import { useUserDataContext } from '../../../../contexts/UserDataContext';
 import { useEffectNonNull } from '../../../../utils/hooks';
-import RightBarLayout from '../../../../layouts/RightBarLayout';
+import TableLayoutWithBar from '../../../../layouts/TableLayoutWithBar';
+import { defaultColDef } from '../../labels/columnDefs';
 
 const ImagesToReview = () => {
   const [{ token }] = useUserDataContext();
@@ -143,7 +144,7 @@ const ImagesToReview = () => {
   }
 
   return (
-    <RightBarLayout rightBarComponent={renderRightBar()}>
+    <TableLayoutWithBar rightBarComponent={renderRightBar()}>
       <AgGridReact
         onGridReady={onGridReady}
         onSelectionChanged={onSelectionChanged}
@@ -153,7 +154,7 @@ const ImagesToReview = () => {
         columnDefs={columnDefs}
         className="ag-theme-alpine-dark"
       />
-    </RightBarLayout>
+    </TableLayoutWithBar>
   );
 };
 

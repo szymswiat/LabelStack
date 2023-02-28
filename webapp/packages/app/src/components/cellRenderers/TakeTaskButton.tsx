@@ -2,15 +2,14 @@ import React from 'react';
 import { ICellRendererParams } from 'ag-grid-community';
 
 import { api, Task } from '@labelstack/api';
-import { useUserDataContext } from '../../../contexts/UserDataContext';
-import { showSuccessNotification } from '../../../utils';
-import { showNotificationWithApiError } from '../../../utils/notifications';
+import { useUserDataContext } from '../../contexts/UserDataContext';
+import { showNotificationWithApiError, showSuccessNotification } from '../../utils';
 
-interface TakeTaskButtonParams extends ICellRendererParams {
+interface TakeTaskButtonProps extends ICellRendererParams {
   reloadData: () => void;
 }
 
-export const TakeTaskButton = (params: TakeTaskButtonParams) => {
+const TakeTaskButton: React.FC<TakeTaskButtonProps> = (params) => {
   const [{ user, token }] = useUserDataContext();
 
   const assignTaskToCurrentUser = () => {
@@ -30,9 +29,11 @@ export const TakeTaskButton = (params: TakeTaskButtonParams) => {
   return (
     <button
       onClick={assignTaskToCurrentUser}
-      className="w-full p-1 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+      className="w-full p-1 font-medium rounded-lg text-sm text-center text-dark-accent bg-dark-card-bg"
     >
       Take this task
     </button>
   );
 };
+
+export default TakeTaskButton;

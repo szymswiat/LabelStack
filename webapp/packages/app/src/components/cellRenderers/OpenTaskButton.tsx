@@ -3,7 +3,7 @@ import { ICellRendererParams } from 'ag-grid-community';
 
 import { IoMdOpen } from 'react-icons/io';
 
-export const OpenTaskButton = (params: ICellRendererParams) => {
+const OpenTaskButton: React.FC<ICellRendererParams> = (params) => {
   const openTask = () => {
     window.open('/annotator?taskId=' + params.data.id);
   };
@@ -14,3 +14,5 @@ export const OpenTaskButton = (params: ICellRendererParams) => {
     </button>
   );
 };
+
+export default OpenTaskButton;

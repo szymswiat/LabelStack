@@ -6,7 +6,7 @@ interface BaseLayoutProps {
 }
 
 const BaseLayout: React.FC<BaseLayoutProps> = ({ children }) => {
-  return <>{children || <Outlet />}</>;
+  return <div className="w-full h-full bg-dark-bg text-dark-text">{children || <Outlet />}</div>;
 };
 
 export default BaseLayout;

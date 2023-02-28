@@ -1,12 +1,12 @@
 import LayoutCard from '@labelstack/viewer/src/components/LayoutCard';
 import React from 'react';
 
-export interface RightBarLayoutProps {
+export interface TableLayoutWithBarProps {
   children?: React.ReactNode;
   rightBarComponent: React.ReactNode;
 }
 
-const RightBarLayout: React.FC<RightBarLayoutProps> = ({ children, rightBarComponent }) => {
+const TableLayoutWithBar: React.FC<TableLayoutWithBarProps> = ({ children, rightBarComponent }) => {
   return (
     <div className="flex flex-row h-full w-full gap-x-4">
       <div className="basis-3/4 py-1">{children}</div>
@@ -17,4 +17,4 @@ const RightBarLayout: React.FC<RightBarLayoutProps> = ({ children, rightBarCompo
   );
 };
 
-export default RightBarLayout;
+export default TableLayoutWithBar;

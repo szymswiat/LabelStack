@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { IconType } from 'react-icons';
 import getMenuItems, { MenuSection } from './items';
-import { useUserDataContext } from '../../../contexts/UserDataContext';
+import { useUserDataContext } from '../../contexts/UserDataContext';
 import classNames from 'classnames';
 import LayoutCard from '@labelstack/viewer/src/components/LayoutCard';
-import { useEffectNonNull } from '../../../utils/hooks';
+import { useEffectNonNull } from '../../utils/hooks';
 
 function Sidebar() {
   const navigate = useNavigate();

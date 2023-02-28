@@ -59,7 +59,7 @@ function Login() {
   };
 
   return (
-    <div className="w-full h-full bg-dark-bg text-dark-text grid place-items-center">
+    <div className="w-full h-full grid place-items-center">
       <form onKeyUp={handleEnterPress}>
         <LayoutCard className="w-[30rem] h-[20rem] px-20 flex flex-col gap-y-3">
           <input

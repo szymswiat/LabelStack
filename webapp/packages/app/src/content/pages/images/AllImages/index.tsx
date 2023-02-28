@@ -7,13 +7,14 @@ import 'ag-grid-community/dist/styles/ag-theme-alpine-dark.css';
 
 import { api, ImageInstance } from '@labelstack/api';
 
-import { defaultColDef, imageInstancesColumnDefs } from '../../../../const/ag-grid/columnDefs';
+import { imageInstancesColumnDefs } from '../columnDefs';
 import { useUserDataContext } from '../../../../contexts/UserDataContext';
 import { showNotificationWithApiError } from '../../../../utils';
-import RightBarLayout from '../../../../layouts/RightBarLayout';
+import TableLayoutWithBar from '../../../../layouts/TableLayoutWithBar';
 import { GridApi } from 'ag-grid-community';
-import SelectedItemsTable from '../../../../components/Tables/SelectedItemsTable';
-import { selectedImagesTableHeaders } from '../../../../const/tableHeaders';
+import SelectedItemsTable from '../../../../components/tables/SelectedItemsTable';
+import { selectedImagesTableHeaders } from '../../../../components/tables/tableHeaders';
+import { defaultColDef } from '../../labels/columnDefs';
 
 const AllImages: React.FC = () => {
   const [{ token }] = useUserDataContext();
@@ -59,7 +60,7 @@ const AllImages: React.FC = () => {
   }
 
   return (
-    <RightBarLayout rightBarComponent={renderRightBar()}>
+    <TableLayoutWithBar rightBarComponent={renderRightBar()}>
       <AgGridReact
         rowData={images}
         rowSelection="multiple"
@@ -69,7 +70,7 @@ const AllImages: React.FC = () => {
         columnDefs={imageInstancesColumnDefs}
         className="ag-theme-alpine-dark"
       />
-    </RightBarLayout>
+    </TableLayoutWithBar>
   );
 };
 

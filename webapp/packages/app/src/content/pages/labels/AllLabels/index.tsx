@@ -9,10 +9,10 @@ import 'ag-grid-community/dist/styles/ag-theme-alpine-dark.css';
 import { AnnotationType, api, Label, LabelType } from '@labelstack/api';
 
 import CreateLabelForm from '../../../../components/Forms/Labels/CreateLabelForm';
-import { defaultColDef, labelColumnDefs } from '../../../../const/ag-grid/columnDefs';
+import { defaultColDef, labelColumnDefs } from '../columnDefs';
 import { useUserDataContext } from '../../../../contexts/UserDataContext';
 import { useEffectNonNull } from '../../../../utils/hooks';
-import RightBarLayout from '../../../../layouts/RightBarLayout';
+import TableLayoutWithBar from '../../../../layouts/TableLayoutWithBar';
 
 const AllLabels = () => {
   const [{ token }] = useUserDataContext();
@@ -104,14 +104,14 @@ const AllLabels = () => {
   }
 
   return (
-    <RightBarLayout rightBarComponent={renderRightBar()}>
+    <TableLayoutWithBar rightBarComponent={renderRightBar()}>
       <AgGridReact
         rowData={labels}
         defaultColDef={defaultColDef}
         columnDefs={columnDefs}
         className="ag-theme-alpine-dark"
       />
-    </RightBarLayout>
+    </TableLayoutWithBar>
   );
 };
 

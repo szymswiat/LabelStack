@@ -8,14 +8,15 @@ import 'ag-grid-community/dist/styles/ag-theme-alpine-dark.css';
 import { api, User, RoleType, ImageInstance } from '@labelstack/api';
 
 import CreateLabelTaskForm from '../../../../components/Forms/Tasks/CreateLabelTaskForm';
-import SelectedItemsTable from '../../../../components/Tables/SelectedItemsTable';
-import { defaultColDef, imageInstancesColumnDefs } from '../../../../const/ag-grid/columnDefs';
-import { selectedImagesTableHeaders } from '../../../../const/tableHeaders';
+import SelectedItemsTable from '../../../../components/tables/SelectedItemsTable';
+import { imageInstancesColumnDefs } from '../columnDefs';
+import { selectedImagesTableHeaders } from '../../../../components/tables/tableHeaders';
 import { useUserDataContext } from '../../../../contexts/UserDataContext';
 import { ImageInstanceTagValue, Tag } from '@labelstack/api/src/schemas/tag';
-import { FilterEntry } from '../../../../const/ag-grid/filters/FilterEntry';
 import { useEffectNonNull } from '../../../../utils/hooks';
-import RightBarLayout from '../../../../layouts/RightBarLayout';
+import TableLayoutWithBar from '../../../../layouts/TableLayoutWithBar';
+import { FilterEntry } from '../../../../components/cellFilters/FilterEntry';
+import { defaultColDef } from '../../labels/columnDefs';
 
 const ImagesToLabel = () => {
   const [{ token }] = useUserDataContext();
@@ -138,7 +139,7 @@ const ImagesToLabel = () => {
   }
 
   return (
-    <RightBarLayout rightBarComponent={renderRightBar()}>
+    <TableLayoutWithBar rightBarComponent={renderRightBar()}>
       <AgGridReact
         onGridReady={onGridReady}
         onSelectionChanged={onSelectionChanged}
@@ -148,7 +149,7 @@ const ImagesToLabel = () => {
         columnDefs={columnDefs}
         className="ag-theme-alpine-dark"
       />
-    </RightBarLayout>
+    </TableLayoutWithBar>
   );
 };
 

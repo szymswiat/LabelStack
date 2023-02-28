@@ -3,7 +3,7 @@ import { ICellRendererParams } from 'ag-grid-community';
 
 import { IoMdOpen } from 'react-icons/io';
 
-export const OpenImageButton = (params: ICellRendererParams) => {
+const OpenImageButton: React.FC<ICellRendererParams> = (params) => {
   const openImage = () => {
     window.open(`/viewer?imageInstanceIds=${params.data.id}`);
   };
@@ -14,3 +14,5 @@ export const OpenImageButton = (params: ICellRendererParams) => {
     </button>
   );
 };
+
+export default OpenImageButton;

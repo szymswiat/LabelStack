@@ -13,13 +13,13 @@ import {
   Task,
   taskPriorityRepresentation,
   taskStatusRepresentation,
-  TaskType,
   taskTypeRepresentation
 } from '@labelstack/api';
 
-import { defaultColDef, taskColumnDefs, unassignedTaskColumnDefs } from '../../../const/ag-grid/columnDefs';
+import { taskColumnDefs, unassignedTaskColumnDefs } from './columnDefs';
 import { useUserDataContext } from '../../../contexts/UserDataContext';
 import { useEffectNonNull } from '../../../utils/hooks';
+import { defaultColDef } from '../helpers';
 
 interface TasksTableProps {
   tasks: Task[];
@@ -115,11 +115,12 @@ const TasksTable: React.FC<TasksTableProps> = ({ tasks, unassigned, refreshTasks
   );
 
   return (
-    <div className="flex flex-row h-full w-full overflow-auto">
-      <div className="w-full ag-theme-alpine-dark">
-        <AgGridReact rowData={tasks} defaultColDef={defaultColDef} columnDefs={columnDefs} />
-      </div>
-    </div>
+    <AgGridReact
+      rowData={tasks}
+      defaultColDef={defaultColDef}
+      columnDefs={columnDefs}
+      className="ag-theme-alpine-dark w-full full"
+    />
   );
 };
 

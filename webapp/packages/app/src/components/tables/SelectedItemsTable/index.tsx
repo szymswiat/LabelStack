@@ -1,5 +1,5 @@
 import React from 'react';
-import { TableColumnInfo } from '../../../const/tableHeaders';
+import { TableColumnInfo } from '../tableHeaders';
 import { IoMdOpen } from 'react-icons/io';
 import classNames from 'classnames';
 import PanelButton from '@labelstack/viewer/src/ui/components/PanelButton';

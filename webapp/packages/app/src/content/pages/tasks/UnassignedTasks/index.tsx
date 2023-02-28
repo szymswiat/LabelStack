@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 
 import { api, Task, TaskStatus } from '@labelstack/api';
 import { useUserDataContext } from '../../../../contexts/UserDataContext';
-import RightBarLayout from '../../../../layouts/RightBarLayout';
-import TasksTable from '../../../../components/Tables/TasksTable';
+import TableLayout from '../../../../layouts/TableLayout';
+import TasksTable from '../../../../components/tables/TasksTable';
 
 export interface UnassignedTasksProps {}
 
@@ -20,14 +20,10 @@ const UnassignedTasks: React.FC<UnassignedTasksProps> = ({}) => {
     loadTasks();
   }, []);
 
-  function renderRightBarComponent(): React.ReactNode {
-    return <></>;
-  }
-
   return (
-    <RightBarLayout rightBarComponent={renderRightBarComponent()}>
+    <TableLayout>
       <TasksTable refreshTasks={loadTasks} tasks={tasks} unassigned={true} />
-    </RightBarLayout>
+    </TableLayout>
   );
 };
 
