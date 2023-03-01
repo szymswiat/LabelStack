@@ -3,8 +3,11 @@ import { useUserDataContext } from '../../../../contexts/UserDataContext';
 
 import ManageUserForm, { ManageUserFormMode } from '../../../../components/Forms/Users/ManageUserForm';
 import { api, Role } from '@labelstack/api';
+import EmptyLayout from '../../../../layouts/EmptyLayout';
 
-const CreateUser = () => {
+interface CreateUserProps {}
+
+const CreateUser: React.FC<CreateUserProps> = ({}) => {
   const [{ token }] = useUserDataContext();
   const [roles, setRoles] = useState<Role[]>([]);
 
@@ -18,7 +21,11 @@ const CreateUser = () => {
     getRoles();
   }, []);
 
-  return <ManageUserForm mode={ManageUserFormMode.CREATE} roles={roles} />;
+  return (
+    <EmptyLayout>
+      <ManageUserForm mode={ManageUserFormMode.CREATE} roles={roles} />
+    </EmptyLayout>
+  );
 };
 
 export default CreateUser;

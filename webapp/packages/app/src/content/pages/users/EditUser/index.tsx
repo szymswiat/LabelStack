@@ -4,6 +4,7 @@ import { api, User, Role } from '@labelstack/api';
 import { useUserDataContext } from '../../../../contexts/UserDataContext';
 import { useQuery } from '../../../../utils/hooks';
 import ManageUserForm, { ManageUserFormMode } from '../../../../components/Forms/Users/ManageUserForm';
+import EmptyLayout from '../../../../layouts/EmptyLayout';
 
 const EditUser = () => {
   const [{ user, token }] = useUserDataContext();
@@ -39,7 +40,11 @@ const EditUser = () => {
     getUserById();
   }, [userId]);
 
-  return <ManageUserForm mode={ManageUserFormMode.UPDATE} roles={roles} userToUpdate={userToUpdate} />;
+  return (
+    <EmptyLayout>
+      <ManageUserForm mode={ManageUserFormMode.UPDATE} roles={roles} userToUpdate={userToUpdate} />
+    </EmptyLayout>
+  );
 };
 
 export default EditUser;

@@ -4,7 +4,6 @@ import { IconType } from 'react-icons';
 import getMenuItems, { MenuSection } from './items';
 import { useUserDataContext } from '../../contexts/UserDataContext';
 import classNames from 'classnames';
-import LayoutCard from '@labelstack/viewer/src/components/LayoutCard';
 import { useEffectNonNull } from '../../utils/hooks';
 
 function Sidebar() {
@@ -33,10 +32,10 @@ function Sidebar() {
   };
 
   return (
-    <LayoutCard className="flex flex-col h-full gap-y-2 p-4">
+    <div className="flex flex-col h-full gap-y-5 p-4">
       {menuSections.map((section, index) => (
         <div key={`section_${index}`} className="flex flex-col gap-y-2">
-          <span className="font-bold mb-2 pl-2 text-lg">{section.heading}</span>
+          <span className="font-bold pl-2 text-lg">{section.heading}</span>
           {section.items.map((item, index) => (
             <div
               key={`section_item_${index}`}
@@ -61,7 +60,7 @@ function Sidebar() {
       >
         <span>Logout</span>
       </div>
-    </LayoutCard>
+    </div>
   );
 }
 
