@@ -6,7 +6,7 @@ WORKDIR /code
 
 RUN apt-get update && apt-get install -y yarn
 
-COPY package.json yarn.lock lerna.json /code/
+COPY package.json yarn.lock lerna.json tailwind.config.js /code/
 COPY packages/annotator/package.json /code/packages/annotator/package.json
 COPY packages/api/package.json /code/packages/api/package.json
 COPY packages/app/package.json /code/packages/app/package.json

@@ -1,4 +1,3 @@
-from sqlalchemy import or_
 from sqlalchemy.orm import Session, Query
 
 from app import models, schemas
