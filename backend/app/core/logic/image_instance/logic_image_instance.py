@@ -3,6 +3,7 @@ from itertools import groupby
 from sqlalchemy.orm import Session
 
 from app import models, query, schemas, crud, utils
+from app.core import logic
 from app.resources.modalities import IMAGING_MODALITIES
 from app.utils import DicomWebQidoInstance, DicomTags
 from app import resources
@@ -100,9 +101,13 @@ def filter_image_instances_for_user(
 
     for image_instance in image_instance_list:
         image_instance_new = schemas.ImageInstance.from_orm(image_instance)
-        image_instance_new.label_assignments = filter_label_assignments_for_user(
-            image_instance.label_assignments, user
-        )
+
+        if not logic.user.has_role_one_of(
+            user, [schemas.RoleType.superuser, schemas.RoleType.task_admin]
+        ):
+            image_instance_new.label_assignments = filter_label_assignments_for_user(
+                image_instance.label_assignments, user
+            )
 
         image_instance_list_new.append(image_instance_new)
 
@@ -119,8 +124,8 @@ def filter_label_assignments_for_user(
     for label_assignment in label_assignment_list:
 
         if (
-            label_assignment.parent_task is not None and
-            label_assignment.parent_task.status != schemas.TaskStatus.done
+            label_assignment.parent_task is not None
+            and label_assignment.parent_task.status != schemas.TaskStatus.done
             and label_assignment.author_id != user.id
         ):
             continue
@@ -144,11 +149,7 @@ def filter_annotations_for_user(
 
     for annotation in annotation_list:
 
-        if (
-            annotation.label_assignment.parent_task is not None and
-            annotation.label_assignment.parent_task.status != schemas.TaskStatus.done
-            and annotation.author_id != user.id
-        ):
+        if annotation.parent_task.status != schemas.TaskStatus.done and annotation.author_id != user.id:
             continue
 
         annotation_new = schemas.Annotation.from_orm(annotation)

@@ -25,6 +25,8 @@ class Annotation(Base):
     spent_time: Mapped[int] = mapped_column(sa.BigInteger, default=0, nullable=False)
     status: Mapped[int] = mapped_column(sa.Integer, nullable=False)
 
+    parent_task: Mapped["models.Task"] = relationship("Task")
+
     label_assignment: Mapped["models.LabelAssignment"] = relationship(
         "LabelAssignment", back_populates="annotations"
     )

@@ -76,7 +76,9 @@ def read_annotation_data(
     sequence: int,
     task_id: int | None = None,
     current_user: models.User = Depends(
-        deps.get_current_user_with_role([schemas.RoleType.annotator, schemas.RoleType.data_admin])
+        deps.get_current_user_with_role(
+            [schemas.RoleType.annotator, schemas.RoleType.data_admin, schemas.RoleType.task_admin]
+        )
     ),
 ):
     """
@@ -88,7 +90,9 @@ def read_annotation_data(
     if task_id is not None:
         task = crud.task.get(db, id=task_id)
         helpers.validate_access_to_task(
-            task, current_user, roles_bypassing_access=[schemas.RoleType.data_admin]
+            task,
+            current_user,
+            roles_bypassing_access=[schemas.RoleType.data_admin, schemas.RoleType.task_admin],
         )
         assert task
 
@@ -99,7 +103,7 @@ def read_annotation_data(
                 detail="User does not have access to requested image instance.",
             )
     else:
-        helpers.validate_access_by_role(current_user)
+        helpers.validate_access_by_role(current_user, [schemas.RoleType.task_admin])
 
     annotation = crud.annotation.get(db, id=annotation_id)
 

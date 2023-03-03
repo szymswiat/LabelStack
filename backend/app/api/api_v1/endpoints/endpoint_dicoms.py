@@ -40,7 +40,9 @@ def read_dicoms_for_image_instance(
     image_instance_id: int,
     task_id: int | None = None,
     current_user: models.User = Depends(
-        deps.get_current_user_with_role([schemas.RoleType.annotator, schemas.RoleType.data_admin])
+        deps.get_current_user_with_role(
+            [schemas.RoleType.annotator, schemas.RoleType.data_admin, schemas.RoleType.task_admin]
+        )
     ),
 ) -> list[models.Dicom]:
     """
@@ -51,7 +53,9 @@ def read_dicoms_for_image_instance(
 
     if task_id is not None:
         task = crud.task.get(db, id=task_id)
-        helpers.validate_access_to_task(task, current_user)
+        helpers.validate_access_to_task(
+            task, current_user, roles_bypassing_access=[schemas.RoleType.task_admin]
+        )
         assert task
 
         image_instances = logic.image_instance.get_all_image_instances_for_task(task)
@@ -62,7 +66,7 @@ def read_dicoms_for_image_instance(
             )
 
     else:
-        helpers.validate_access_by_role(current_user)
+        helpers.validate_access_by_role(current_user, [schemas.RoleType.task_admin])
 
     if not image_instance:
         raise HTTPException(

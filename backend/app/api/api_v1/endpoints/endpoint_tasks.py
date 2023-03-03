@@ -79,7 +79,9 @@ def read_tasks(
     task_type: schemas.TaskType | None = None,
     for_me: bool | None = None,
     for_user_id: int | None = None,
-    current_user: models.User = Depends(deps.get_current_user_with_role([schemas.RoleType.annotator])),
+    current_user: models.User = Depends(
+        deps.get_current_user_with_role([schemas.RoleType.annotator, schemas.RoleType.task_admin])
+    ),
 ) -> list[models.Task | schemas.Task]:
     """
     Read list of tasks filtered by following options:
@@ -96,11 +98,19 @@ def read_tasks(
 
     if id is not None:
         task = crud.task.get(db, id=id)
-        helpers.validate_access_to_task(task, current_user)
+        helpers.validate_access_to_task(task, current_user, [schemas.RoleType.task_admin])
         assert task
 
         return [helpers.convert_task_nested_to_ids(task)]
     query_out = query.task.query(db)
+
+    if not for_me and not logic.user.has_role_one_of(
+        current_user, [schemas.RoleType.superuser, schemas.RoleType.task_admin]
+    ):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="User is not permitted fetch all tasks.",
+        )
 
     if for_me:
         query_out = query.task.query_by_user(db, user_id=current_user.id, query_in=query_out)
