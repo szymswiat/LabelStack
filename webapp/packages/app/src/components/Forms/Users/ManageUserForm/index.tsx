@@ -61,22 +61,21 @@ const ManageUserForm = ({ mode, roles, userToUpdate }: ManageUserFormParams) => 
     }
   }
 
-  function createUser() {
+  async function createUser() {
     if (isFormValid()) {
       let newUser = { ...formUser };
-      api
-        .createUser(token, newUser as UserCreate)
-        .then(() => {
-          navigate('/users/all');
-          showSuccessNotification(undefined, 'User created successfully!');
-        })
-        .catch((error: any) => {
-          showNotificationWithApiError(error);
-        });
+      try {
+        await api.createUser(token, newUser as UserCreate);
+        navigate('/users/all');
+        showSuccessNotification(undefined, 'User created successfully!');
+      } catch (error) {
+        showNotificationWithApiError(error);
+      }
     }
   }
 
-  function updateUser() {
+
+  async function updateUser() {
     if (isFormValid()) {
       let modifiedUser: UserUpdate = {};
 
@@ -86,18 +85,16 @@ const ManageUserForm = ({ mode, roles, userToUpdate }: ManageUserFormParams) => 
       if (checkIfRolesChanged()) modifiedUser.role_ids = formUser.role_ids;
       if (formUser.is_active != userToUpdate.is_active) modifiedUser.is_active = formUser.is_active;
 
-      api
-        .updateUser(token, userToUpdate.id, modifiedUser)
-        .then(() => {
-          if (isLoggedInUserSuperAdmin) {
-            navigate('/users/all');
-          }
-          reloadUserData();
-          showSuccessNotification(undefined, 'User updated successfully!');
-        })
-        .catch((error: any) => {
-          showNotificationWithApiError(error);
-        });
+      try {
+        await api.updateUser(token, userToUpdate.id, modifiedUser);
+        if (isLoggedInUserSuperAdmin) {
+          navigate('/users/all');
+        }
+        reloadUserData();
+        showSuccessNotification(undefined, 'User updated successfully!');
+      } catch (error) {
+        showNotificationWithApiError(error);
+      }
     }
   }
 

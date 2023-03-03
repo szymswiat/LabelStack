@@ -35,15 +35,14 @@ const ReviewPanel: React.FC<ReviewPanelProps> = () => {
     boundResult: AnnotationReviewResult,
     colorClassName?: string,
   ) {
-    function updateReviewResult() {
-      api
-        .updateAnnotationReview(token, review, boundResult, '')
-        .then(() => {
-          refreshTaskObjects();
-        })
-        .catch((reason) => {
-          showWarningNotification('Warning', reason.response.data.detail);
-        });
+
+    async function updateReviewResult() {
+      try {
+        await api.updateAnnotationReview(token, review, boundResult, '');
+        refreshTaskObjects();
+      } catch (reason) {
+        showWarningNotification('Warning', reason.response.data.detail);
+      }
     }
 
     return (

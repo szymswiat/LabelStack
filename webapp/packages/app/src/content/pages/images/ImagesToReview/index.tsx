@@ -28,32 +28,25 @@ const ImagesToReview = () => {
   const [annotations, setAnnotations] = useState<Annotation[]>();
   const [selectedAnnotations, setSelectedAnnotations] = useState<Annotation[]>([]);
 
-  const loadUsers = () => {
-    const allUsersRequest = api.getUsers(token);
-    if (allUsersRequest) {
-      allUsersRequest.then((response) => {
-        const responseUsers = response.data as User[];
-        setUsers(responseUsers);
+  async function loadUsers() {
+    const { data: users } = await api.getUsers(token);
+    setUsers(users);
 
-        const responseAnnotators = users.filter((user) => {
-          return user.roles.some((role) => {
-            return role.type === RoleType.annotator;
-          });
-        });
-        setAllAnnotators(responseAnnotators);
-        setAvailableAnnotators(responseAnnotators);
+    const annotators = users.filter((user) => {
+      return user.roles.some((role) => {
+        return role.type === RoleType.annotator;
       });
-    }
-  };
-
-  const loadAnnotations = () => {
-    api.getAnnotations(token, undefined, undefined, true, true, undefined).then((response) => {
-      const responseAnnotations: Annotation[] = response.data as Annotation[];
-      setAnnotations(responseAnnotations);
     });
-  };
+    setAllAnnotators(annotators);
+    setAvailableAnnotators(annotators);
+  }
 
-  const getAvailableAnnotators = (selectedRows: Annotation[]) => {
+  async function loadAnnotations() {
+    const { data: annotations } = await api.getAnnotations(token, undefined, undefined, true, true, undefined);
+    setAnnotations(annotations);
+  }
+
+  function getAvailableAnnotators(selectedRows: Annotation[]) {
     const idsFromSelectedAnnotations = selectedRows.map((annotation) => {
       return annotation.author_id;
     });
@@ -62,9 +55,9 @@ const ImagesToReview = () => {
       return !uniqueIds.has(annotator.id);
     });
     setAvailableAnnotators(annotators);
-  };
+  }
 
-  const setColumnDefinitions = () => {
+  function setColumnDefinitions() {
     const colDefs: ColDef[] = annotationColumnDefs.map((columnDef) => {
       if (columnDef.field == 'author_id') {
         columnDef.cellRendererParams = { users: users };
@@ -92,9 +85,9 @@ const ImagesToReview = () => {
     });
 
     setColumnDefs(colDefs);
-  };
+  }
 
-  const onSelectionChanged = () => {
+  function onSelectionChanged() {
     if (gridApi) {
       const selectedRows = gridApi.getSelectedRows();
       setSelectedAnnotations(selectedRows);
@@ -102,7 +95,7 @@ const ImagesToReview = () => {
     }
   };
 
-  const onGridReady = (params: any) => {
+  function onGridReady(params: any) {
     setGridApi(params.api);
   };
 

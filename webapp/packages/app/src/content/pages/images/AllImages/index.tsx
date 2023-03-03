@@ -15,6 +15,7 @@ import { GridApi } from 'ag-grid-community';
 import SelectedItemsTable from '../../../../components/tables/SelectedItemsTable';
 import { selectedImagesTableHeaders } from '../../../../components/tables/tableHeaders';
 import { defaultColDef } from '../../labels/columnDefs';
+import { useEffectAsync } from '../../../../utils/hooks';
 
 const AllImages: React.FC = () => {
   const [{ token }] = useUserDataContext();
@@ -23,16 +24,14 @@ const AllImages: React.FC = () => {
   const [gridApi, setGridApi] = useState<GridApi>();
   const [selectedImages, setSelectedImages] = useState<ImageInstance[]>([]);
 
-  useEffect(() => {
-    api
-      .getImageInstances(token, false, false)
-      .then((response: AxiosResponse) => {
-        const responseImages = response.data as ImageInstance[];
-        setImages(responseImages);
-      })
-      .catch((error) => {
-        showNotificationWithApiError(error);
-      });
+  useEffectAsync(async () => {
+
+    try {
+      const { data: responseImages } = await api.getImageInstances(token, false, false);
+      setImages(responseImages);
+    } catch (error) {
+      showNotificationWithApiError(error);
+    }
   }, []);
 
   const onSelectionChanged = () => {

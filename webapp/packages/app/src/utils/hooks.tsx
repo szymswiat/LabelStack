@@ -56,6 +56,23 @@ const useEffectNonNull = (effect: EffectCallback, deps: any[], nonNullDeps: any[
   }, [...deps, ...nonNullDeps]);
 };
 
+const useEffectNonNullAsync = (effect: () => Promise<void>, deps: any[], nonNullDeps: any[]) => {
+  useEffect(() => {
+    for (const dep of nonNullDeps) {
+      if (dep == null) {
+        return;
+      }
+    }
+    effect();
+  }, [...deps, ...nonNullDeps]);
+};
+
+const useEffectAsync = (effect: () => Promise<void>, deps: any[]) => {
+  useEffect(() => {
+    effect();
+  }, deps);
+};
+
 function useLocalStorage<T>(key, initialValue: T): [T, (value: T) => void] {
   // State to store our value
   // Pass initial state function to useState so logic is only executed once
@@ -114,4 +131,13 @@ function useDocumentTitle(title, prevailOnUnmount = false) {
   );
 }
 
-export { useQuery, usePrevious, useEffectDebug, useEffectNonNull, useLocalStorage, useDocumentTitle };
+export {
+  useQuery,
+  usePrevious,
+  useEffectDebug,
+  useEffectNonNull,
+  useEffectNonNullAsync,
+  useEffectAsync,
+  useLocalStorage,
+  useDocumentTitle
+};

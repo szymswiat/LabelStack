@@ -44,23 +44,22 @@ const AssignLabelsPanel: React.FC<AssignLabelsPanelProps> = () => {
 
   useHotkeys(saveHotkeys.join(','), uploadCheckedAssignments, [uploadCheckedAssignments]);
 
-  function uploadCheckedAssignments() {
+  async function uploadCheckedAssignments() {
     const labelIdsToCreate = Object.entries(checkboxesState)
       .filter(([, isChecked]) => isChecked)
       .map(([labelId]) => Number(labelId));
     const labelIdsToRemove = Object.entries(checkboxesState)
       .filter(([, isChecked]) => !isChecked)
       .map(([labelId]) => Number(labelId));
-    api
-      .modifyLabelAssignments(token, labelIdsToCreate, labelIdsToRemove, imageInstance, task)
-      .then(() => {
-        setContentModified(false);
-        refreshTaskObjects();
-      })
-      .catch((reason) => {
-        const message = reason.response.data.detail;
-        showDangerNotification('Error', message);
-      });
+
+    try {
+      await api.modifyLabelAssignments(token, labelIdsToCreate, labelIdsToRemove, imageInstance, task);
+      setContentModified(false);
+      refreshTaskObjects();
+    } catch (reason) {
+      const message = reason.response.data.detail;
+      showDangerNotification('Error', message);
+    }
   }
 
   function renderCheckboxCircle(label: Label) {

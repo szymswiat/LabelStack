@@ -24,28 +24,22 @@ const ManageLabels: React.FC<ManageLabelsProps> = ({}) => {
   const [labelTypes, setLabelTypes] = useState<LabelType[]>([]);
   const [columnDefs, setColumnDefs] = useState<ColDef[]>([]);
 
-  const loadLabels = () => {
-    api.getLabels(token).then((response: AxiosResponse) => {
-      const responseLabels = response.data as Label[];
-      setLabels(responseLabels);
-    });
-  };
+  async function loadLabels() {
+    const { data: responseLabels } = await api.getLabels(token);
+    setLabels(responseLabels);
+  }
 
-  const loadAnnotationTypes = () => {
-    api.getAnnotationTypes(token).then((response: AxiosResponse) => {
-      const responseAnnotationTypes = response.data as AnnotationType[];
-      setAnnotationTypes(responseAnnotationTypes);
-    });
-  };
+  async function loadAnnotationTypes() {
+    const { data: responseAnnotationTypes } = await api.getAnnotationTypes(token);
+    setAnnotationTypes(responseAnnotationTypes);
+  }
 
-  const loadLabelTypes = () => {
-    api.getLabelTypes(token).then((response: AxiosResponse) => {
-      const responseLabelTypes = response.data as LabelType[];
-      setLabelTypes(responseLabelTypes);
-    });
-  };
+  async function loadLabelTypes() {
+    const { data: responseLabelTypes } = await api.getLabelTypes(token);
+    setLabelTypes(responseLabelTypes);
+  }
 
-  const setColumnDefinitions = () => {
+  function setColumnDefinitions() {
     const filterEntries = annotationTypes.map((annotationType) => ({
       label: annotationType.name,
       id: annotationType.id
@@ -79,7 +73,7 @@ const ManageLabels: React.FC<ManageLabelsProps> = ({}) => {
     });
 
     setColumnDefs(colDefs);
-  };
+  }
 
   useEffect(() => {
     loadAnnotationTypes();
@@ -90,7 +84,7 @@ const ManageLabels: React.FC<ManageLabelsProps> = ({}) => {
   useEffectNonNull(
     () => {
       // if (annotationTypes.length > 0 && labelTypes.length > 0) {
-        setColumnDefinitions();
+      setColumnDefinitions();
       // }
     },
     [],

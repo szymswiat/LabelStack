@@ -29,42 +29,35 @@ const ImagesToAnnotate = () => {
   const [labelAssignments, setLabelAssignments] = useState<LabelAssignment[]>();
   const [selectedLabelAssignments, setSelectedLabelAssignments] = useState<LabelAssignment[]>([]);
 
-  const loadUsers = () => {
-    const allUsersRequest = api.getUsers(token);
-    if (allUsersRequest) {
-      allUsersRequest.then((response) => {
-        const responseUsers = response.data as User[];
-        setUsers(responseUsers);
+  async function loadUsers() {
+    const { data: responseUsers } = await api.getUsers(token);
+    setUsers(responseUsers);
 
-        const responseAnnotators = responseUsers.filter((user) => {
-          return user.roles.some((role) => {
-            return role.type === RoleType.annotator;
-          });
-        });
-        setAnnotators(responseAnnotators);
+    const responseAnnotators = responseUsers.filter((user) => {
+      return user.roles.some((role) => {
+        return role.type === RoleType.annotator;
       });
-    }
-  };
-
-  const loadLabels = () => {
-    api.getLabels(token).then((response) => {
-      const responseLabels: Label[] = response.data as Label[];
-      setLabels(responseLabels);
     });
-  };
+    setAnnotators(responseAnnotators);
+  }
 
-  const loadLabelAssignments = () => {
-    api.getLabelAssignments(token, true, true, [AnnotationTypes.segment]).then((response) => {
-      let responseLabelAssignments = response.data as LabelAssignment[];
+  async function loadLabels() {
+    const { data: responseLabels } = await api.getLabels(token);
+    setLabels(responseLabels);
+  }
 
-      responseLabelAssignments = responseLabelAssignments.map((labelAssignment) => {
-        const label = labels.find((label) => label.id == labelAssignment.label_id);
-        return { ...labelAssignment, label: label.name };
-      }) as any;
+  async function loadLabelAssignments() {
+    let { data: responseLabelAssignments } = await api.getLabelAssignments(token, true, true, [
+      AnnotationTypes.segment
+    ]);
 
-      setLabelAssignments(responseLabelAssignments);
+    responseLabelAssignments = responseLabelAssignments.map((labelAssignment) => {
+      const label = labels.find((label) => label.id == labelAssignment.label_id);
+      return { ...labelAssignment, label: label.name };
     });
-  };
+
+    setLabelAssignments(responseLabelAssignments);
+  }
 
   const setColumnDefinitions = () => {
     const colDefs: ColDef[] = labelAssignmentColumnDefs.map((columnDef) => {

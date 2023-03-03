@@ -22,7 +22,7 @@ const CreateAnnotationReviewTaskForm = ({
 }: CreateAnnotationReviewTaskFormParams) => {
   const [{ token }] = useUserDataContext();
 
-  const createTask: CreateTaskFunction = ({
+  const createTask: CreateTaskFunction = async ({
     e,
     annotatorId,
     taskName,
@@ -47,21 +47,19 @@ const CreateAnnotationReviewTaskForm = ({
         annotation_ids: selectedAnnotations.map((annotation) => annotation.id)
       };
 
-      api
-        .createTask(token, newTask)
-        .then((_) => {
-          const form = e.target as HTMLFormElement;
-          form.reset();
-          clearForm();
-          showSuccessNotification(undefined, 'Task created successfully!');
-          reloadAnnotations();
-          if (gridApi) gridApi.deselectAll();
-        })
-        .catch((error) => {
-          showNotificationWithApiError(error);
-        });
+      try {
+        await api.createTask(token, newTask);
+        const form = e.target as HTMLFormElement;
+        form.reset();
+        clearForm();
+        showSuccessNotification(undefined, 'Task created successfully!');
+        reloadAnnotations();
+        if (gridApi) gridApi.deselectAll();
+      } catch (error) {
+        showNotificationWithApiError(error);
+      }
     }
-  };
+  }
 
   function isFormValidTaskSpecific() {
     return !(selectedAnnotations === undefined || selectedAnnotations.length <= 0);

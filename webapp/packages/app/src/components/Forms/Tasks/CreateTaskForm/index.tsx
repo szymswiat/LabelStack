@@ -15,7 +15,7 @@ export interface CreateTaskFunctionParams {
   clearForm: () => void;
 }
 
-export type CreateTaskFunction = (params: CreateTaskFunctionParams) => void;
+export type CreateTaskFunction = (params: CreateTaskFunctionParams) => Promise<void>;
 
 export interface CreateTaskFormProps {
   annotators: User[];

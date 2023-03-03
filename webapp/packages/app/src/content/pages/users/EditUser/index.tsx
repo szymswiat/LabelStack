@@ -13,22 +13,21 @@ const EditUser = () => {
   const [userToUpdate, setUserToUpdate] = useState<User>();
   const [roles, setRoles] = useState<Role[]>([]);
 
-  const getUserById = () => {
+  async function getUserById() {
     if (userId != null) {
-      api.getUser(token, userId).then((response) => {
-        setUserToUpdate(response.data as User);
-      });
+      const { data: responseUser } = await api.getUser(token, userId);
+      setUserToUpdate(responseUser);
     }
-  };
+  }
 
-  const getRoles = () => {
-    api.getRoles(token).then((response) => {
-      setRoles(response.data as Role[]);
-    });
-  };
+  async function getRoles() {
+    const { data: responseRoles } = await api.getRoles(token);
+    setRoles(responseRoles);
+  }
 
   useEffect(() => {
     getRoles();
+
     if (query.has('userId') === false) {
       setUserToUpdate(user);
     } else {

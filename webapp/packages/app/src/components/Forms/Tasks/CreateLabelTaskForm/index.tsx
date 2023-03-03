@@ -22,7 +22,7 @@ const CreateLabelTaskForm: React.FC<CreateLabelTaskFormProps> = ({
 }) => {
   const [{ token }] = useUserDataContext();
 
-  const createTask: CreateTaskFunction = ({
+  const createTask: CreateTaskFunction = async ({
     e,
     annotatorId,
     taskName,
@@ -33,7 +33,7 @@ const CreateLabelTaskForm: React.FC<CreateLabelTaskFormProps> = ({
   }) => {
     e.preventDefault();
 
-    if (isGenericFormValid() && isFormValidTaskSpecific) {
+    if (isGenericFormValid() && isFormValidTaskSpecific()) {
       const newTask: Task = {
         assigned_user_id: annotatorId,
         status: annotatorId ? TaskStatus.open : TaskStatus.unassigned,
@@ -45,19 +45,17 @@ const CreateLabelTaskForm: React.FC<CreateLabelTaskFormProps> = ({
         image_instance_ids: selectedImages.map((image) => image.id)
       };
 
-      api
-        .createTask(token, newTask)
-        .then((_) => {
-          const form = e.target as HTMLFormElement;
-          form.reset();
-          clearForm();
-          showSuccessNotification(undefined, 'Task created successfully!');
-          reloadImages();
-          if (gridApi) gridApi.deselectAll();
-        })
-        .catch((error) => {
-          showNotificationWithApiError(error);
-        });
+      try {
+        await api.createTask(token, newTask);
+        const form = e.target as HTMLFormElement;
+        form.reset();
+        clearForm();
+        showSuccessNotification(undefined, 'Task created successfully!');
+        reloadImages();
+        if (gridApi) gridApi.deselectAll();
+      } catch (error) {
+        showNotificationWithApiError(error);
+      }
     }
   };
 

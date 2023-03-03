@@ -1,24 +1,19 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 import { api, User } from '@labelstack/api';
 import UsersTable from '../../../../components/tables/UsersTable';
 import { useUserDataContext } from '../../../../contexts/UserDataContext';
 import TableLayout from '../../../../layouts/TableLayout';
+import { useEffectAsync } from '../../../../utils/hooks';
 
-const AllUsers = () => {
+const AllUsers: React.FC = () => {
   const [{ token }] = useUserDataContext();
 
   const [users, setUsers] = useState<User[]>([]);
 
-  const loadUsers = () => {
-    api.getUsers(token).then((response) => {
-      const responseUsers = response.data as User[];
-      setUsers(responseUsers);
-    });
-  };
-
-  useEffect(() => {
-    loadUsers();
+  useEffectAsync(async () => {
+    const { data: responseUsers } = await api.getUsers(token);
+    setUsers(responseUsers);
   }, []);
 
   return (

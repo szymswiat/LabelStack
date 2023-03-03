@@ -9,7 +9,7 @@ import { useViewerDataContext } from '../../contexts/ViewerDataContext';
 import { useNavigate } from 'react-router';
 import vtkImageData from '@kitware/vtk.js/Common/DataModel/ImageData';
 import { buildLabelMap, decodeLabelMap } from '../../utils/labelMapUtils';
-import { useEffectNonNull } from '@labelstack/app/src/utils/hooks';
+import { useEffectAsync, useEffectNonNull } from '@labelstack/app/src/utils/hooks';
 
 interface ViewerDataLoaderProps {
   imageInstanceIds: number[];
@@ -97,26 +97,23 @@ const ViewerDataLoader: React.FC<ViewerDataLoaderProps> = ({ imageInstanceIds, i
     prevImageInstanceId.current = imageInstance.id;
   }
 
-  useEffect(() => {
+  useEffectAsync(async () => {
     if (String(prevImageInstanceIds.current) == String(imageInstanceIds)) {
       return;
     }
-    api.getImageInstances(token, false, false, imageInstanceIds).then((response) => {
-      const { data: imageInstances } = response;
-      const imageInstancesObject = Object.fromEntries(
-        imageInstances.map((imageInstance) => [imageInstance.id, imageInstance])
-      );
-      setViewerImageInstances(imageInstancesObject);
+    const { data: imageInstances } = await api.getImageInstances(token, false, false, imageInstanceIds);
+    const imageInstancesObject = Object.fromEntries(
+      imageInstances.map((imageInstance) => [imageInstance.id, imageInstance])
+    );
+    setViewerImageInstances(imageInstancesObject);
 
-      routeToInstance(imageInstancesObject);
-    });
+    routeToInstance(imageInstancesObject);
     prevImageInstanceIds.current = imageInstanceIds;
   }, [imageInstanceIds]);
 
-  useEffect(() => {
-    api.getLabels(token).then((response) => {
-      setAllLabels(Object.fromEntries(response.data.map((label) => [label.id, label])));
-    });
+  useEffectAsync(async () => {
+    const { data: labels } = await api.getLabels(token);
+    setAllLabels(Object.fromEntries(labels.map((label) => [label.id, label])));
   }, []);
 
   useEffectNonNull(

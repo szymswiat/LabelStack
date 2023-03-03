@@ -30,49 +30,45 @@ const ImagesToLabel = () => {
   const [images, setImages] = useState<ImageInstance[]>([]);
   const [selectedImages, setSelectedImages] = useState<ImageInstance[]>([]);
 
-  const loadAnnotators = () => {
-    api.getUsers(token).then((response) => {
-      const users = response.data as User[];
-      const reponseAnnotators = users.filter((user) => {
-        return user.roles.some((role) => {
-          return role.type === RoleType.annotator;
+  async function loadAnnotators() {
+    const { data: users } = await api.getUsers(token);
+    const reponseAnnotators = users.filter((user) => {
+      return user.roles.some((role) => {
+        return role.type === RoleType.annotator;
+      });
+    });
+    setAnnotators(reponseAnnotators);
+  }
+
+  async function loadImages() {
+    const { data: responseImages } = await api.getImageInstances(token, true, true);
+    let tags = new Array<Tag>();
+    responseImages.forEach((image: ImageInstance) => {
+      if (image.tags && image.tags.length > 0) {
+        image.tags.forEach((tagValue: ImageInstanceTagValue) => {
+          tags.push(tagValue.tag);
         });
-      });
-      setAnnotators(reponseAnnotators);
+      }
     });
-  };
 
-  const loadImages = () => {
-    api.getImageInstances(token, true, true).then((response) => {
-      const responseImages = response.data as ImageInstance[];
-      let tags = new Array<Tag>();
-      responseImages.forEach((image: ImageInstance) => {
-        if (image.tags && image.tags.length > 0) {
-          image.tags.forEach((tagValue: ImageInstanceTagValue) => {
-            tags.push(tagValue.tag);
-          });
-        }
-      });
+    // @ts-ignore
+    const uniqueTags = [...new Map(tags.map((tag) => [tag.id, tag])).values()];
+    setImageTags(Array.from(uniqueTags));
+    setImages(responseImages);
+  }
 
-      // @ts-ignore
-      const uniqueTags = [...new Map(tags.map((tag) => [tag.id, tag])).values()];
-      setImageTags(Array.from(uniqueTags));
-      setImages(responseImages);
-    });
-  };
-
-  const onSelectionChanged = () => {
+  function onSelectionChanged() {
     if (gridApi) {
       const selectedRows = gridApi.getSelectedRows();
       setSelectedImages(selectedRows);
     }
-  };
+  }
 
-  const onGridReady = (params: any) => {
+  function onGridReady(params: any) {
     setGridApi(params.api);
-  };
+  }
 
-  const setColumnDefinitions = () => {
+  function setColumnDefinitions() {
     const tagFilterEntries: FilterEntry[] = imageTags.map((tag) => {
       return {
         label: tag.name,
@@ -98,7 +94,7 @@ const ImagesToLabel = () => {
     });
 
     setColumnDefs(colDefs);
-  };
+  }
 
   useEffect(() => {
     loadAnnotators();

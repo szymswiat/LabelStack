@@ -12,19 +12,16 @@ interface TakeTaskButtonProps extends ICellRendererParams {
 const TakeTaskButton: React.FC<TakeTaskButtonProps> = (params) => {
   const [{ user, token }] = useUserDataContext();
 
-  const assignTaskToCurrentUser = () => {
-    const task = params.data as Task;
-
-    api
-      .changeTaskOwner(token, task.id, user.id)
-      .then(() => {
-        showSuccessNotification(undefined, 'Task assigned successfully!');
-        params.reloadData();
-      })
-      .catch((error) => {
-        showNotificationWithApiError(error);
-      });
-  };
+  async function assignTaskToCurrentUser() {
+    try {
+      const task = params.data as Task;
+      await api.changeTaskOwner(token, task.id, user.id);
+      showSuccessNotification(undefined, 'Task assigned successfully!');
+      params.reloadData();
+    } catch (error) {
+      showNotificationWithApiError(error);
+    }
+  }
 
   return (
     <button

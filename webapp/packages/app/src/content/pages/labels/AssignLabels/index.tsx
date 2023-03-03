@@ -16,6 +16,7 @@ import { selectedImagesTableHeaders } from '../../../../components/tables/tableH
 import { defaultColDef } from '../../labels/columnDefs';
 import { imageInstancesColumnDefs } from '../../images/columnDefs';
 import AssignLabelsForm from '../../../../components/Forms/Labels/AssignLabels';
+import { useEffectAsync } from '../../../../utils/hooks';
 
 export interface AssignLabelsProps {}
 
@@ -27,33 +28,28 @@ const AssignLabels: React.FC<AssignLabelsProps> = ({}) => {
   const [selectedImages, setSelectedImages] = useState<ImageInstance[]>([]);
   const [labels, setLabels] = useState<Label[]>();
 
-  useEffect(() => {
-    api
-      .getImageInstances(token, false, false)
-      .then((response: AxiosResponse) => {
-        const responseImages = response.data as ImageInstance[];
-        setImages(responseImages);
-      })
-      .catch((error) => {
-        showNotificationWithApiError(error);
-      });
+  useEffectAsync(async () => {
+    try {
+      const { data: responseImages } = await api.getImageInstances(token, false, false);
+      setImages(responseImages);
 
-    api.getLabels(token).then((response: AxiosResponse) => {
-      const responseLabels = response.data as Label[];
+      const { data: responseLabels } = await api.getLabels(token);
       setLabels(responseLabels);
-    });
+    } catch (error) {
+      showNotificationWithApiError(error);
+    }
   }, []);
 
-  const onSelectionChanged = () => {
+  function onSelectionChanged() {
     if (gridApi) {
       const selectedRows = gridApi.getSelectedRows();
       setSelectedImages(selectedRows);
     }
-  };
+  }
 
-  const onGridReady = (params: any) => {
+  function onGridReady(params: any) {
     setGridApi(params.api);
-  };
+  }
 
   function renderRightBar(): React.ReactNode {
     return (

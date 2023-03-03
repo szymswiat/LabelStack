@@ -11,16 +11,15 @@ const TaskStatusControl: React.FC<TaskStatusControlProps> = () => {
   const [{ task, availableTaskStatuses }, { refreshTask, refreshTaskObjects }] = useAnnotatorDataContext();
   const [{ token }] = useUserDataContext();
 
-  function changeTaskStatus(status: number) {
-    api
-      .changeTaskStatus(token, task.id, status)
-      .then((response) => {
-        refreshTask();
-        refreshTaskObjects();
-      })
-      .catch((reason) => {
-        showWarningNotification('Warning', reason.response.data.detail);
-      });
+  async function changeTaskStatus(status: number) {
+
+    try {
+      await api.changeTaskStatus(token, task.id, status);
+      refreshTask();
+      refreshTaskObjects();
+    } catch (reason) {
+      showWarningNotification('Warning', reason.response.data.detail);
+    }
   }
 
   return (

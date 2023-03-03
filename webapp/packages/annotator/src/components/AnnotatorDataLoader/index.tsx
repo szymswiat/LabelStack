@@ -11,6 +11,7 @@ import LabelAssignmentTaskDataLoader from './LabelAssignmentTaskDataLoader';
 import { ImageInstancesObject } from '@labelstack/api';
 import { useAnnotatorLayoutContext } from '../../contexts/AnnotatorLayoutContext';
 import { useEditedAnnotationDataContext } from '../../contexts/EditedAnnotationDataContext';
+import { useEffectAsync } from '@labelstack/app/src/utils/hooks';
 
 interface AnnotatorDataLoaderProps {
   taskId: number;
@@ -46,39 +47,37 @@ const AnnotatorDataLoader: React.FC<AnnotatorDataLoaderProps> = ({ taskId, image
     navigate(`?taskId=${taskId}&imageInstanceId=${imageInstanceIdToSet}`);
   }
 
-  useEffect(() => {
-    api
-      .getTasks(token, taskId)
-      .then((response) => {
-        const task = response.data[0];
-        setEditModeLocked(task.status !== TaskStatus.inProgress);
-        if (task.status !== TaskStatus.inProgress) {
-          setEditedLabelMapId(null);
-        }
+  useEffectAsync(async () => {
+    try {
+      const { data: tasks } = await api.getTasks(token, taskId);
+      const task = tasks[0];
 
-        api.getAvailableStatusesForTask(token, task).then((response) => {
-          setTask(task);
-          setAvailableTaskStatuses(response.data.statuses);
-        });
-      })
-      .catch((reason) => {
-        const message = reason.response.data.detail;
-        navigate('/error', { state: { message } });
-      });
+      setEditModeLocked(task.status !== TaskStatus.inProgress);
+      if (task.status !== TaskStatus.inProgress) {
+        setEditedLabelMapId(null);
+      }
+
+      const { data: statuses } = await api.getAvailableStatusesForTask(token, task);
+
+      setTask(task);
+      setAvailableTaskStatuses(statuses.statuses);
+    } catch (reason) {
+      const message = reason.response.data.detail;
+      navigate('/error', { state: { message } });
+    }
   }, [taskId, taskTrigger]);
 
-  useEffect(() => {
+  useEffectAsync(async () => {
     if (!task) {
       return;
     }
-    api.getImageInstancesForTask(token, task.id as number).then((response) => {
-      const imageInstances = response.data;
-      const newTaskImageInstances = Object.fromEntries(imageInstances.map((instance) => [instance.id, instance]));
-      setTaskImageInstances(newTaskImageInstances);
-      if (taskObjectsTrigger === 0) {
-        routeToInstance(newTaskImageInstances);
-      }
-    });
+
+    const { data: imageInstances } = await api.getImageInstancesForTask(token, task.id as number);
+    const newTaskImageInstances = Object.fromEntries(imageInstances.map((instance) => [instance.id, instance]));
+    setTaskImageInstances(newTaskImageInstances);
+    if (taskObjectsTrigger === 0) {
+      routeToInstance(newTaskImageInstances);
+    }
     // TODO: called twice on task status change (triggered by separate changes of both dependencies)
   }, [taskObjectsTrigger, task]);
 
@@ -86,10 +85,10 @@ const AnnotatorDataLoader: React.FC<AnnotatorDataLoaderProps> = ({ taskId, image
     routeToInstance();
   }, [imageInstanceId, imageInstance?.id]);
 
-  useEffect(() => {
-    api.getLabels(token).then((response) => {
-      setAllLabels(Object.fromEntries(response.data.map((label) => [label.id, label])));
-    });
+  useEffectAsync(async () => {
+    const { data: labels } = await api.getLabels(token);
+    const allLabels = Object.fromEntries(labels.map((label) => [label.id, label]));
+    setAllLabels(allLabels);
   }, []);
 
   useEffect(() => {

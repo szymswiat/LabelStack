@@ -18,33 +18,34 @@ const AssignLabelsForm: React.FC<LabelImageInstancesFormProps> = ({ selectedImag
   const [labelIds, setLabelIds] = useState<number[] | null>(null);
   const [labelIdsValid, setLabelIdsValid] = useState<boolean | null>(null);
 
-  const labelImages = (e: React.FormEvent<HTMLFormElement>) => {
+  async function labelImages(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (isFormValid()) {
-      Promise.all(
-        labelIds.map((labelId) =>
-          api.addLabelAssignments(
-            token,
-            labelId,
-            selectedImages.map((image) => image.id)
+      try {
+        await Promise.all(
+          labelIds.map((labelId) =>
+            api.addLabelAssignments(
+              token,
+              labelId,
+              selectedImages.map((image) => image.id)
+            )
           )
-        )
-      )
-        .then(() => {
-          showSuccessNotification('Success', 'Labels assigned successfully!');
-          clearForm();
-          if (gridApi) gridApi.deselectAll();
-        })
-        .catch(showNotificationWithApiError);
+        );
+        showSuccessNotification('Success', 'Labels assigned successfully!');
+        clearForm();
+        if (gridApi) gridApi.deselectAll();
+      } catch (error) {
+        showNotificationWithApiError(error);
+      }
     }
-  };
+  }
 
-  const clearForm = () => {
+  function clearForm() {
     setLabelIds(null);
     setLabelIdsValid(null);
-  };
+  }
 
-  const isFormValid = () => {
+  function isFormValid() {
     if (labelIds === null || labelIds.length <= 0) {
       setLabelIdsValid(false);
       showDangerNotification('Input error', 'At least one label has to be selected!');
@@ -54,9 +55,9 @@ const AssignLabelsForm: React.FC<LabelImageInstancesFormProps> = ({ selectedImag
       return false;
     }
     return true;
-  };
+  }
 
-  const handleLabelsChange = (e) => {
+  function handleLabelsChange(e: React.ChangeEvent<HTMLSelectElement>) {
     if (e && e.target && e.target.selectedOptions) {
       const selectedOptions = e.target.selectedOptions as HTMLCollection;
       let labelTypesIdsArray = [];
@@ -67,7 +68,7 @@ const AssignLabelsForm: React.FC<LabelImageInstancesFormProps> = ({ selectedImag
       setLabelIds(labelTypesIdsArray);
       setLabelIdsValid(true);
     }
-  };
+  }
 
   return (
     <>

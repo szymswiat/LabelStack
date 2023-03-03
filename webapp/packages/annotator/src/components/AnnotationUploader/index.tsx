@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { useEffectNonNull } from '@labelstack/app/src/utils/hooks';
+import { useEffectNonNullAsync } from '@labelstack/app/src/utils/hooks';
 import { LabelMap, useAnnotationDataContext } from '@labelstack/viewer/src/contexts/AnnotationDataContext';
 import { useEditedAnnotationDataContext } from '../../contexts/EditedAnnotationDataContext';
 import { AnnotationsObject, api } from '@labelstack/api';
@@ -64,13 +64,12 @@ const AnnotationUploader: React.FC<AnnotationUploaderProps> = ({ annotations }) 
     return filteredLabelMaps;
   }
 
-  useEffectNonNull(
-    () => {
-      uploadAllEditableLabelMaps().then((labelMaps: LabelMap[]) => {
-        if (labelMaps.length > 0) {
-          refreshTaskObjects();
-        }
-      });
+  useEffectNonNullAsync(
+    async () => {
+      const labelMaps = await uploadAllEditableLabelMaps();
+      if (labelMaps.length > 0) {
+        refreshTaskObjects();
+      }
     },
     [],
     [uploadAnnotationsTrigger]
@@ -78,12 +77,11 @@ const AnnotationUploader: React.FC<AnnotationUploaderProps> = ({ annotations }) 
 
   useEffect(() => {
     console.log('Starting uploader');
-    setInterval(() => {
-      uploadAllEligibleLabelMapsRef.current().then((labelMaps: LabelMap[]) => {
-        if (labelMaps.length > 0) {
-          refreshTaskObjectsRef.current();
-        }
-      });
+    setInterval(async () => {
+      const labelMaps = await uploadAllEligibleLabelMapsRef.current();
+      if (labelMaps.length > 0) {
+        refreshTaskObjectsRef.current();
+      }
     }, 1000);
   }, []);
 

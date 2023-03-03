@@ -25,7 +25,7 @@ const CreateLabelForm = ({ annotationTypes, labelTypes, reloadLabels }: CreateLa
   const [labelTypesIds, setLabelTypesIds] = useState<number[]>(undefined);
   const [labelTypesIdsValid, setLabelTypesIdsValid] = useState<boolean>(undefined);
 
-  const createLabel = (e: React.FormEvent<HTMLFormElement>) => {
+  async function createLabel(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
     if (isFormValid()) {
@@ -35,31 +35,29 @@ const CreateLabelForm = ({ annotationTypes, labelTypes, reloadLabels }: CreateLa
         type_ids: labelTypesIds
       };
 
-      api
-        .createLabel(token, newLabel)
-        .then((_) => {
-          const form = e.target as HTMLFormElement;
-          form.reset();
-          clearForm();
-          showSuccessNotification(undefined, 'Label created successfully!');
-          reloadLabels();
-        })
-        .catch((error) => {
-          showNotificationWithApiError(error);
-        });
+      try {
+        await api.createLabel(token, newLabel);
+        const form = e.target as HTMLFormElement;
+        form.reset();
+        clearForm();
+        showSuccessNotification(undefined, 'Label created successfully!');
+        reloadLabels();
+      } catch (error) {
+        showNotificationWithApiError(error);
+      }
     }
-  };
+  }
 
-  const clearForm = () => {
+  function clearForm() {
     setLabelName('');
     setLabelNameValid(undefined);
     setAllowedAnnotationTypeId(undefined);
     setAllowedAnnotationTypeIdValid(undefined);
     setLabelTypesIds(undefined);
     setLabelTypesIdsValid(undefined);
-  };
+  }
 
-  const isFormValid = () => {
+  function isFormValid() {
     if (labelName === undefined || labelName === '') {
       setLabelNameValid(false);
       showDangerNotification(undefined, 'Label name is required!');
@@ -68,15 +66,16 @@ const CreateLabelForm = ({ annotationTypes, labelTypes, reloadLabels }: CreateLa
       setAllowedAnnotationTypeIdValid(false);
       showDangerNotification(undefined, 'Allowed annotation type is required!');
       return false;
-    } else if (labelTypesIds === undefined || labelTypesIds.length <= 0) {
-      setLabelTypesIdsValid(false);
-      showDangerNotification(undefined, 'Label types are required!');
-      return false;
     }
+    // else if (labelTypesIds === undefined || labelTypesIds.length <= 0) {
+    //   setLabelTypesIdsValid(false);
+    //   showDangerNotification(undefined, 'Label types are required!');
+    //   return false;
+    // }
     return true;
-  };
+  }
 
-  const handleLabelNameChange = (e) => {
+  function handleLabelNameChange(e: React.ChangeEvent<HTMLInputElement>) {
     if (e && e.target && e.target.value) {
       const taskNameValue = e.target.value;
       setLabelName(taskNameValue);
@@ -85,9 +84,9 @@ const CreateLabelForm = ({ annotationTypes, labelTypes, reloadLabels }: CreateLa
       setLabelName('');
       setLabelNameValid(false);
     }
-  };
+  }
 
-  const handleAllowedAnnotationTypeChange = (e) => {
+  function handleAllowedAnnotationTypeChange(e: React.ChangeEvent<HTMLSelectElement>) {
     if (e && e.target && e.target.value) {
       const annotatorIdValue = Number(e.target.value);
       if (typeof annotatorIdValue === 'number') {
@@ -98,9 +97,9 @@ const CreateLabelForm = ({ annotationTypes, labelTypes, reloadLabels }: CreateLa
         setAllowedAnnotationTypeIdValid(false);
       }
     }
-  };
+  }
 
-  const handleLabelTypesChange = (e) => {
+  function handleLabelTypesChange(e: React.ChangeEvent<HTMLSelectElement>) {
     if (e && e.target && e.target.selectedOptions) {
       const selectedOptions = e.target.selectedOptions as HTMLCollection;
       let labelTypesIdsArray = [];
@@ -111,7 +110,7 @@ const CreateLabelForm = ({ annotationTypes, labelTypes, reloadLabels }: CreateLa
       setLabelTypesIds(labelTypesIdsArray);
       setLabelTypesIdsValid(true);
     }
-  };
+  }
 
   return (
     <>
