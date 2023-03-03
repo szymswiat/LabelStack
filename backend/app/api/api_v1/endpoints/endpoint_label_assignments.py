@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
 
 from app import crud, models, schemas, query
@@ -117,6 +117,7 @@ def read_label_assignments(
     db: Session = Depends(deps.get_db),
     waiting_for_annotations: bool | None = False,
     without_active_task: bool | None = False,
+    annotation_types: list[schemas.AnnotationTypes | None] | None = Query(None, alias="annotation_types[]"),
     current_user: models.User = Depends(
         deps.get_current_user_with_role([schemas.RoleType.data_admin, schemas.RoleType.task_admin])
     ),
@@ -127,6 +128,13 @@ def read_label_assignments(
       - **without_active_task** - filters label assignments and returns items that do not have active annotation task
     """
     query_out = query.label_assignment.query_for_finished(db=db)
+
+    if annotation_types is None:
+        annotation_types = [*list(schemas.AnnotationTypes), None]
+
+    query_out = query.label_assignment.query_by_allowed_types(
+        db=db, query_in=query_out, allowed_types=annotation_types
+    )
 
     if without_active_task:
         query_out = query.label_assignment.query_without_active_task(db=db, query_in=query_out)

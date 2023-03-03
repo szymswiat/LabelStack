@@ -5,6 +5,7 @@ import getMenuItemsForUser, { MenuSection } from './items';
 import { useUserDataContext } from '../../contexts/UserDataContext';
 import classNames from 'classnames';
 import { useEffectNonNull } from '../../utils/hooks';
+import { motion } from 'framer-motion';
 
 function Sidebar() {
   const navigate = useNavigate();
@@ -48,7 +49,12 @@ function Sidebar() {
               onClick={() => navigate(item.link)}
             >
               <span className="text-xl text-dark-accent">{renderIcon(item.icon)}</span>
-              <span className={classNames('ml-3 select-none', { 'pl-2': location.pathname === item.link })}>{item.name}</span>
+              <motion.span
+                className={classNames('ml-3 select-none')}
+                animate={{ x: location.pathname === item.link ? 8 : 0 }}
+              >
+                {item.name}
+              </motion.span>
             </div>
           ))}
         </div>

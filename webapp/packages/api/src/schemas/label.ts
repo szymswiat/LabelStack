@@ -5,6 +5,11 @@ export interface LabelType {
   name?: string;
 }
 
+export enum AnnotationTypes {
+  segment = 'segment',
+  box = 'box'
+}
+
 export interface Label {
   id?: number;
   name: string;

@@ -11,11 +11,13 @@ interface UserDataState {
   user: User;
   token: string | undefined;
   updatingUser: React.MutableRefObject<boolean>;
+  userReloadTrigger: number;
 }
 
 interface UserDataApi {
   setUser: (user: User | null | undefined) => void;
   setToken: (token: string | undefined) => void;
+  reloadUserData: () => void;
 }
 
 export const UserDataContext = createContext<[UserDataState, UserDataApi]>(null);
@@ -24,11 +26,17 @@ export const UserDataProvider: React.FC<{ children?: ReactNode }> = ({ children 
   const [user, setUser] = useState<User | null | undefined>(undefined);
   const updatingUser = useRef<boolean>(false);
   const [token, setTokenState] = useLocalStorage<string | undefined>('token', '');
+  const [userReloadTrigger, setUserReloadTrigger] = useState<number>(Date.now());
+
+  function reloadUserData() {
+    setUserReloadTrigger(Date.now());
+  }
 
   const state: UserDataState = {
     user,
     token,
-    updatingUser
+    updatingUser,
+    userReloadTrigger
   };
 
   function setToken(token: string) {
@@ -38,7 +46,8 @@ export const UserDataProvider: React.FC<{ children?: ReactNode }> = ({ children 
 
   const api: UserDataApi = {
     setUser,
-    setToken
+    setToken,
+    reloadUserData
   };
 
   return <UserDataContext.Provider value={[state, api]}>{children}</UserDataContext.Provider>;

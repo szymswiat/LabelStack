@@ -14,7 +14,9 @@ import { useUserDataContext } from '../../../../contexts/UserDataContext';
 import { useEffectNonNull } from '../../../../utils/hooks';
 import TableLayoutWithBar from '../../../../layouts/TableLayoutWithBar';
 
-const AllLabels = () => {
+interface ManageLabelsProps {}
+
+const ManageLabels: React.FC<ManageLabelsProps> = ({}) => {
   const [{ token }] = useUserDataContext();
 
   const [labels, setLabels] = useState<Label[]>();
@@ -87,9 +89,9 @@ const AllLabels = () => {
 
   useEffectNonNull(
     () => {
-      if (annotationTypes.length > 0 && labelTypes.length > 0) {
+      // if (annotationTypes.length > 0 && labelTypes.length > 0) {
         setColumnDefinitions();
-      }
+      // }
     },
     [],
     [annotationTypes, labelTypes]
@@ -115,4 +117,4 @@ const AllLabels = () => {
   );
 };
 
-export default AllLabels;
+export default ManageLabels;

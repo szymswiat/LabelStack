@@ -13,6 +13,7 @@ import {
 } from 'react-icons/md';
 
 import { FaTasks, FaUserEdit, FaUserPlus, FaUsers } from 'react-icons/fa';
+import { BsPencilSquare } from 'react-icons/bs';
 
 declare global {
   interface Array<T> {
@@ -107,9 +108,9 @@ const menuItems: MenuSection[] = [
     roles: [RoleType.dataAdmin, RoleType.taskAdmin],
     items: [
       {
-        name: 'All Labels',
-        link: '/labels/all',
-        icon: MdCollectionsBookmark,
+        name: 'Manage Labels',
+        link: '/labels/manage',
+        icon: BsPencilSquare,
         roles: [RoleType.dataAdmin, RoleType.taskAdmin]
       },
       {
@@ -158,7 +159,7 @@ const menuItems: MenuSection[] = [
   }
 ];
 
-const getNestedElements = (array: MenuItem[], userRoles: RoleType[]) => {
+function getNestedElements(array: MenuItem[], userRoles: RoleType[]): MenuItem[] {
   let items: MenuItem[] = [];
 
   items = array.filter((item) => {
@@ -169,15 +170,19 @@ const getNestedElements = (array: MenuItem[], userRoles: RoleType[]) => {
     }
   });
 
+  items = items.map((item) => {
+    return { ...item };
+  });
+
   items.forEach((item) => {
     if (item.items) item.items = getNestedElements(item.items, userRoles);
   });
 
   return items;
-};
+}
 
-const getMenuItems = (user: User | null) => {
-  const items: MenuSection[] = [];
+function getMenuItems(user: User | null): MenuSection[] {
+  let items: MenuSection[] = [];
   const userRoles = user ? user.roles.map((role) => role.type) : [];
 
   menuItems.forEach((item) => {
@@ -187,11 +192,15 @@ const getMenuItems = (user: User | null) => {
     }
   });
 
+  items = items.map((item) => {
+    return { ...item };
+  });
+
   items.forEach((item) => {
     if (item.items) item.items = getNestedElements(item.items, userRoles);
   });
 
   return items;
-};
+}
 
 export default getMenuItems;

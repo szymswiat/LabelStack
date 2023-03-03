@@ -130,7 +130,7 @@ def update_user(
     db: Session = Depends(deps.get_db),
     user_id: int,
     user_in: schemas.UserUpdate,
-    current_user: models.User = Depends(deps.get_current_user_with_role()),
+    current_user: models.User = Depends(deps.get_current_user_with_role(schemas.RoleType.all_roles())),
 ) -> Any:
     """
     Update a user.
@@ -141,5 +141,16 @@ def update_user(
             status_code=status.HTTP_406_NOT_ACCEPTABLE,
             detail="The user with this username does not exist in the system",
         )
+
+    if schemas.RoleType.superuser not in [role.type for role in current_user.roles]:
+
+        if user_id != current_user.id:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Not enough permissions",
+            )
+
+        user_in = schemas.UserUpdateMe(**user_in.dict())  # type: ignore
+
     user = crud.user.update(db, db_obj=user, obj_in=user_in)
     return user

@@ -15,6 +15,7 @@ import { useUserDataContext } from '../../../../contexts/UserDataContext';
 import { useEffectNonNull } from '../../../../utils/hooks';
 import TableLayoutWithBar from '../../../../layouts/TableLayoutWithBar';
 import { defaultColDef } from '../../labels/columnDefs';
+import { AnnotationTypes } from '@labelstack/api';
 
 const ImagesToAnnotate = () => {
   const [{ token }] = useUserDataContext();
@@ -53,15 +54,14 @@ const ImagesToAnnotate = () => {
   };
 
   const loadLabelAssignments = () => {
-    api.getLabelAssignments(token, true, true).then((response) => {
+    api.getLabelAssignments(token, true, true, [AnnotationTypes.segment]).then((response) => {
       let responseLabelAssignments = response.data as LabelAssignment[];
 
-      if (labels) {
-        responseLabelAssignments = responseLabelAssignments.map((labelAssignment) => {
-          const label = labels.find((label) => label.id == labelAssignment.label_id);
-          return { ...labelAssignment, label: label.name };
-        }) as any;
-      }
+      responseLabelAssignments = responseLabelAssignments.map((labelAssignment) => {
+        const label = labels.find((label) => label.id == labelAssignment.label_id);
+        return { ...labelAssignment, label: label.name };
+      }) as any;
+
       setLabelAssignments(responseLabelAssignments);
     });
   };
@@ -114,9 +114,13 @@ const ImagesToAnnotate = () => {
     loadLabels();
   }, []);
 
-  useEffect(() => {
-    loadLabelAssignments();
-  }, [labels]);
+  useEffectNonNull(
+    () => {
+      loadLabelAssignments();
+    },
+    [],
+    [labels]
+  );
 
   useEffectNonNull(
     () => {

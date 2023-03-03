@@ -66,9 +66,43 @@ class QueryLabelAssignment(QueryBase[models.LabelAssignment]):
             models.LabelAssignment.parent_task_id.is_(None)
         )
 
+        return (
+            self.query(db, query_in)
+            .filter(models.LabelAssignment.parent_task_id == finished_tasks.c.id)
+            .union(all_label_assignments_with_no_parent_task)
+        )
+
+    def query_by_allowed_types(
+        self,
+        *,
+        db: Session,
+        query_in: Query | None = None,
+        allowed_types: list[schemas.AnnotationTypes | None],
+    ) -> Query:
+
+        allowed_labels = (
+            db.query(models.Label.id)
+            .join(models.AnnotationType)
+            .filter(
+                models.AnnotationType.name.in_(
+                    allowed_type for allowed_type in allowed_types if allowed_type
+                )
+            )
+        )
+
+        if None in allowed_types:
+            labels_with_no_allowed_types = db.query(models.Label.id).filter(
+                models.Label.allowed_annotation_type_id.is_(None)
+            )
+            allowed_labels = allowed_labels.union(labels_with_no_allowed_types)
+
+            return self.query(db, query_in).filter(
+                models.LabelAssignment.label_id == allowed_labels.subquery().c.label_id
+            )
+
         return self.query(db, query_in).filter(
-            models.LabelAssignment.parent_task_id == finished_tasks.c.id
-        ).union(all_label_assignments_with_no_parent_task)
+                models.LabelAssignment.label_id == allowed_labels.subquery().c.id
+            )
 
 
 label_assignment = QueryLabelAssignment(models.LabelAssignment)

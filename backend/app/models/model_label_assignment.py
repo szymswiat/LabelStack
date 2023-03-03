@@ -33,7 +33,7 @@ class LabelAssignment(Base):
         "ImageInstance", back_populates="label_assignments"
     )
     author: Mapped["models.User"] = relationship("User")
-    parent_task: Mapped["models.Task"] = relationship("Task")
+    parent_task: Mapped["models.Task | None"] = relationship("Task")
 
     annotations: Mapped[list["models.Annotation"]] = relationship(
         "Annotation", order_by="Annotation.version"

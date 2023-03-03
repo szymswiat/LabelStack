@@ -26,12 +26,15 @@ class CRUDUser(CRUDBase[models.User, schemas.UserCreate, schemas.UserUpdate]):
         else:
             update_data = update_obj.dict(exclude_unset=True)
 
-        if "password" in update_data:
+        if "email" in update_data and update_data["email"] is None:
+            update_data.pop("email")
+
+        if "password" in update_data and update_data["password"]:
             hashed_password = get_password_hash(update_data["password"])
             del update_data["password"]
             update_data["hashed_password"] = hashed_password
 
-        if "role_ids" in update_data:
+        if "role_ids" in update_data and update_data["role_ids"]:
             roles = (
                 db.query(models.Role)
                 .filter(models.Role.id.in_(update_obj.role_ids))  # type: ignore

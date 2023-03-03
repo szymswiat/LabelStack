@@ -7,7 +7,7 @@ import { useUserDataContext } from '@labelstack/app/src/contexts/UserDataContext
 interface UserDataLoaderProps {}
 
 const UserDataLoader: React.FC<UserDataLoaderProps> = ({}) => {
-  const [{ token, updatingUser }, { setUser }] = useUserDataContext();
+  const [{ token, updatingUser, userReloadTrigger }, { setUser }] = useUserDataContext();
 
   useEffect(() => {
     if (!token || token === '') {
@@ -26,7 +26,7 @@ const UserDataLoader: React.FC<UserDataLoaderProps> = ({}) => {
     }).finally(() => {
       updatingUser.current = false;
     });
-  }, [token]);
+  }, [token, userReloadTrigger]);
 
   return <></>;
 };

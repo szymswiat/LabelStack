@@ -119,6 +119,7 @@ def filter_label_assignments_for_user(
     for label_assignment in label_assignment_list:
 
         if (
+            label_assignment.parent_task is not None and
             label_assignment.parent_task.status != schemas.TaskStatus.done
             and label_assignment.author_id != user.id
         ):
@@ -144,6 +145,7 @@ def filter_annotations_for_user(
     for annotation in annotation_list:
 
         if (
+            annotation.label_assignment.parent_task is not None and
             annotation.label_assignment.parent_task.status != schemas.TaskStatus.done
             and annotation.author_id != user.id
         ):

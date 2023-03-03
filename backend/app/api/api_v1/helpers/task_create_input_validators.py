@@ -1,7 +1,7 @@
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 
-from app import schemas
+from app import schemas, crud
 
 
 def validate_label_task_input(db: Session, task_in: schemas.TaskCreateApiIn):
@@ -33,6 +33,22 @@ def validate_annotation_task_input(db: Session, task_in: schemas.TaskCreateApiIn
             status_code=status.HTTP_406_NOT_ACCEPTABLE,
             detail="Cannot insert annotation task with dicom_ids or annotation_ids.",
         )
+
+    if task_in.label_assignment_ids:
+        selected_assignments = crud.label_assignment.get_multi_by_ids(db, task_in.label_assignment_ids)
+
+        for assignment, label in [
+            (assignment, assignment.label) for assignment in selected_assignments
+        ]:
+            if (
+                label.allowed_annotation_type is None
+                or label.allowed_annotation_type.name != schemas.AnnotationTypes.segment
+            ):
+                raise HTTPException(
+                    status_code=status.HTTP_406_NOT_ACCEPTABLE,
+                    detail="Cannot create annotation task with label assignment "
+                    f"{assignment.id} that is not segmentable.",
+                )
 
 
 def validate_annotation_review_task_input(db: Session, task_in: schemas.TaskCreateApiIn):

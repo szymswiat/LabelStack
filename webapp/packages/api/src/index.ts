@@ -8,7 +8,7 @@ import {
 } from './schemas/annotationReview';
 import { Annotation, AnnotationData, AnnotationStatus, AnnotationType, AnnotationsObject } from './schemas/annotation';
 import { Dicom } from './schemas/dicom';
-import { Label, LabelCreateApiIn, LabelsObject, LabelType } from './schemas/label';
+import { AnnotationTypes, Label, LabelCreateApiIn, LabelsObject, LabelType } from './schemas/label';
 import { LabelAssignment, LabelAssignmentsModifyApiIn, LabelAssignmentsObject } from './schemas/labelAssignment';
 import { Role, RoleType, userRoleRepresentation } from './schemas/role';
 import {
@@ -31,6 +31,7 @@ export {
   AnnotationReviewStatus,
   AnnotationReviewResult,
   AnnotationStatus,
+  AnnotationTypes,
   TaskType,
   TaskStatus,
   TaskPriority,

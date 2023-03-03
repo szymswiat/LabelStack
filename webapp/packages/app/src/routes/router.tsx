@@ -24,7 +24,7 @@ const ImagesToReview = Loader(lazy(() => import('../content/pages/images/ImagesT
 const AllImages = Loader(lazy(() => import('../content/pages/images/AllImages')));
 
 // Labels
-const AllLabels = Loader(lazy(() => import('../content/pages/labels/AllLabels')));
+const ManageLabels = Loader(lazy(() => import('../content/pages/labels/ManageLabels')));
 const AssignLabels = Loader(lazy(() => import('../content/pages/labels/AssignLabels')));
 
 // Tasks
@@ -140,13 +140,13 @@ const routes: RouteObject[] = [
     children: [
       {
         path: '',
-        element: <Navigate to="labels/all" replace />
+        element: <Navigate to="labels/manage" replace />
       },
       {
-        path: 'all',
+        path: 'manage',
         element: (
           <PrivateWrapper roles={[RoleType.taskAdmin, RoleType.dataAdmin]}>
-            <AllLabels />
+            <ManageLabels />
           </PrivateWrapper>
         )
       },

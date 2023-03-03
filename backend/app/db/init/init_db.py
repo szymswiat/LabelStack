@@ -10,8 +10,7 @@ from app.db import base  # noqa: F401 # type: ignore
 # make sure all SQL Alchemy models are imported (app.db.base) before initializing DB
 # otherwise, SQL Alchemy might fail to initialize relationships properly
 # for more details: https://github.com/tiangolo/full-stack-fastapi-postgresql/issues/28
-from app.db.init.dev_data import (
-    label_types_create_data,
+from app.db.init.initial_data_gen import (
     labels_create_data,
     tags_create_data,
     annotation_types_create_data,
@@ -58,6 +57,9 @@ def init_db(db: Session) -> None:
     tags_data = tags_create_data()
     crud.tag.create_bulk(db, objs_in=tags_data)
 
+    annotation_types_data = annotation_types_create_data()
+    crud.annotation_type.create_bulk(db, objs_in=annotation_types_data)
+
     if "dev" not in settings.ENV:
         return
 
@@ -71,12 +73,6 @@ def init_db(db: Session) -> None:
                 password=user_meta.password,
                 roles=[role],
             )
-
-    label_types_data = label_types_create_data()
-    crud.label_type.create_bulk(db, objs_in=label_types_data)
-
-    annotation_types_data = annotation_types_create_data()
-    crud.annotation_type.create_bulk(db, objs_in=annotation_types_data)
 
     labels_data = labels_create_data(db)
     crud.label.create_many(db, objs_in=labels_data)

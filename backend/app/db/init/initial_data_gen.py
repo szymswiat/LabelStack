@@ -9,17 +9,8 @@ from app.core.config import settings
 resources_root = Path(settings.TEST_INIT_DATA_ROOT)
 
 
-def label_types_create_data() -> list[schemas.LabelTypeCreateCrud]:
-    label_types: list[str] = pd.read_csv(resources_root / "label_types.csv")["label_type"].tolist()  # type: ignore
-
-    data = [schemas.LabelTypeCreateCrud(name=lt) for lt in label_types]
-    return data
-
-
 def annotation_types_create_data() -> list[schemas.AnnotationTypeCreateCrud]:
-    annotation_types: list[str] = pd.read_csv(resources_root / "annotation_types.csv")[  # type: ignore
-        "annotation_type"
-    ].tolist()
+    annotation_types = [at.name for at in schemas.AnnotationTypes]
 
     data = [schemas.AnnotationTypeCreateCrud(name=at) for at in annotation_types]
     return data
@@ -71,8 +62,8 @@ def labels_create_data(db: Session) -> list[schemas.LabelCreateCrud]:
 
         label = schemas.LabelCreateCrud(
             **create_attrs,
-            # name=row['eng_name'], TODO
-            name=row["pl_name"],
+            name=row['eng_name'],
+            # name=row["pl_name"],
             type_ids=type_ids
         )
         data.append(label)

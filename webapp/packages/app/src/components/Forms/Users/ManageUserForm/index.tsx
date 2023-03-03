@@ -39,7 +39,7 @@ const getNewUserObject = (existingUser?: User): UserCreate | UserUpdate => {
 
 const ManageUserForm = ({ mode, roles, userToUpdate }: ManageUserFormParams) => {
   const navigate = useNavigate();
-  const [{ user, token }] = useUserDataContext();
+  const [{ user, token }, { reloadUserData }] = useUserDataContext();
 
   const [isLoggedInUserSuperAdmin, setIsLoggedInUserSuperAdmin] = useState<boolean>(false);
   const [passwordUpdate, setPasswordUpdate] = useState<boolean>(false);
@@ -89,7 +89,10 @@ const ManageUserForm = ({ mode, roles, userToUpdate }: ManageUserFormParams) => 
       api
         .updateUser(token, userToUpdate.id, modifiedUser)
         .then(() => {
-          navigate('/users/all');
+          if (isLoggedInUserSuperAdmin) {
+            navigate('/users/all');
+          }
+          reloadUserData();
           showSuccessNotification(undefined, 'User updated successfully!');
         })
         .catch((error: any) => {
@@ -172,7 +175,7 @@ const ManageUserForm = ({ mode, roles, userToUpdate }: ManageUserFormParams) => 
   }, []);
 
   return (
-    <div className='grid place-items-center'>
+    <div className="grid place-items-center">
       <div className="flex flex-col items-center w-[55rem] pt-20">
         <p className="w-full p-4 text-center text-xl font-bold">
           {mode == ManageUserFormMode.CREATE ? 'Create User' : 'Edit User'}

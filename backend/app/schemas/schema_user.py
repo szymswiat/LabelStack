@@ -19,6 +19,12 @@ class UserUpdate(UserCRUDBase):
     password: str | None = None
 
 
+class UserUpdateMe(BaseModel):
+    password: str | None = None
+    full_name: str | None = None
+    email: EmailStr | None = None
+
+
 class UserInDBBase(BaseModel):
     id: int | None = None
     email: EmailStr | None = None

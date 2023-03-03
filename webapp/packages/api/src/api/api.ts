@@ -1,7 +1,7 @@
 import axios, { AxiosError } from 'axios';
 import { User, UserCreate, UserUpdate } from '../schemas/user';
 import { Dicom } from '../schemas/dicom';
-import { Label, LabelCreateApiIn, LabelType } from '../schemas/label';
+import { AnnotationTypes, Label, LabelCreateApiIn, LabelType } from '../schemas/label';
 import { ImageInstance } from '../schemas/imageInstance';
 import { AvailableStatusesForTaskApiOut, Task } from '../schemas/task';
 import { Annotation, AnnotationType } from '../schemas/annotation';
@@ -146,12 +146,18 @@ export const api = {
     return axios.get<AnnotationType[]>(`${apiUrl}${apiV1}/annotation_types/`, authHeaders(token));
   },
 
-  async getLabelAssignments(token: string, waitingForAnnotations = false, withoutActiveTask = false) {
+  async getLabelAssignments(
+    token: string,
+    waitingForAnnotations = false,
+    withoutActiveTask = false,
+    annotationTypes: (AnnotationTypes | null)[]
+  ) {
     return axios.get<LabelAssignment[]>(`${apiUrl}${apiV1}/label_assignments/`, {
       ...authHeaders(token),
       params: {
         waiting_for_annotations: waitingForAnnotations,
-        without_active_task: withoutActiveTask
+        without_active_task: withoutActiveTask,
+        annotation_types: annotationTypes
       }
     });
   },

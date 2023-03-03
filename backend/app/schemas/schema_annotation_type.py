@@ -1,4 +1,10 @@
+from enum import Enum
 from pydantic import BaseModel
+
+
+class AnnotationTypes(str, Enum):
+    segment = "segment"
+    box = "box"
 
 
 class AnnotationTypeCreateApiIn(BaseModel):

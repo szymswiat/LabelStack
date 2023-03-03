@@ -10,4 +10,4 @@ class Role(Base):
 
     id: Mapped[int] = mapped_column(sa.Integer, Identity(always=True), primary_key=True)
 
-    type: Mapped[int] = mapped_column(sa.String, nullable=False, unique=True)
+    type: Mapped[str] = mapped_column(sa.String, nullable=False, unique=True)
