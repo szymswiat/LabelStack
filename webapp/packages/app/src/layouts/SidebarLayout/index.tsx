@@ -1,7 +1,7 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
 import Sidebar from '../../components/Sidebar';
-import LayoutCard from '@labelstack/viewer/src/components/LayoutCard';
+import LayoutCard from '@labelstack/viewer/src/ui/components/LayoutCard';
 
 interface SidebarLayoutProps extends React.HTMLAttributes<HTMLDivElement> {}
 

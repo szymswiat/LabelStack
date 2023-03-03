@@ -3,13 +3,14 @@ import React from 'react';
 import ImageInstanceLoader from '@labelstack/viewer/src/components/ImageInstanceLoader';
 import { useDocumentTitle, useQuery } from '@labelstack/app/src/utils/hooks';
 import { Navigate } from 'react-router-dom';
-import Viewport from '../../ui/components/Viewport';
+import Viewport from '../../components/Viewport';
 import SliceView from '../../vtk/SliceView';
 
 import ViewerDataLoader from '../ViewerDataLoader';
 import ViewerImageInstanceDownloader from '../ImageInstanceDownloader/ViewerImageInstanceDownloader';
 import ServerConnectionChecker from '../ServerConnectionChecker';
-import ViewerUi from '../ViewerUi';
+import ViewerLayout from '../ViewerLayout';
+import uiModeMain from '../ViewerLayout/mainMode';
 
 const ViewerApp: React.FC = () => {
   const query = useQuery();
@@ -28,13 +29,15 @@ const ViewerApp: React.FC = () => {
   const imageInstanceId = Number(query.get('imageInstanceId'));
 
   return (
-    <ViewerUi>
+    <>
       <ImageInstanceLoader />
       <ViewerImageInstanceDownloader />
       <ServerConnectionChecker />
       <ViewerDataLoader imageInstanceIds={imageInstanceIds} imageInstanceId={imageInstanceId} />
-      <Viewport sliceViewComponent={SliceView} />
-    </ViewerUi>
+      <ViewerLayout {...uiModeMain}>
+        <Viewport sliceViewComponent={SliceView} />
+      </ViewerLayout>
+    </>
   );
 };
 

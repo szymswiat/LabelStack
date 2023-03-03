@@ -4,7 +4,7 @@ import { api, requestErrorMessageKey, RoleType } from '@labelstack/api';
 import { useUserDataContext } from '../../../contexts/UserDataContext';
 import { showDangerNotification, showSuccessNotification, showNotificationWithApiError } from '../../../utils';
 import { useDocumentTitle } from '../../../utils/hooks';
-import LayoutCard from '@labelstack/viewer/src/components/LayoutCard';
+import LayoutCard from '@labelstack/viewer/src/ui/components/LayoutCard';
 import { useLocation, useNavigate } from 'react-router';
 
 function Login() {

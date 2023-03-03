@@ -2,7 +2,7 @@ import React from 'react';
 
 import { SlicingMode } from '@kitware/vtk.js/Rendering/Core/ImageMapper/Constants';
 import { useViewerLayoutContext } from '../../contexts/ViewerLayoutContext';
-import ViewHeader from '../../ui/components/ViewHeader';
+import ViewHeader from '../../components/ViewHeader';
 import SliceView from '../../vtk/SliceView';
 
 interface SliceViewComponentProps {

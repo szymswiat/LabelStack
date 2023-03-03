@@ -1,10 +1,13 @@
 import React from 'react';
-import { useImageDataContext } from '../../../contexts/ImageDataContext';
+import { useImageDataContext } from '../../contexts/ImageDataContext';
 import ViewportHeader from '../ViewportHeader';
-import { useViewerLayoutContext, ViewMode } from '../../../contexts/ViewerLayoutContext';
-import { OneSliceViewport, ThreeSlicesViewport, TwoSlicesViewport } from '../../../viewport_modes';
-import SliceView from '../../../vtk/SliceView';
-import Window from '../Window';
+import { useViewerLayoutContext, ViewMode } from '../../contexts/ViewerLayoutContext';
+import OneSliceViewport from './OneSliceViewport';
+import TwoSlicesViewport from './TwoSlicesViewport';
+import ThreeSlicesViewport from './ThreeSlicesViewport';
+
+import SliceView from '../../vtk/SliceView';
+import Window from '../../ui/components/Window';
 
 const viewModeMappings = {
   [ViewMode.ONE_SLICE]: OneSliceViewport,

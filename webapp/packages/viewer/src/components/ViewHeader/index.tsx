@@ -1,11 +1,11 @@
 import React from 'react';
-import { useImagePropertiesContext } from '../../../contexts/ImagePropertiesContext';
-import { useImageDataContext } from '../../../contexts/ImageDataContext';
+import { useImagePropertiesContext } from '../../contexts/ImagePropertiesContext';
+import { useImageDataContext } from '../../contexts/ImageDataContext';
 import { EditText } from 'react-edit-text';
 import { showDangerNotification } from '@labelstack/app/src/utils';
-import PanelButton from '../PanelButton';
-import { useViewerLayoutContext } from '../../../contexts/ViewerLayoutContext';
+import { useViewerLayoutContext } from '../../contexts/ViewerLayoutContext';
 import vtkImageMapper from '@kitware/vtk.js/Rendering/Core/ImageMapper';
+import PanelButton from '../../ui/components/PanelButton';
 // @ts-ignore
 const { SlicingMode } = vtkImageMapper;
 

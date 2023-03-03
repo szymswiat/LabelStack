@@ -1,13 +1,14 @@
 import React from 'react';
 import { useImageDataContext } from '../../../contexts/ImageDataContext';
 import classNames from 'classnames';
-import { ImageInstance, ImageInstancesObject } from '@labelstack/api';
+import { getTagStringRepresentation, ImageInstance, ImageInstancesObject } from '@labelstack/api';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { useViewerSettingsContext } from '../../../contexts/ViewerSettingsContext';
 import { BsExclamationLg, BsFillImageFill, BsServer } from 'react-icons/bs';
 import PanelButton from '../../components/PanelButton';
 import { CircularProgressbar } from 'react-circular-progressbar';
 import Tooltip from '../../components/Tooltip';
+import Divider from '../../components/Divider';
 
 interface ImageListProps {
   imageInstances: ImageInstancesObject;
@@ -100,7 +101,7 @@ const ImageList: React.FC<ImageListProps> = ({ imageInstances, onImageInstanceCh
           border={false}
           fullSize={false}
         />
-        <div className={'text-base'}>
+        <div className={'text-base flex flex-row'}>
           {imageInstanceList.indexOf(imageInstance) + 1}/{imageInstanceList.length}
         </div>
         <PanelButton
@@ -129,8 +130,16 @@ const ImageList: React.FC<ImageListProps> = ({ imageInstances, onImageInstanceCh
                 )}
                 onClick={() => onImageInstanceChange(imageInstanceIter)}
               >
-                <div className={'flex flex-col justify-center pl-2'}>
-                  <div className={'text-base'}>{imageInstanceIter.id}</div>
+                <div className={'flex flex-col w-4/5 justify-center pl-2'}>
+                  <div className={'text-base grid grid-cols-3 gap-x-2'}>
+                    <span className="place-self-start">{imageInstanceIter.id}</span>
+                    <span className="place-self-start">
+                      {getTagStringRepresentation(imageInstanceIter, 'PatientID')}
+                    </span>
+                    <span className="place-self-end">
+                      {getTagStringRepresentation(imageInstanceIter, 'Modality')}
+                    </span>
+                  </div>
                 </div>
                 <div className={'flex flex-grow'} />
                 {renderDownloadIndicator(index)}

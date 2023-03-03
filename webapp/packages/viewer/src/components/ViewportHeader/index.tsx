@@ -1,7 +1,7 @@
 import React from 'react';
-import { useImagePropertiesContext } from '../../../contexts/ImagePropertiesContext';
+import { useImagePropertiesContext } from '../../contexts/ImagePropertiesContext';
 import { EditText } from 'react-edit-text';
-import { useImageDataContext } from '../../../contexts/ImageDataContext';
+import { useImageDataContext } from '../../contexts/ImageDataContext';
 import { showDangerNotification } from '@labelstack/app/src/utils';
 
 const ViewportHeader: React.FC = () => {

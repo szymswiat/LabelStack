@@ -1,6 +1,7 @@
 import classNames from 'classnames';
 import React from 'react';
-import { hasClassName } from '../../utils';
+import { hasClassName } from '../../../utils';
+
 
 export interface LayoutCardProps extends React.HTMLAttributes<HTMLDivElement> {}
 

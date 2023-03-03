@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react';
 import useCollapse from 'react-collapsed';
 import { IoIosArrowDown, IoIosArrowUp } from 'react-icons/io';
-import LayoutCard from '../../../components/LayoutCard';
+import LayoutCard from '../../components/LayoutCard';
 
 interface PanelCollapsibleProps {
   headerName: string;

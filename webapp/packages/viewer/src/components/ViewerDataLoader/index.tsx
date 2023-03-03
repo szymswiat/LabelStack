@@ -38,6 +38,7 @@ const ViewerDataLoader: React.FC<ViewerDataLoaderProps> = ({ imageInstanceIds, i
     navigate(`?imageInstanceIds=${imageInstanceIds.join(',')}&imageInstanceId=${imageInstanceIdToSet}`);
   }
 
+
   function buildViewerObjects() {
     const viewerLabelAssignments: LabelAssignmentsObject = {};
     const viewerAnnotations: AnnotationsObject = {};
@@ -78,7 +79,7 @@ const ViewerDataLoader: React.FC<ViewerDataLoaderProps> = ({ imageInstanceIds, i
         const { data: encodedLabelMap } = await api.readAnnotationData(token, annotation, annotationData.sequence);
         labelMapData = await decodeLabelMap(imageData.vtkImage, encodedLabelMap);
       } else {
-        labelMapData = await buildLabelMap(imageData.vtkImage);
+        labelMapData = buildLabelMap(imageData.vtkImage);
       }
 
       const labelMapToDisplay: LabelMap = {

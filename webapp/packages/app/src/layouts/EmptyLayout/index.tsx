@@ -1,4 +1,4 @@
-import LayoutCard from '@labelstack/viewer/src/components/LayoutCard';
+import LayoutCard from '@labelstack/viewer/src/ui/components/LayoutCard';
 import React from 'react';
 
 export interface EmptyLayoutProps {

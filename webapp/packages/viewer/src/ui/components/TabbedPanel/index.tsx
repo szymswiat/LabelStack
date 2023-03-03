@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import { IconType } from 'react-icons';
-import PanelButton from '../PanelButton';
 import classNames from 'classnames';
 import { BsBoxArrowUpRight } from 'react-icons/bs';
 import PanelCollapsible from '../PanelCollapsible';
-import LayoutCard from '../../../components/LayoutCard';
+import LayoutCard from '../../components/LayoutCard';
 import TopBarButton from '../TopBarButton';
 
 export interface TabbedPanelSection {

@@ -22,7 +22,7 @@ import {
   taskTypeRepresentation
 } from './schemas/task';
 import { User, UserCreate, UserUpdate } from './schemas/user';
-import { ImageInstance, ImageInstancesObject } from './schemas/imageInstance';
+import { ImageInstance, ImageInstancesObject, getTagValue } from './schemas/imageInstance';
 
 export {
   api,
@@ -39,7 +39,8 @@ export {
   taskStatusRepresentation,
   taskTypeRepresentation,
   userRoleRepresentation,
-  showAxiosError
+  showAxiosError,
+  getTagValue as getTagStringRepresentation
 };
 
 export type {

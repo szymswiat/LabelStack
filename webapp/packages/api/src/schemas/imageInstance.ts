@@ -9,4 +9,8 @@ export interface ImageInstance {
   tags: ImageInstanceTagValue[];
 }
 
+export function getTagValue(imageInstance: ImageInstance, tagKey: string): string {
+  return imageInstance.tags.find((tag) => tag.tag.keyword == tagKey).value;
+}
+
 export type ImageInstancesObject = Record<number, ImageInstance>;

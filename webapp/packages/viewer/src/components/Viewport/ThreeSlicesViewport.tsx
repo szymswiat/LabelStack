@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 import { SlicingMode } from '@kitware/vtk.js/Rendering/Core/ImageMapper/Constants';
 
-import SliceViewComponent from '../components/SliceViewComponent';
-import { ViewportProps } from '../ui/components/Viewport';
-import { useViewerLayoutContext } from '../contexts/ViewerLayoutContext';
+import SliceViewComponent from '../../components/SliceViewComponent';
+import { ViewportProps } from '../../components/Viewport';
+import { useViewerLayoutContext } from '../../contexts/ViewerLayoutContext';
 import { useLocalStorage } from '@labelstack/app/src/utils/hooks';
 
 

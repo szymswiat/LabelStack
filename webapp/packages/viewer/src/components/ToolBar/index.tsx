@@ -1,12 +1,11 @@
 import React from 'react';
 import classNames from 'classnames';
-import PanelButton from '../PanelButton';
 import { BsBoxArrowUpRight, BsGear } from 'react-icons/bs';
-import ViewerSettings from '../../../components/ViewerSettings';
-import { useViewerLayoutContext } from '../../../contexts/ViewerLayoutContext';
-import Divider from '../Divider';
-import LayoutCard from '../../../components/LayoutCard';
-import TopBarButton from '../TopBarButton';
+import ViewerSettings from '../ViewerSettings';
+import { useViewerLayoutContext } from '../../contexts/ViewerLayoutContext';
+import Divider from '../../ui/components/Divider';
+import LayoutCard from '../../ui/components/LayoutCard';
+import TopBarButton from '../../ui/components/TopBarButton';
 
 export interface ToolBarElementData {
   element: React.ReactElement;

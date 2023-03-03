@@ -3,15 +3,20 @@ import classNames from 'classnames';
 
 interface DividerProps {
   orientation: 'horizontal' | 'vertical';
+  className?: string;
 }
 
-const Divider: React.FC<DividerProps> = ({ orientation }) => {
+const Divider: React.FC<DividerProps> = ({ className, orientation }) => {
   return (
     <div
-      className={classNames('h-full w-full flex justify-center', {
-        'flex-row': orientation === 'vertical',
-        'flex-col': orientation === 'horizontal'
-      })}
+      className={classNames(
+        'h-full w-full flex justify-center',
+        {
+          'flex-row': orientation === 'vertical',
+          'flex-col': orientation === 'horizontal'
+        },
+        className
+      )}
     >
       <div
         className={classNames('border-[1px] border-dark-text', {

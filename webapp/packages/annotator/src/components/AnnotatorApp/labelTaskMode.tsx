@@ -1,15 +1,15 @@
 import { TabbedPanelElement } from '@labelstack/viewer/src/ui/components/TabbedPanel';
 import { BsBriefcase, BsFilePerson, BsListTask } from 'react-icons/bs';
-
+import { AnnotatorImageList } from '@labelstack/annotator/src/ui/panel_sections/AnnotatorImageList';
 import UserInfo from '@labelstack/viewer/src/ui/panel_sections/UserInfo';
 import React from 'react';
-import { ToolBarElementData } from '@labelstack/viewer/src/ui/components/ToolBar';
+import { ToolBarElementData } from '@labelstack/viewer/src/components/ToolBar';
 import ViewModeSelector from '@labelstack/viewer/src/ui/panel_sections/ViewModeSelector';
-import ViewerImageList from '../../ui/panel_sections/ImageList/ViewerImageList';
-import { ViewerLabelMapList } from '../../ui/panel_sections/LabelMapList/ViewerLabelMapList';
-import ImageMetadata from '../../ui/panel_sections/ImageMetadata';
-import ImagePropertiesOptions from '../../ui/panel_sections/ImagePropertiesOptions';
-import UiMode from './uiMode';
+import ImagePropertiesOptions from '@labelstack/viewer/src/ui/panel_sections/ImagePropertiesOptions';
+import AssignLabelsPanel from '../../ui/panel_sections/AssignLabelsPanel';
+import TaskStatusControl from '../../ui/panel_sections/TaskStatusControl';
+import ImageMetadata from '@labelstack/viewer/src/ui/panel_sections/ImageMetadata';
+import UiMode from '@labelstack/viewer/src/components/ViewerLayout/uiMode';
 
 const toolBarElements: ToolBarElementData[] = [
   { element: <ViewModeSelector /> },
@@ -19,15 +19,19 @@ const toolBarElements: ToolBarElementData[] = [
 const leftPanels: TabbedPanelElement[] = [
   {
     icon: BsListTask,
-    name: 'Viewer Panel',
+    name: 'Task Details',
     sections: [
+      {
+        name: 'Task Status',
+        element: <TaskStatusControl />
+      },
       {
         name: 'Image Metadata',
         element: <ImageMetadata />
       },
       {
-        name: 'Image List',
-        element: <ViewerImageList />
+        name: 'Task Images',
+        element: <AnnotatorImageList />
       }
     ]
   },
@@ -46,20 +50,20 @@ const leftPanels: TabbedPanelElement[] = [
 const rightPanels: TabbedPanelElement[] = [
   {
     icon: BsBriefcase,
-    name: 'Viewer Panel',
+    name: 'Label Task Panel',
     sections: [
       {
-        name: 'Completed Annotations',
-        element: <ViewerLabelMapList />
+        name: 'Image Labels',
+        element: <AssignLabelsPanel />
       }
     ]
   }
 ];
 
-const uiModeMain: UiMode = {
+const uiModeLabelTask: UiMode = {
   toolBarElements,
   leftPanels,
   rightPanels
 };
 
-export default uiModeMain;
+export default uiModeLabelTask;

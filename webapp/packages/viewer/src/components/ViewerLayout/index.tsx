@@ -1,13 +1,13 @@
 import React, { ReactNode } from 'react';
 
-import ToolBar, { ToolBarElementData } from '../../components/ToolBar';
-import TabbedPanel, { TabbedPanelElement, TabbedPanelProps } from '../../components/TabbedPanel';
+import ToolBar, { ToolBarElementData } from '../ToolBar';
+import TabbedPanel, { TabbedPanelElement, TabbedPanelProps } from '../../ui/components/TabbedPanel';
 import NewWindow from 'react-new-window';
-import { UiComponentLocation, useViewerLayoutContext } from '../../../contexts/ViewerLayoutContext';
+import { UiComponentLocation, useViewerLayoutContext } from '../../contexts/ViewerLayoutContext';
 import classNames from 'classnames';
-import FloatingWindowContainer from '../../../components/FloatingWindowContainer';
-import OverlayWindowContainer from '../../../components/OverlayWindowContainer';
-import LayoutCard from '../../../components/LayoutCard';
+import FloatingWindowContainer from '../FloatingWindowContainer';
+import OverlayWindowContainer from '../OverlayWindowContainer';
+import LayoutCard from '../../ui/components/LayoutCard';
 
 export interface ViewerLayoutProps {
   toolBarElements: ToolBarElementData[];
@@ -103,9 +103,7 @@ const ViewerLayout: React.FC<ViewerLayoutProps> = ({ toolBarElements, leftPanels
               />
             </div>
           )}
-          <LayoutCard className={classNames('flex-grow h-auto')}>
-            {children}
-          </LayoutCard>
+          <LayoutCard className={classNames('flex-grow h-auto')}>{children}</LayoutCard>
         </div>
       </div>
       {!isComponentPopOut(componentLocations.rightPanelLocation!) && rightPanels.length > 0 && (
