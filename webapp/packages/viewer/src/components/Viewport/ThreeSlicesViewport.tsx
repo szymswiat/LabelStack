@@ -1,13 +1,12 @@
 import React, { useEffect } from 'react';
 import { SlicingMode } from '@kitware/vtk.js/Rendering/Core/ImageMapper/Constants';
 
-import SliceViewComponent from '../../components/SliceViewComponent';
+import SliceView from '../SliceView';
 import { ViewportProps } from '../../components/Viewport';
 import { useViewerLayoutContext } from '../../contexts/ViewerLayoutContext';
 import { useLocalStorage } from '@labelstack/app/src/utils/hooks';
 
-
-const ThreeSlicesViewport: React.FC<ViewportProps> = ({ sliceViewComponent }) => {
+const ThreeSlicesViewport: React.FC<ViewportProps> = ({ sliceViewType }) => {
   const [{ slicingModes }, { setSlicingModes }] = useViewerLayoutContext();
 
   const [slicingModesStorage, setSlicingModesStorage] = useLocalStorage<Record<string, SlicingMode>>(
@@ -33,14 +32,14 @@ const ThreeSlicesViewport: React.FC<ViewportProps> = ({ sliceViewComponent }) =>
     <div className={'flex flex-row divide-x h-full'}>
       <div className={'w-1/2 h-full flex flex-col divide-y'}>
         <div className={'h-1/2 w-full'}>
-          <SliceViewComponent viewId={'0'} slicingMode={slicingModes['0']} viewComponent={sliceViewComponent} />
+          <SliceView viewId={'0'} slicingMode={slicingModes['0']} sliceViewType={sliceViewType} />
         </div>
         <div className={'h-1/2 w-full'}>
-          <SliceViewComponent viewId={'1'} slicingMode={slicingModes['1']} viewComponent={sliceViewComponent} />
+          <SliceView viewId={'1'} slicingMode={slicingModes['1']} sliceViewType={sliceViewType} />
         </div>
       </div>
       <div className={'w-1/2 h-full'}>
-        <SliceViewComponent viewId={'2'} slicingMode={slicingModes['2']} viewComponent={sliceViewComponent} />
+        <SliceView viewId={'2'} slicingMode={slicingModes['2']} sliceViewType={sliceViewType} />
       </div>
     </div>
   );

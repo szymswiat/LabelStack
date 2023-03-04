@@ -4,7 +4,7 @@ import ImageInstanceLoader from '@labelstack/viewer/src/components/ImageInstance
 import { useDocumentTitle, useQuery } from '@labelstack/app/src/utils/hooks';
 import { Navigate } from 'react-router-dom';
 import Viewport from '../../components/Viewport';
-import SliceView from '../../vtk/SliceView';
+import SliceViewVtk from '../../vtk/SliceViewVtk';
 
 import ViewerDataLoader from '../ViewerDataLoader';
 import ViewerImageInstanceDownloader from '../ImageInstanceDownloader/ViewerImageInstanceDownloader';
@@ -35,7 +35,7 @@ const ViewerApp: React.FC = () => {
       <ServerConnectionChecker />
       <ViewerDataLoader imageInstanceIds={imageInstanceIds} imageInstanceId={imageInstanceId} />
       <ViewerLayout {...uiModeMain}>
-        <Viewport sliceViewComponent={SliceView} />
+        <Viewport sliceViewType={SliceViewVtk} />
       </ViewerLayout>
     </>
   );

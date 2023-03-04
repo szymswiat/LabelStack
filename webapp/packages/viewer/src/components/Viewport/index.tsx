@@ -6,7 +6,7 @@ import OneSliceViewport from './OneSliceViewport';
 import TwoSlicesViewport from './TwoSlicesViewport';
 import ThreeSlicesViewport from './ThreeSlicesViewport';
 
-import SliceView from '../../vtk/SliceView';
+import SliceView from '../../vtk/SliceViewVtk';
 import Window from '../../ui/components/Window';
 
 const viewModeMappings = {
@@ -16,10 +16,10 @@ const viewModeMappings = {
 };
 
 export interface ViewportProps {
-  sliceViewComponent: typeof SliceView;
+  sliceViewType: typeof SliceView;
 }
 
-const Viewport: React.FC<ViewportProps> = ({ sliceViewComponent }) => {
+const Viewport: React.FC<ViewportProps> = ({ sliceViewType }) => {
   const [{ imageData }] = useImageDataContext();
   const [{ viewMode }] = useViewerLayoutContext();
 
@@ -33,7 +33,7 @@ const Viewport: React.FC<ViewportProps> = ({ sliceViewComponent }) => {
             <ViewportHeader />
           </div>
           <div className={'h-full z-0'}>
-            <ViewportComponent sliceViewComponent={sliceViewComponent} />
+            <ViewportComponent sliceViewType={sliceViewType} />
           </div>
         </div>
       )}

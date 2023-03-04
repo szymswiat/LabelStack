@@ -9,34 +9,34 @@ import { useImageDataContext } from '@labelstack/viewer/src/contexts/ImageDataCo
 import { useAnnotationDataContext } from '@labelstack/viewer/src/contexts/AnnotationDataContext';
 import { MouseButtonType } from '../../types/vtkjs.ext';
 import { useViewerLayoutContext } from '../../contexts/ViewerLayoutContext';
-import SliceViewCompanion from './SliceViewCompanion';
+import SliceViewVtkCompanion from './SliceViewVtkCompanion';
 import { useEffectNonNull } from '@labelstack/app/src/utils/hooks';
 import { useHookCompanion } from '../../utils/HookCompanion';
 import WidgetManager from '../WidgetManager';
 import WidgetManagerCompanion from '../WidgetManager/WidgetManagerCompanion';
 
-export interface SliceViewProps {
+export interface SliceViewVtkProps {
   viewId: string;
   activeViewId: string;
   slicingMode: SlicingMode;
   children?: ReactNode;
 
-  parentHookCompanion?: SliceViewCompanion;
+  parentHookCompanion?: SliceViewVtkCompanion;
 }
 
-const SliceView: React.FC<SliceViewProps> = (props) => {
+const SliceViewVtk: React.FC<SliceViewVtkProps> = (props) => {
   const { viewId, children, slicingMode, parentHookCompanion } = props;
   const [, viewerLayoutApi] = useViewerLayoutContext();
   const [{ imageData }] = useImageDataContext();
   const [{ labelMaps }] = useAnnotationDataContext();
 
-  let hookCompanion: SliceViewCompanion;
+  let hookCompanion: SliceViewVtkCompanion;
 
   if (parentHookCompanion) {
     hookCompanion = parentHookCompanion;
   } else {
     // eslint-disable-next-line react-hooks/rules-of-hooks
-    hookCompanion = useHookCompanion(SliceViewCompanion, { ...props }, (companion) => {
+    hookCompanion = useHookCompanion(SliceViewVtkCompanion, { ...props }, (companion) => {
       companion.setViewerLayoutContext(viewerLayoutApi);
     });
   }
@@ -125,4 +125,4 @@ const interactorSettings = [
   }
 ];
 
-export default SliceView;
+export default SliceViewVtk;

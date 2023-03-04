@@ -1,8 +1,8 @@
 import React from 'react';
 
-import SliceView, { SliceViewProps } from '@labelstack/viewer/src/vtk/SliceView';
+import SliceViewVtk, { SliceViewVtkProps } from '@labelstack/viewer/src/vtk/SliceViewVtk';
 import { useImageDataContext } from '@labelstack/viewer/src/contexts/ImageDataContext';
-import SliceViewCompanion from '@labelstack/viewer/src/vtk/SliceView/SliceViewCompanion';
+import SliceViewVtkCompanion from '@labelstack/viewer/src/vtk/SliceViewVtk/SliceViewVtkCompanion';
 import { useHookCompanion } from '@labelstack/viewer/src/utils/HookCompanion';
 import { useViewerLayoutContext } from '@labelstack/viewer/src/contexts/ViewerLayoutContext';
 import { useEditedAnnotationDataContext } from '../../contexts/EditedAnnotationDataContext';
@@ -10,15 +10,15 @@ import LabelMapDrawer from '../LabelMapDrawer';
 import ToolSizeManipulator from '../ToolSizeManipulator';
 import { MouseButtonType } from '@labelstack/viewer/src/types/vtkjs.ext';
 
-interface EditableSliceViewProps extends SliceViewProps {}
+interface EditableSliceViewVtkProps extends SliceViewVtkProps {}
 
-const EditableSliceView: React.FC<EditableSliceViewProps> = (props) => {
+const EditableSliceViewVtk: React.FC<EditableSliceViewVtkProps> = (props) => {
   const { viewId, slicingMode } = props;
   const [{ imageData }] = useImageDataContext();
   const [, viewerLayoutApi] = useViewerLayoutContext();
   const [{ editedLabelMapId }] = useEditedAnnotationDataContext();
 
-  const hookCompanion = useHookCompanion(SliceViewCompanion, { ...props }, (companion) => {
+  const hookCompanion = useHookCompanion(SliceViewVtkCompanion, { ...props }, (companion) => {
     companion.setViewerLayoutContext(viewerLayoutApi);
   });
 
@@ -29,10 +29,10 @@ const EditableSliceView: React.FC<EditableSliceViewProps> = (props) => {
   const activeRepresentation = hookCompanion.labelMapRepresentations[editedLabelMapId];
 
   return (
-    <SliceView {...props} parentHookCompanion={hookCompanion}>
+    <SliceViewVtk {...props} parentHookCompanion={hookCompanion}>
       {activeRepresentation && imageData && hookCompanion.widgetManager && (
         <>
-          <LabelMapDrawer viewId={viewId} slicingMode={slicingMode} sliceView={hookCompanion} />
+          <LabelMapDrawer viewId={viewId} slicingMode={slicingMode} sliceViewVtkCompanion={hookCompanion} />
           <ToolSizeManipulator
             manipulatorOptions={{ button: MouseButtonType.NONE, scrollEnabled: true, scale: 2, shift: true }}
             minToolSize={5}
@@ -40,8 +40,8 @@ const EditableSliceView: React.FC<EditableSliceViewProps> = (props) => {
           />
         </>
       )}
-    </SliceView>
+    </SliceViewVtk>
   );
 };
 
-export default EditableSliceView;
+export default EditableSliceViewVtk;

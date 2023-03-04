@@ -1,5 +1,5 @@
 import React, { createContext, ReactNode, useContext, useState } from 'react';
-import SliceViewCompanion from '../../vtk/SliceView/SliceViewCompanion';
+import SliceViewVtkCompanion from '../../vtk/SliceViewVtk/SliceViewVtkCompanion';
 import { SlicingMode } from '@kitware/vtk.js/Rendering/Core/ImageMapper/Constants';
 
 export enum ViewMode {
@@ -24,7 +24,7 @@ export type FloatingWindowsObject = Record<string, ReactNode>;
 
 export interface ViewerLayoutState {
   activeViewId: string | null;
-  sliceViews: Record<string, SliceViewCompanion>;
+  sliceViews: Record<string, SliceViewVtkCompanion>;
   slicingModes: Record<string, SlicingMode>;
 
   viewMode: ViewMode | null;
@@ -46,8 +46,8 @@ export interface ViewerLayoutApi {
   showOverlayWindow: (windowNode: ReactNode) => void;
   hideOverlayWindow: () => void;
 
-  attachSliceView: (id: string, view: SliceViewCompanion) => void;
-  detachSliceView: (id: string) => void;
+  attachSliceViewVtk: (id: string, view: SliceViewVtkCompanion) => void;
+  detachSliceViewVtk: (id: string) => void;
 }
 
 export type ViewerLayoutContextType = [ViewerLayoutState, ViewerLayoutApi];
@@ -67,7 +67,7 @@ export const ViewerLayoutContextProvider: React.FC<{ children: ReactNode }> = ({
   const [slicingModes, setSlicingModes] = useState<Record<string, SlicingMode>>({});
   const [floatingWindows, setFloatingWindows] = useState<FloatingWindowsObject>({});
   const [overlayWindow, setOverlayWindow] = useState<ReactNode | null>(null);
-  const [sliceViews, setSliceViews] = useState<Record<string, SliceViewCompanion>>({});
+  const [sliceViews, setSliceViewVtks] = useState<Record<string, SliceViewVtkCompanion>>({});
 
   function updateComponentLocations(newComponentLocations: UiComponentLocations) {
     setComponentLocations(Object.assign({ ...componentLocations }, newComponentLocations));
@@ -91,14 +91,14 @@ export const ViewerLayoutContextProvider: React.FC<{ children: ReactNode }> = ({
     setOverlayWindow(null);
   }
 
-  function attachSliceView(id: string, view: SliceViewCompanion) {
+  function attachSliceViewVtk(id: string, view: SliceViewVtkCompanion) {
     sliceViews[id] = view;
-    setSliceViews({ ...sliceViews });
+    setSliceViewVtks({ ...sliceViews });
   }
 
-  function detachSliceView(id: string) {
+  function detachSliceViewVtk(id: string) {
     delete sliceViews[id];
-    setSliceViews({ ...sliceViews });
+    setSliceViewVtks({ ...sliceViews });
   }
 
   const state: ViewerLayoutState = {
@@ -120,8 +120,8 @@ export const ViewerLayoutContextProvider: React.FC<{ children: ReactNode }> = ({
     hideFloatingWindow,
     showOverlayWindow,
     hideOverlayWindow,
-    attachSliceView,
-    detachSliceView
+    attachSliceViewVtk,
+    detachSliceViewVtk
   };
 
   return <ViewerLayoutContext.Provider value={[state, api]}>{children}</ViewerLayoutContext.Provider>;

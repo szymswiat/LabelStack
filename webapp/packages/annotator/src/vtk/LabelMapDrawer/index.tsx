@@ -8,7 +8,7 @@ import { useEffectNonNull } from '@labelstack/app/src/utils/hooks';
 import { useViewerLayoutContext } from '@labelstack/viewer/src/contexts/ViewerLayoutContext';
 import { AnnotatorWidgetTool } from '../../contexts/AnnotatorToolsContext';
 import BrushWidgetInstance from '../BrushWidgetInstance';
-import SliceViewCompanion from '@labelstack/viewer/src/vtk/SliceView/SliceViewCompanion';
+import SliceViewVtkCompanion from '@labelstack/viewer/src/vtk/SliceViewVtk/SliceViewVtkCompanion';
 import { ViewTypes } from '@kitware/vtk.js/Widgets/Core/WidgetManager/Constants';
 import { useEditedAnnotationDataContext } from '../../contexts/EditedAnnotationDataContext';
 import { LabelMap, useAnnotationDataContext } from '@labelstack/viewer/src/contexts/AnnotationDataContext';
@@ -18,11 +18,11 @@ import SplineWidgetInstance from '../SplineWidgetInstance';
 export interface LabelMapDrawerProps {
   viewId: string;
   slicingMode: SlicingMode;
-  sliceView: SliceViewCompanion;
+  sliceViewVtkCompanion: SliceViewVtkCompanion;
 }
 
 const LabelMapDrawer: React.FC<LabelMapDrawerProps> = (props) => {
-  const { viewId, slicingMode, sliceView } = props;
+  const { viewId, slicingMode, sliceViewVtkCompanion } = props;
   const [
     { drawMode, undoTrigger, redoTrigger, toolSize, activeTool, drawerMode },
     { attachWidgetManager, detachWidgetManager, setCanUndo, setCanRedo, syncDrawersData }
@@ -31,7 +31,7 @@ const LabelMapDrawer: React.FC<LabelMapDrawerProps> = (props) => {
   const [{ activeViewId }] = useViewerLayoutContext();
   const [{ labelMaps }, { updateLabelMap }] = useAnnotationDataContext();
   const [{ editedLabelMapId }] = useEditedAnnotationDataContext();
-  const editedLabelMapRepresentation = sliceView.labelMapRepresentations[editedLabelMapId];
+  const editedLabelMapRepresentation = sliceViewVtkCompanion.labelMapRepresentations[editedLabelMapId];
   const editedLabelMap = labelMaps[editedLabelMapId];
   const editedLabelMapRef = useRef<LabelMap>(null);
   editedLabelMapRef.current = editedLabelMap;
@@ -174,7 +174,7 @@ const LabelMapDrawer: React.FC<LabelMapDrawerProps> = (props) => {
       <WidgetToAttach
         size={toolSize}
         slicingMode={slicingMode}
-        widgetManager={sliceView.widgetManager}
+        widgetManager={sliceViewVtkCompanion.widgetManager}
         labelMapDrawer={hookCompanion}
         viewType={ViewTypes.SLICE}
         imageData={imageData}

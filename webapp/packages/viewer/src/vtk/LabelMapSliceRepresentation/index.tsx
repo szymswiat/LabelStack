@@ -6,7 +6,7 @@ import { useViewContext } from '../../contexts/consumers';
 import { useImageDataContext } from '../../contexts/ImageDataContext';
 import LabelMapSliceRepresentationCompanion from './LabelMapSliceRepresentationCompanion';
 import { useEffectNonNull } from '@labelstack/app/src/utils/hooks';
-import SliceViewCompanion from '../SliceView/SliceViewCompanion';
+import SliceViewCompanion from '../SliceViewVtk/SliceViewVtkCompanion';
 import { useHookCompanion } from '../../utils/HookCompanion';
 import { LabelMap } from '../../contexts/AnnotationDataContext';
 import { View } from 'react-vtk-js';

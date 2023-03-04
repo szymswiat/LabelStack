@@ -2,20 +2,16 @@ import React from 'react';
 
 import { SlicingMode } from '@kitware/vtk.js/Rendering/Core/ImageMapper/Constants';
 import { useViewerLayoutContext } from '../../contexts/ViewerLayoutContext';
-import ViewHeader from '../../components/ViewHeader';
-import SliceView from '../../vtk/SliceView';
+import ViewHeader from '../ViewHeader';
+import SliceViewVtk from '../../vtk/SliceViewVtk';
 
-interface SliceViewComponentProps {
+interface SliceViewProps {
   viewId: string;
   slicingMode: SlicingMode;
-  viewComponent: typeof SliceView;
+  sliceViewType: typeof SliceViewVtk;
 }
 
-const SliceViewComponent: React.FC<SliceViewComponentProps> = ({
-  viewId,
-  slicingMode,
-  viewComponent: ViewComponent
-}) => {
+const SliceView: React.FC<SliceViewProps> = ({ viewId, slicingMode, sliceViewType: SliceViewVtkComponent }) => {
   const [{ activeViewId }, { setActiveViewId }] = useViewerLayoutContext();
 
   return (
@@ -28,10 +24,10 @@ const SliceViewComponent: React.FC<SliceViewComponentProps> = ({
         <ViewHeader viewId={viewId} />
       </div>
       <div className={'h-full w-full z-0'}>
-        <ViewComponent viewId={viewId} activeViewId={activeViewId!} slicingMode={slicingMode} />
+        <SliceViewVtkComponent viewId={viewId} activeViewId={activeViewId!} slicingMode={slicingMode} />
       </div>
     </div>
   );
 };
 
-export default SliceViewComponent;
+export default SliceView;

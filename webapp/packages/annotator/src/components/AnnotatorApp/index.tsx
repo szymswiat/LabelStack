@@ -12,7 +12,7 @@ import uiModeAnnotationTask from './annotationTaskMode';
 import uiModeAnnotationReviewTask from './annotationReviewTaskMode';
 import ViewerLayout from '@labelstack/viewer/src/components/ViewerLayout';
 import Viewport from '@labelstack/viewer/src/components/Viewport';
-import EditableSliceView from '../../vtk/EditableSliceView';
+import EditableSliceViewVtk from '../../vtk/EditableSliceViewVtk';
 import { useAnnotatorDataContext } from '../../contexts/AnnotatorDataContext';
 
 const taskModeMappings = {
@@ -44,7 +44,7 @@ const AnnotatorApp: React.FC = () => {
       <ServerConnectionChecker />
       {renderLayout && (
         <ViewerLayout {...taskModeMappings[task.task_type]}>
-          <Viewport sliceViewComponent={EditableSliceView} />
+          <Viewport sliceViewType={EditableSliceViewVtk} />
         </ViewerLayout>
       )}
     </>
