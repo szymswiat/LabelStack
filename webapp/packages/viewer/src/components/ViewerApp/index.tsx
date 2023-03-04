@@ -3,7 +3,7 @@ import React from 'react';
 import ImageInstanceLoader from '@labelstack/viewer/src/components/ImageInstanceLoader';
 import { useDocumentTitle, useQuery } from '@labelstack/app/src/utils/hooks';
 import { Navigate } from 'react-router-dom';
-import Viewport from '../../components/Viewport';
+import SliceViewportSelector from '../../components/SliceViewportSelector';
 import SliceViewVtk from '../../vtk/SliceViewVtk';
 
 import ViewerDataLoader from '../ViewerDataLoader';
@@ -11,6 +11,7 @@ import ViewerImageInstanceDownloader from '../ImageInstanceDownloader/ViewerImag
 import ServerConnectionChecker from '../ServerConnectionChecker';
 import ViewerLayout from '../ViewerLayout';
 import uiModeMain from '../ViewerLayout/mainMode';
+import Viewport from '../Viewport';
 
 const ViewerApp: React.FC = () => {
   const query = useQuery();
@@ -32,10 +33,12 @@ const ViewerApp: React.FC = () => {
     <>
       <ImageInstanceLoader />
       <ViewerImageInstanceDownloader />
-      <ServerConnectionChecker />
       <ViewerDataLoader imageInstanceIds={imageInstanceIds} imageInstanceId={imageInstanceId} />
+      <ServerConnectionChecker />
       <ViewerLayout {...uiModeMain}>
-        <Viewport sliceViewType={SliceViewVtk} />
+        <Viewport>
+          <SliceViewportSelector sliceViewType={SliceViewVtk} />
+        </Viewport>
       </ViewerLayout>
     </>
   );

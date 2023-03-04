@@ -2,11 +2,11 @@ import React, { useEffect } from 'react';
 import { SlicingMode } from '@kitware/vtk.js/Rendering/Core/ImageMapper/Constants';
 
 import SliceView from '../SliceView';
-import { ViewportProps } from '../../components/Viewport';
+import { SliceViewportSelectorProps } from '../../components/SliceViewportSelector';
 import { useViewerLayoutContext } from '../../contexts/ViewerLayoutContext';
 import { useLocalStorage } from '@labelstack/app/src/utils/hooks';
 
-const ThreeSlicesViewport: React.FC<ViewportProps> = ({ sliceViewType }) => {
+const ThreeSlicesViewport: React.FC<SliceViewportSelectorProps> = ({ sliceViewType }) => {
   const [{ slicingModes }, { setSlicingModes }] = useViewerLayoutContext();
 
   const [slicingModesStorage, setSlicingModesStorage] = useLocalStorage<Record<string, SlicingMode>>(

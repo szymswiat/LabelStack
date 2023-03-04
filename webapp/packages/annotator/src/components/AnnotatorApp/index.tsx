@@ -11,9 +11,10 @@ import uiModeLabelTask from '../AnnotatorApp/labelTaskMode';
 import uiModeAnnotationTask from './annotationTaskMode';
 import uiModeAnnotationReviewTask from './annotationReviewTaskMode';
 import ViewerLayout from '@labelstack/viewer/src/components/ViewerLayout';
-import Viewport from '@labelstack/viewer/src/components/Viewport';
+import SliceViewportSelector from '@labelstack/viewer/src/components/SliceViewportSelector';
 import EditableSliceViewVtk from '../../vtk/EditableSliceViewVtk';
 import { useAnnotatorDataContext } from '../../contexts/AnnotatorDataContext';
+import Viewport from '@labelstack/viewer/src/components/Viewport';
 
 const taskModeMappings = {
   [TaskType.labelAssignment]: uiModeLabelTask,
@@ -39,12 +40,14 @@ const AnnotatorApp: React.FC = () => {
   return (
     <>
       <ImageInstanceLoader />
-      <AnnotatorDataLoader taskId={taskId} imageInstanceId={imageInstanceId} />
       <AnnotatorImageInstanceDownloader taskId={taskId} />
+      <AnnotatorDataLoader taskId={taskId} imageInstanceId={imageInstanceId} />
       <ServerConnectionChecker />
       {renderLayout && (
         <ViewerLayout {...taskModeMappings[task.task_type]}>
-          <Viewport sliceViewType={EditableSliceViewVtk} />
+          <Viewport>
+            <SliceViewportSelector sliceViewType={EditableSliceViewVtk} />
+          </Viewport>
         </ViewerLayout>
       )}
     </>
