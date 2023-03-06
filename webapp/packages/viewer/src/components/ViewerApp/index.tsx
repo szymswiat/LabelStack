@@ -12,9 +12,17 @@ import ServerConnectionChecker from '../ServerConnectionChecker';
 import ViewerLayout from '../ViewerLayout';
 import uiModeMain from '../ViewerLayout/mainMode';
 import Viewport from '../Viewport';
+import { useViewerLayoutContext, ViewMode } from '../../contexts/ViewerLayoutContext';
+import VolumeView from '../VolumeView';
+import VolumeViewVtk from '../../vtk/VolumeViewVtk';
+
+export const sliceViewModes = [ViewMode.ONE_SLICE, ViewMode.TWO_SLICES, ViewMode.THREE_SLICES];
+export const volumeViewModes = [ViewMode.VOLUME];
 
 const ViewerApp: React.FC = () => {
   const query = useQuery();
+
+  const [{ viewMode }] = useViewerLayoutContext();
 
   useDocumentTitle('LabelStack - Viewer');
 
@@ -29,6 +37,9 @@ const ViewerApp: React.FC = () => {
 
   const imageInstanceId = Number(query.get('imageInstanceId'));
 
+  const isSliceViewActive = sliceViewModes.includes(viewMode);
+  const isVolumeViewActive = volumeViewModes.includes(viewMode);
+
   return (
     <>
       <ImageInstanceLoader />
@@ -37,7 +48,8 @@ const ViewerApp: React.FC = () => {
       <ServerConnectionChecker />
       <ViewerLayout {...uiModeMain}>
         <Viewport>
-          <SliceViewportSelector sliceViewType={SliceViewVtk} />
+          {isSliceViewActive && <SliceViewportSelector sliceViewType={SliceViewVtk} />}
+          {isVolumeViewActive && <VolumeView volumeViewType={VolumeViewVtk} viewId={'0'} />}
         </Viewport>
       </ViewerLayout>
     </>

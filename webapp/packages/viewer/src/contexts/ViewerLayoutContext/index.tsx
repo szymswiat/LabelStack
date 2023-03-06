@@ -5,7 +5,8 @@ import { SlicingMode } from '@kitware/vtk.js/Rendering/Core/ImageMapper/Constant
 export enum ViewMode {
   ONE_SLICE,
   TWO_SLICES,
-  THREE_SLICES
+  THREE_SLICES,
+  VOLUME
 }
 
 export enum UiComponentLocation {

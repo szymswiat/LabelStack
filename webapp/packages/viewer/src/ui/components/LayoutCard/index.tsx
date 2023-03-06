@@ -2,7 +2,6 @@ import classNames from 'classnames';
 import React from 'react';
 import { hasClassName } from '../../../utils';
 
-
 export interface LayoutCardProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 const LayoutCard: React.FC<LayoutCardProps> = (props) => {
@@ -13,11 +12,11 @@ const LayoutCard: React.FC<LayoutCardProps> = (props) => {
       {...props}
       className={classNames(
         {
-          'bg-dark-card-bg': !hasClassName(className, 'bg-'),
+          'bg-dark-card-bg text-dark-text': !hasClassName(className, 'bg-'),
           'w-full': !hasClassName(className, 'w-'),
           'h-full': !hasClassName(className, 'h-')
         },
-        'rounded-lg shadow-layout-custom-dark',
+        'rounded-sm shadow-layout-custom-dark',
         className
       )}
     >

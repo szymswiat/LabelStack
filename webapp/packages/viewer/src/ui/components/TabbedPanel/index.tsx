@@ -54,7 +54,7 @@ const TabbedPanel: React.FC<TabbedPanelProps> = ({ elements, side, onPopClick })
           ))}
         </LayoutCard>
       </div>
-      <div className={classNames('flex flex-grow flex-col space-y-4 w-full overflow-y-scroll no-scrollbar rounded-lg')}>
+      <div className={classNames('flex flex-grow flex-col space-y-4 w-full overflow-y-scroll no-scrollbar rounded-sm')}>
         {activePanel &&
           activePanel.sections.map((section) => (
             <div key={section.name} className={'max-h-2/3'}>

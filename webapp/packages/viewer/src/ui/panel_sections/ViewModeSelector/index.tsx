@@ -2,6 +2,7 @@ import React from 'react';
 import { useViewerLayoutContext, ViewMode } from '../../../contexts/ViewerLayoutContext';
 import { IconType } from 'react-icons';
 import { BsApp, BsLayoutSplit, BsLayoutThreeColumns } from 'react-icons/bs';
+import { RxCube } from 'react-icons/rx';
 import { useImageDataContext } from '../../../contexts/ImageDataContext';
 import { useEffectNonNull, useLocalStorage } from '@labelstack/app/src/utils/hooks';
 import TopBarButton from '../../components/TopBarButton';
@@ -11,7 +12,8 @@ interface ViewModeSelectorProps {}
 const viewModeData: { [K in ViewMode]: [string, IconType] } = {
   [ViewMode.ONE_SLICE]: ['One slice', BsApp],
   [ViewMode.TWO_SLICES]: ['Two slices', BsLayoutSplit],
-  [ViewMode.THREE_SLICES]: ['Three slices', BsLayoutThreeColumns]
+  [ViewMode.THREE_SLICES]: ['Three slices', BsLayoutThreeColumns],
+  [ViewMode.VOLUME]: ['Volume', RxCube],
 };
 
 const ViewModeSelector: React.FC<ViewModeSelectorProps> = () => {

@@ -9,7 +9,7 @@ interface WindowProps {
 const Window: React.FC<WindowProps> = ({ className, children }) => {
   return (
     <div
-      className={classNames(className, 'rounded-lg', {
+      className={classNames(className, 'rounded-sm', {
         'bg-dark-bg': className.search('bg-') === -1
       })}
     >

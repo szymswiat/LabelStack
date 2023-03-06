@@ -9,7 +9,7 @@ import PanelButton from '../../ui/components/PanelButton';
 // @ts-ignore
 const { SlicingMode } = vtkImageMapper;
 
-interface PaintViewHeaderProps {
+interface SliceViewHeaderProps {
   viewId: string;
 }
 
@@ -19,7 +19,7 @@ const slicingModeNameMapping = {
   [SlicingMode.I]: 'SAGITTAL'
 };
 
-const ViewHeader: React.FC<PaintViewHeaderProps> = ({ viewId }) => {
+const SliceViewHeader: React.FC<SliceViewHeaderProps> = ({ viewId }) => {
   const [{ visibleSlices }, { setVisibleSlices }] = useImagePropertiesContext();
   const [{ imageData }] = useImageDataContext();
   const [{ slicingModes }, { setSlicingModes }] = useViewerLayoutContext();
@@ -83,4 +83,4 @@ const ViewHeader: React.FC<PaintViewHeaderProps> = ({ viewId }) => {
   );
 };
 
-export default ViewHeader;
+export default SliceViewHeader;

@@ -55,7 +55,7 @@ const PanelButton: React.FC<PanelButtonProps> = ({
     return (
       <div
         key={name}
-        className={classNames('h-full w-full', 'grid place-items-center border-dark-text rounded-lg text-sm', {
+        className={classNames('h-full w-full', 'grid place-items-center border-dark-text rounded-md text-sm', {
           'border-2': border,
           [activeClassName]: isActive,
           [inactiveClassName]: !isActive,

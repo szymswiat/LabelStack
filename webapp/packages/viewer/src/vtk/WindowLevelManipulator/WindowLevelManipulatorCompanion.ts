@@ -39,7 +39,7 @@ class WindowLevelManipulatorCompanion extends HookCompanion<WindowLevelManipulat
     this.maxImageValue = dataset.WindowCenter + dataset.WindowWidth / 2;
 
     this.rangeManipulator.setHorizontalListener(
-      0,
+      10,
       dataset.WindowWidth,
       10,
       () => this.getWindowWidth(),

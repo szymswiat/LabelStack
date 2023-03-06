@@ -14,7 +14,7 @@ const PanelCollapsible: React.FC<PanelCollapsibleProps> = ({ headerName, childre
   const ExpandIcon = isExpanded ? IoIosArrowUp : IoIosArrowDown;
 
   return (
-    <LayoutCard className={'w-full text-dark-text select-none bg-dark-card-bg rounded-lg h-fit'}>
+    <LayoutCard className={'w-full select-none h-fit'}>
       <div className={'w-full h-16 flex flex-row'} {...getToggleProps()}>
         <div className={'pl-6 flex-none font-bold grid'}>
           <div className={'place-self-center text-base'}>{headerName}</div>

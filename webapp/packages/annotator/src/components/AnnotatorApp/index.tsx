@@ -15,6 +15,10 @@ import SliceViewportSelector from '@labelstack/viewer/src/components/SliceViewpo
 import EditableSliceViewVtk from '../../vtk/EditableSliceViewVtk';
 import { useAnnotatorDataContext } from '../../contexts/AnnotatorDataContext';
 import Viewport from '@labelstack/viewer/src/components/Viewport';
+import { useViewerLayoutContext } from '@labelstack/viewer/src/contexts/ViewerLayoutContext';
+import { sliceViewModes, volumeViewModes } from '@labelstack/viewer/src/components/ViewerApp';
+import VolumeView from '@labelstack/viewer/src/components/VolumeView';
+import VolumeViewVtk from '@labelstack/viewer/src/vtk/VolumeViewVtk';
 
 const taskModeMappings = {
   [TaskType.labelAssignment]: uiModeLabelTask,
@@ -25,6 +29,7 @@ const taskModeMappings = {
 const AnnotatorApp: React.FC = () => {
   const query = useQuery();
   const [{ task }] = useAnnotatorDataContext();
+  const [{ viewMode }] = useViewerLayoutContext();
 
   useDocumentTitle('LabelStack - Annotator');
 
@@ -37,6 +42,9 @@ const AnnotatorApp: React.FC = () => {
 
   const renderLayout = task && task.task_type in taskModeMappings;
 
+  const isSliceViewActive = sliceViewModes.includes(viewMode);
+  const isVolumeViewActive = volumeViewModes.includes(viewMode);
+
   return (
     <>
       <ImageInstanceLoader />
@@ -46,7 +54,8 @@ const AnnotatorApp: React.FC = () => {
       {renderLayout && (
         <ViewerLayout {...taskModeMappings[task.task_type]}>
           <Viewport>
-            <SliceViewportSelector sliceViewType={EditableSliceViewVtk} />
+            {isSliceViewActive && <SliceViewportSelector sliceViewType={EditableSliceViewVtk} />}
+            {isVolumeViewActive && <VolumeView volumeViewType={VolumeViewVtk} viewId={'0'} />}
           </Viewport>
         </ViewerLayout>
       )}
