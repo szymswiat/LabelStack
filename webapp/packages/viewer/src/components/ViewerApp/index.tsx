@@ -1,0 +1,41 @@
+import React from 'react';
+
+import ImageInstanceLoader from '@labelstack/viewer/src/components/ImageInstanceLoader';
+import { useDocumentTitle, useQuery } from '@labelstack/app/src/utils/hooks';
+import { Navigate } from 'react-router-dom';
+import ViewerLayout from '../../ui/layouts/ViewerLayout';
+import Viewport from '../../ui/components/Viewport';
+import SliceView from '../../vtk/SliceView';
+import mainUiMode from './mainMode';
+import ViewerDataLoader from '../ViewerDataLoader';
+import ViewerImageInstanceDownloader from '../ImageInstanceDownloader/ViewerImageInstanceDownloader';
+import ServerConnectionChecker from '../ServerConnectionChecker';
+
+const ViewerApp: React.FC = () => {
+  const query = useQuery();
+
+  useDocumentTitle('LabelStack - Viewer');
+
+  if (query.has('imageInstanceIds') === false) {
+    return <Navigate to={'/error'} state={{ message: 'Missing imageInstanceIds. Cannot launch viewer.' }} />;
+  }
+
+  const imageInstanceIds = query
+    .get('imageInstanceIds')
+    .split(',')
+    .map((idStr) => Number(idStr));
+
+  const imageInstanceId = Number(query.get('imageInstanceId'));
+
+  return (
+    <ViewerLayout {...mainUiMode}>
+      <ImageInstanceLoader />
+      <ViewerImageInstanceDownloader />
+      <ServerConnectionChecker />
+      <ViewerDataLoader imageInstanceIds={imageInstanceIds} imageInstanceId={imageInstanceId} />
+      <Viewport sliceViewComponent={SliceView} />
+    </ViewerLayout>
+  );
+};
+
+export default ViewerApp;

@@ -1,0 +1,22 @@
+{
+  "name": "@labelstack/annotator",
+  "version": "0.0.0",
+  "title": "",
+  "description": "LabelStack App",
+  "author": "LabelStack contributors",
+  "publishConfig": {
+    "access": "public"
+  },
+  "private": false,
+  "dependencies": {
+    "@labelstack/api": "0.0.0",
+    "@labelstack/app": "0.1.0",
+    "@labelstack/viewer": "0.0.0"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  }
+}

@@ -1,0 +1,44 @@
+pl_name,eng_name,segmentable
+Na leżąco,lying down,FALSE
+Na stojąco,,FALSE
+Na siedząco,,FALSE
+Dziecko,child,FALSE
+Skolioza,scoliosis,FALSE
+Zmiany zwyrodnieniowe kręgosłupa,degenerative lesions of the spine,FALSE
+Płyn,fluid,TRUE
+Wzmożony rysunek naczyniowy,increased pulmonary vascularity,FALSE
+Pogrubienie opłucnej,thickening,TRUE
+Powietrze pod przeponą,subdiaphragmatic free gas,TRUE
+Zacienienie,pulmonary opacity,TRUE
+Zwłóknienie,fibrosis,TRUE
+Guz,tumor,TRUE
+Kardiomegalia,cardiomegaly,TRUE
+Niedodma,atelectasis,TRUE
+Odma,pneumothorax,TRUE
+Rozedma,emphysema,TRUE
+Blaszka miażdżycowa,atherosclerotic plaque,TRUE
+Wnęki płucne naczyniowe,vascular cavities,FALSE
+Poszerzenie sródpiersia,mediastinal widening,TRUE
+Port naczyniowy,vascular port,TRUE
+ICD,ICD,TRUE
+Rurka intubacyjna,tracheal tube,TRUE
+Rurka tracheostomijna,tracheostomy,TRUE
+Wkłucie centralne,central venous catheter,TRUE
+Dren opłucnowy,pleural catherer,TRUE
+Sonda żołądkowa,G-tube,TRUE
+Drutowanie mostka,sternal wires,TRUE
+Endoproteza stawu ramiennego,total shoulder arthroplasty,TRUE
+Zagęszczenia plamiste - zapalenie płuc,consolidation,FALSE
+Bronchogram powietrzny,air bronchogram,TRUE
+Szwy metalowe,metallic sutures,TRUE
+Złamanie żeber,rib fracture,TRUE
+Zatarte kąty przeponowo-żebrowe ,obscured costophrenic angles,TRUE
+Kaniula dializacyjna,dialysis catheter,TRUE
+Resekcja płuca,lung resection,FALSE
+Nawarstwienie opłucnej,pleural overlays,TRUE
+Przepuklina rozworu przełykowego,hernia ,TRUE
+Osteopenia,osteopenia,FALSE
+Sternotomia,sternotomy,FALSE
+Zatarcie kopłół przepony,obscured diaphragm ,TRUE
+Poszerzenie wnęk,pulmonary cavities enlargment,FALSE
+Złamanie obojczyka,clavicle fracture ,TRUE

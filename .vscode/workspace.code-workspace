@@ -1,0 +1,16 @@
+{
+	"folders": [
+		{
+			"path": ".."
+		}
+	],
+	"settings": {
+		"[typescriptreact]": {
+			"editor.defaultFormatter": "esbenp.prettier-vscode"
+		},
+		"python.languageServer": "Pylance",
+		"python.analysis.typeCheckingMode": "off",
+		"files.trimTrailingWhitespace": true,
+		"python.formatting.provider": "black"
+	}
+}

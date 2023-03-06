@@ -1,0 +1,46 @@
+version: "3.9"
+services:
+
+  traefik:
+    ports:
+      - "8080:8080"
+    command:
+      - --api
+      - --api.insecure=true
+      - --log.level=DEBUG
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+      - --accesslog
+      - --log
+      - --entrypoints.web.address=:80
+      - --entrypoints.web-secure.address=:443
+
+  pgadmin:
+    ports:
+      - "5050:5050"
+    expose:
+      - "5050"
+
+  db:
+    ports:
+      - "5432:5432"
+
+  backend:
+    ports:
+      - "8000:8000"
+    expose:
+      - "8000"
+    volumes:
+      - ./backend:/code
+      - ~/.cache.pypoetry:/root/.cache/pypoetry
+
+  webapp:
+    ports:
+      - "3000:80"
+    expose:
+      - "80"
+
+  orthanc:
+    ports:
+      - "8042:8042"
+      - "4242:4242"

@@ -1,0 +1,21 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Backend dev server",
+            "type": "python",
+            "request": "launch",
+            "module": "uvicorn",
+            "args": [
+                "app.main:app",
+                "--reload"
+            ],
+            "envFile": "${workspaceFolder}/.env",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/backend/app",
+                "POSTGRES_SERVER": "localhost",
+                "DICOMWEB_URL": "http://localhost:8042/dicom-web"
+            }
+        }
+    ]
+}

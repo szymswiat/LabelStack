@@ -1,0 +1,21 @@
+{
+  "name": "@labelstack/api",
+  "version": "0.0.0",
+  "description": "LabelStack API",
+  "author": "LabelStack contributors",
+  "main": "./src/index.ts",
+  "exports": "./src/index.ts",
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "axios": "^0.25.0",
+    "dicomweb-client": "^0.6.0"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  }
+}

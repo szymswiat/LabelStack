@@ -1,0 +1,122 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "[DEV] Frontend server",
+			"type": "shell",
+			"command": [
+				"source ${workspaceFolder}/.vscode/taskHelpers &&",
+				"loadDotEnv ${workspaceFolder}/.env &&",
+				"yarn app:dev"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}/webapp/packages/app",
+				"env": {
+					"API_HOST_ORIGIN": "localhost:8000",
+					"ENV": "dev"
+				}
+			}
+		},
+		{
+			"label": "[DEV] Backend server",
+			"type": "shell",
+			"command": [
+				"source ${workspaceFolder}/.vscode/taskHelpers &&",
+				"loadDotEnv ${workspaceFolder}/.env &&",
+				"${command:python.interpreterPath} -m uvicorn app.main:app ",
+				"--reload --reload-delay 1 --reload-dir ${workspaceFolder}/backend/app"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}/backend",
+				"env": {
+					"PYTHONPATH": "${workspaceFolder}/backend",
+					"POSTGRES_SERVER": "localhost",
+					"DICOMWEB_URL": "http://localhost:8042/dicom-web",
+					"ENV": "dev"
+				}
+			}
+		},
+		{
+			"label": "[DEV] Pacs with db",
+			"type": "shell",
+			"command": "docker compose up db orthanc"
+		},
+		{
+			"label": "[DEV] Run dev setup",
+			"dependsOn": [
+				"[DEV] Pacs with db",
+				"[DEV] Frontend server",
+				"[DEV] Backend server"
+			]
+		},
+		{
+			"label": "[DEV] Run database migrations",
+			"type": "shell",
+			"command": [
+				"source ${workspaceFolder}/.vscode/taskHelpers &&",
+				"loadDotEnv ${workspaceFolder}/.env &&",
+				"${command:python.interpreterPath} -m alembic upgrade head"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}/backend",
+				"env": {
+					"PYTHONPATH": "${workspaceFolder}/backend",
+					"POSTGRES_SERVER": "localhost",
+					"ENV": "dev"
+				}
+			}
+		},
+		{
+			"label": "[DEV] Reload database initial data",
+			"type": "shell",
+			"command": [
+				"source ${workspaceFolder}/.vscode/taskHelpers &&",
+				"loadDotEnv ${workspaceFolder}/.env &&",
+				"${command:python.interpreterPath} initial_data.py"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}/backend/app",
+				"env": {
+					"PYTHONPATH": "${workspaceFolder}/backend",
+					"POSTGRES_SERVER": "localhost",
+					"ENV": "dev",
+					"DICOMWEB_URL": "http://localhost:8042/dicom-web",
+				}
+			}
+		},
+		{
+			"label": "[TEST] Run test scenarios",
+			"type": "shell",
+			"command": [
+				"source ${workspaceFolder}/.vscode/taskHelpers &&",
+				"loadDotEnv ${workspaceFolder}/.env &&",
+				"${command:python.interpreterPath} -m pytest ./app/tests/api/api_v1/scenarios"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}/backend",
+				"env": {
+					"PYTHONPATH": "${workspaceFolder}/backend",
+					"ENV": "dev_tests",
+					"TEST_INIT_DATA_ROOT": "${workspaceFolder}/backend/app/db/init/resources"
+				}
+			}
+		},
+		{
+			"label": "[PROD] Build frontend app",
+			"type": "shell",
+			"command": [
+				"source ${workspaceFolder}/.vscode/taskHelpers &&",
+				"loadDotEnv ${workspaceFolder}/.env &&",
+				"yarn build"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}/webapp",
+			}
+		},
+		{
+			"label": "[PROD] Run all containers",
+			"type": "shell",
+			"command": "docker compose -f docker-compose.yml up"
+		},
+	]
+}
