@@ -4,7 +4,7 @@ services:
 
   traefik:
     image: traefik:v2.8
-    container_name: traefik
+    container_name: labelstack-traefik
     ports:
       - "443:443"
       - "8080:8080"
@@ -39,6 +39,7 @@ services:
 
   db:
     image: postgres:14-alpine
+    container_name: labelstack-db
     volumes:
       - app-db-data:${PGDATA}
       - ./database/pg-init-scripts:/docker-entrypoint-initdb.d
@@ -49,6 +50,7 @@ services:
 
   pgadmin:
     image: dpage/pgadmin4
+    container_name: labelstack-pgadmin
     depends_on:
       - db
     env_file:
@@ -76,6 +78,7 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
+    container_name: labelstack-backend
     depends_on:
       - db
       - traefik
@@ -99,6 +102,7 @@ services:
       args:
         - API_HOST_ORIGIN=${API_HOST_ORIGIN}
         - DICOMWEB_ORIGIN=${DICOMWEB_ORIGIN}
+    container_name: labelstack-webapp
     depends_on:
       - traefik
     env_file:
@@ -114,6 +118,7 @@ services:
 
   orthanc:
     image: osimis/orthanc:20.4.2
+    container_name: labelstack-orthanc
     depends_on:
       - db
       - traefik

@@ -2,84 +2,28 @@
 	"version": "2.0.0",
 	"tasks": [
 		{
-			"label": "[DEV] Launch frontend server",
+			"label": "[DEV] Launch dev containers (db, pacs, traefik, webapp, backend)",
 			"type": "shell",
-			"command": [
-				"python ${workspaceFolder}/.vscode/run_with_dotenv ${workspaceFolder}/.env ",
-				"yarn app:dev"
-			],
+			"command": "docker compose up --build db orthanc traefik webapp backend",
 			"options": {
-				"cwd": "${workspaceFolder}/webapp/packages/app",
 				"env": {
-					"API_HOST_ORIGIN": "localhost:8000",
-					"DICOMWEB_ORIGIN": "localhost/pacs/dicom-web",
 					"ENV": "dev"
 				}
 			}
-		},
-		{
-			"label": "[DEV] Launch backend server",
-			"type": "shell",
-			"command": [
-				"python ${workspaceFolder}/.vscode/run_with_dotenv ${workspaceFolder}/.env ",
-				"${command:python.interpreterPath} -m uvicorn app.main:app ",
-				"--reload --reload-delay 1 --reload-dir ${workspaceFolder}/backend/app"
-			],
-			"options": {
-				"cwd": "${workspaceFolder}/backend",
-				"env": {
-					"PYTHONPATH": "${workspaceFolder}/backend",
-					"POSTGRES_SERVER": "localhost",
-					"DICOMWEB_ORIGIN": "localhost/pacs/dicom-web",
-					"ENV": "dev"
-				}
-			}
-		},
-		{
-			"label": "[DEV] Launch dev containers (db, pacs, traefik)",
-			"type": "shell",
-			"command": "docker compose up db orthanc traefik"
-		},
-		{
-			"label": "[DEV] Launch dev environment",
-			"dependsOn": [
-				"[DEV] Launch dev containers (db, pacs, traefik)",
-				"[DEV] Launch frontend server",
-				"[DEV] Launch backend server"
-			]
 		},
 		{
 			"label": "[DEV] Apply database migrations",
 			"type": "shell",
 			"command": [
-				"python ${workspaceFolder}/.vscode/run_with_dotenv ${workspaceFolder}/.env ",
-				"${command:python.interpreterPath} -m alembic upgrade head"
-			],
-			"options": {
-				"cwd": "${workspaceFolder}/backend",
-				"env": {
-					"PYTHONPATH": "${workspaceFolder}/backend",
-					"POSTGRES_SERVER": "localhost",
-					"ENV": "dev"
-				}
-			}
+				"docker exec -it labelstack-backend bash -c 'alembic upgrade head'"
+			]
 		},
 		{
 			"label": "[DEV] Wipe and init database",
 			"type": "shell",
 			"command": [
-				"python ${workspaceFolder}/.vscode/run_with_dotenv ${workspaceFolder}/.env ",
-				"${command:python.interpreterPath} initial_data.py"
-			],
-			"options": {
-				"cwd": "${workspaceFolder}/backend/app",
-				"env": {
-					"PYTHONPATH": "${workspaceFolder}/backend",
-					"POSTGRES_SERVER": "localhost",
-					"ENV": "dev",
-					"DICOMWEB_ORIGIN": "localhost/pacs/dicom-web",
-				}
-			}
+				"docker exec -it labelstack-backend bash -c 'cd app && python initial_data.py'"
+			]
 		},
 		{
 			"label": "[PROD] Build frontend app",

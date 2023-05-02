@@ -18,21 +18,20 @@
             }
         },
         {
-            "name": "Backend dev server",
+            "name": "Attach backend debugger",
             "type": "python",
-            "request": "launch",
-            "module": "uvicorn",
-            "args": [
-                "app.main:app",
-                "--reload"
+            "request": "attach",
+            "connect": {
+                "host": "localhost",
+                "port": 5678
+            },
+            "pathMappings": [
+                {
+                    "localRoot": "${workspaceFolder}/backend",
+                    "remoteRoot": "/code"
+                }
             ],
-            "envFile": "${workspaceFolder}/.env",
-            "env": {
-                "PYTHONPATH": "${workspaceFolder}/backend",
-                "POSTGRES_SERVER": "localhost",
-                "DICOMWEB_ORIGIN": "localhost/pacs/dicom-web",
-                "ENV": "dev"
-            }
+            "justMyCode": true
         }
     ]
 }

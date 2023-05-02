@@ -1,0 +1,9 @@
+FROM alpine:3.17
+
+ENV ENV="dev"
+
+RUN apk add --no-cache yarn
+
+WORKDIR /code/packages/app
+
+CMD ["yarn", "app:dev"]

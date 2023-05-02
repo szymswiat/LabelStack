@@ -14,7 +14,7 @@ if (!['prod', 'dev'].includes(process.env.ENV)) {
   throw Error(`Invalid value of ENV var: ${process.env.ENV}`);
 }
 
-const protocol = process.env.ENV === 'prod' ? 'https' : 'http';
+const protocol = 'https'
 export const apiUrl = `${protocol}://${process.env.API_HOST_ORIGIN}`;
 export const apiV1 = '/api/v1';
 
