@@ -1,6 +1,7 @@
 import React, { createContext, ReactNode, useContext, useRef, useState } from 'react';
 import { User } from '@labelstack/api';
 import { useLocalStorage } from '../../utils/hooks';
+import reactUseCookie from 'react-use-cookie';
 
 export interface UserDataContext {
   state: UserDataState;
@@ -25,7 +26,7 @@ export const UserDataContext = createContext<[UserDataState, UserDataApi]>(null)
 export const UserDataProvider: React.FC<{ children?: ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null | undefined>(undefined);
   const updatingUser = useRef<boolean>(false);
-  const [token, setTokenState] = useLocalStorage<string | undefined>('token', '');
+  const [token, setTokenState] = reactUseCookie('token', '');
   const [userReloadTrigger, setUserReloadTrigger] = useState<number>(Date.now());
 
   function reloadUserData() {
@@ -40,8 +41,7 @@ export const UserDataProvider: React.FC<{ children?: ReactNode }> = ({ children 
   };
 
   function setToken(token: string) {
-    localStorage.setItem('token', token);
-    setTokenState(token);
+    setTokenState(token, { path: '/' });
   }
 
   const api: UserDataApi = {

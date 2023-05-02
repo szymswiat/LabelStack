@@ -539,5 +539,7 @@
     "Database": "orthanc", // default database name in PostgreSQL container (no need to create it)
     "Username": "postgres", // default user name in PostgreSQL container (no need to create it)
     "Password" : "admin"
-  }
+  },
+
+  "PythonScript": "/etc/orthanc/extensions.py"
 }

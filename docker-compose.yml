@@ -117,7 +117,9 @@ services:
       - traefik.http.routers.webapp.tls=true
 
   orthanc:
-    image: osimis/orthanc:20.4.2
+    build:
+      context: ./pacs
+      dockerfile: Dockerfile
     container_name: labelstack-orthanc
     depends_on:
       - db
@@ -127,6 +129,7 @@ services:
       - ${ORTHANC_CONFIG}:${ORTHANC_CONFIG_INTERNAL}:ro
       # storage volume for raw dicoms
       - pacs-data:${ORTHANC_DICOM_DATA_INTERNAL}
+      - ./pacs/extensions.py:/etc/orthanc/extensions.py:ro
     environment:
       - POSTGRES_DB=${POSTGRES_ORTHANC_DB}
       # DICOMWeb Plugin

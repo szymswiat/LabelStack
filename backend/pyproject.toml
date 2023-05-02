@@ -44,6 +44,7 @@ pytest-env = "0.8.1"
 rstr = "3.0.0"
 watchgod = "0.8.2"
 pylint = "2.15.5"
+types-urllib3 = "^1.26.25.12"
 
 [tool.isort]
 multi_line_output = 3
