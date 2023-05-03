@@ -54,6 +54,13 @@ def init_db(db: Session) -> None:
         roles=[superuser_role],
     )
 
+    create_user(
+        db,
+        email=settings.INTERNAL_USER,
+        password=settings.INTERNAL_USER_PASSWORD,
+        roles=[superuser_role],
+    )
+
     tags_data = tags_create_data()
     crud.tag.create_bulk(db, objs_in=tags_data)
 
@@ -77,7 +84,7 @@ def init_db(db: Session) -> None:
     labels_data = labels_create_data(db)
     crud.label.create_many(db, objs_in=labels_data)
 
-    sync_dicomweb(db=db, current_user=superuser)
+    sync_dicomweb(db=db, current_user=superuser, immediate=True)
 
 
 def clear_db(db: Session):

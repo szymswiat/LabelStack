@@ -130,6 +130,8 @@ services:
       # storage volume for raw dicoms
       - pacs-data:${ORTHANC_DICOM_DATA_INTERNAL}
       - ./pacs/extensions.py:/etc/orthanc/extensions.py:ro
+    env_file:
+      - .env
     environment:
       - POSTGRES_DB=${POSTGRES_ORTHANC_DB}
       # DICOMWeb Plugin

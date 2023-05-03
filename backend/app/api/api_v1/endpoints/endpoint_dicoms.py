@@ -1,11 +1,14 @@
+from datetime import timedelta
+import threading
+
 from dicomweb_client import DICOMwebClient
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.orm import Session
 
 from app import crud, models, schemas, query
 from app.api import deps
 from app.api.api_v1 import helpers
-from app.core import logic
+from app.core import logic, security
 from app.core.config import settings
 from app import utils
 
@@ -81,42 +84,69 @@ def read_dicoms_for_image_instance(
     return dicoms
 
 
-@router.post("/sync_dicomweb", response_model=list[schemas.DicomApiOut])
+sync_timer: threading.Timer | None = None
+
+
+@router.post("/sync_dicomweb")
 def sync_dicomweb(
     *,
     db: Session = Depends(deps.get_db),
     current_user: models.User = Depends(deps.get_current_user_with_role([schemas.RoleType.data_admin])),
-) -> list[models.Dicom]:
+    immediate: bool = Query(False),
+):
     """
     Sync internal backend database with attached pacs using dicomweb.
     """
-    client = DICOMwebClient(url=f"http://{settings.DICOMWEB_ORIGIN}")
 
-    tags = utils.DicomTags.build(db)
-    utils.DicomWebQidoInstance.bind_tags(tags)
+    def perform_sync():
 
-    instances = [
-        utils.DicomWebQidoInstance(instance)  # type: ignore
-        for instance in client.search_for_instances(  # type: ignore
-            fields=utils.ADDITIONAL_TAGS_TO_FETCH
+        user = crud.user.authenticate(
+            db, email=settings.INTERNAL_USER, password=settings.INTERNAL_USER_PASSWORD
         )
-    ]
-    series_list = [
-        utils.DicomWebQidoInstance(series_item)  # type: ignore
-        for series_item in client.search_for_series()  # type: ignore
-    ]
+        assert user
+        token = security.create_access_token(user.id, expires_delta=timedelta(minutes=1))
 
-    synced_dicoms = logic.dicom.sync_pacs_with_dicoms(db, instances, tags, commit=False)
-    synced_image_instances = logic.image_instance.sync_pacs_with_image_instances(
-        db, series_list, instances, tags, commit=False
-    )
+        client = DICOMwebClient(
+            url=f"http://{settings.DICOMWEB_ORIGIN}",
+            headers={"authorization": f"Bearer {token}"},
+        )
 
-    db.commit()
+        tags = utils.DicomTags.build(db)
+        utils.DicomWebQidoInstance.bind_tags(tags)
 
-    for image_instance in synced_image_instances:
-        db.refresh(image_instance)
+        instances = [
+            utils.DicomWebQidoInstance(instance)  # type: ignore
+            for instance in client.search_for_instances(  # type: ignore
+                fields=utils.ADDITIONAL_TAGS_TO_FETCH
+            )
+        ]
+        series_list = [
+            utils.DicomWebQidoInstance(series_item)  # type: ignore
+            for series_item in client.search_for_series()  # type: ignore
+        ]
 
-    for dicom in synced_dicoms:
-        db.refresh(dicom)
+        synced_dicoms = logic.dicom.sync_pacs_with_dicoms(db, instances, tags, commit=False)
+        synced_image_instances = logic.image_instance.sync_pacs_with_image_instances(
+            db, series_list, instances, tags, commit=False
+        )
 
-    return synced_dicoms
+        db.commit()
+
+        for image_instance in synced_image_instances:
+            db.refresh(image_instance)
+
+        for dicom in synced_dicoms:
+            db.refresh(dicom)
+
+        global sync_timer
+        sync_timer = None
+
+    if immediate:
+        perform_sync()
+        return
+
+    global sync_timer
+    if sync_timer:
+        sync_timer.cancel()
+    sync_timer = threading.Timer(settings.DICOMWEB_SYNC_DELAY, perform_sync)
+    sync_timer.start()

@@ -1,3 +1,4 @@
+# syntax = docker/dockerfile:experimental
 FROM python:3.10
 
 WORKDIR /code
@@ -24,7 +25,8 @@ COPY ./alembic /code/alembic
 # "${command:python.interpreterPath} -m uvicorn app.main:app ",
 # "--reload --reload-delay 1 --reload-dir ${workspaceFolder}/backend/app"
 
-CMD [ "python", "-m", "debugpy", "--listen", "0.0.0.0:5678", \
-      "-m", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", \
-      "--reload", "--reload-delay", "1", "--reload-dir", "/code/app" \
+CMD [ \
+  "python", "-m", "debugpy", "--listen", "0.0.0.0:5678", \
+  "-m", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", \
+  "--reload", "--reload-delay", "1", "--reload-dir", "/code/app" \
 ]
