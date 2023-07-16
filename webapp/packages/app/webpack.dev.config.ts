@@ -93,7 +93,14 @@ const config: Configuration = {
   devServer: {
     static: path.join(__dirname, 'build'),
     historyApiFallback: true,
-    port: 3000
+    allowedHosts: 'all',
+    host: '0.0.0.0',
+    port: 3000,
+    client: {
+      webSocketURL: {
+        port: 443
+      }
+    }
   }
 };
 

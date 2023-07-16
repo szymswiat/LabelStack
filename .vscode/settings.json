@@ -21,7 +21,7 @@
         "--rcfile",
         "${workspaceFolder}/backend/pyproject.toml"
     ],
-    "python.defaultInterpreterPath": "${workspaceFolder}/backend/.venv/bin/python",
+    "python.defaultInterpreterPath": "${workspaceFolder}/backend/.venv/bin/python3",
     "python.testing.unittestEnabled": false,
     "python.testing.pytestEnabled": true,
     "python.testing.cwd": "${workspaceFolder}/backend",

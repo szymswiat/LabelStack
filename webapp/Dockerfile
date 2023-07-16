@@ -1,4 +1,4 @@
-FROM node:18 as builder
+FROM docker.io/node:18 as builder
 
 ENV ENV="prod"
 
@@ -11,8 +11,10 @@ COPY packages/annotator/package.json /code/packages/annotator/package.json
 COPY packages/api/package.json /code/packages/api/package.json
 COPY packages/app/package.json /code/packages/app/package.json
 COPY packages/viewer/package.json /code/packages/viewer/package.json
-RUN --mount=type=cache,target=/root/.cache/yarn/v6 \
-    yarn install --frozen-lockfile
+# RUN --mount=type=cache,target=/root/.cache/yarn/v6 \
+#     yarn install --frozen-lockfile
+
+RUN yarn install --frozen-lockfile
 
 ARG API_HOST_ORIGIN
 ARG DICOMWEB_ORIGIN
@@ -23,7 +25,7 @@ RUN yarn build
 
 RUN mv /code/packages/app/build /prod_files
 
-FROM nginx:alpine
+FROM docker.io/nginx:alpine
 
 COPY nginx.conf /etc/nginx/nginx.conf
 RUN rm /etc/nginx/conf.d/default.conf

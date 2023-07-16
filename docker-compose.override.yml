@@ -38,6 +38,7 @@ services:
       - ./backend:/code
     labels:
       - traefik.http.services.backend.loadbalancer.server.port=8000
+    tty: true
 
   webapp:
     build:
@@ -49,6 +50,7 @@ services:
       - ./webapp:/code
     labels:
       - traefik.http.services.webapp.loadbalancer.server.port=3000
+    tty: true
 
   orthanc:
     labels:

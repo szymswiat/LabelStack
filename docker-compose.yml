@@ -3,7 +3,7 @@ version: "3.9"
 services:
 
   traefik:
-    image: traefik:v2.8
+    image: docker.io/traefik:v2.8
     container_name: labelstack-traefik
     ports:
       - "443:443"
@@ -11,7 +11,7 @@ services:
     env_file:
       - .env
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /run/user/1000/podman/podman.sock:/var/run/docker.sock:ro
     command:
       - --providers.docker=true
       - --providers.docker.exposedbydefault=false
@@ -38,7 +38,7 @@ services:
       # - traefik.http.middlewares.admin.basicauth.users=${TRAEFIK_DASHBOARD_USER}:${TRAEFIK_DASHBOARD_PASSWORD}
 
   db:
-    image: postgres:14-alpine
+    image: docker.io/postgres:14-alpine
     container_name: labelstack-db
     volumes:
       - app-db-data:${PGDATA}
@@ -49,7 +49,7 @@ services:
       - POSTGRES_MULTIPLE_DATABASES=${POSTGRES_APP_DB},${POSTGRES_ORTHANC_DB}
 
   pgadmin:
-    image: dpage/pgadmin4
+    image: docker.io/dpage/pgadmin4
     container_name: labelstack-pgadmin
     depends_on:
       - db

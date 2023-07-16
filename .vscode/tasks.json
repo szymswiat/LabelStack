@@ -4,7 +4,7 @@
 		{
 			"label": "[DEV] Launch dev containers (db, pacs, traefik, webapp, backend)",
 			"type": "shell",
-			"command": "docker compose up --build db orthanc traefik webapp backend",
+			"command": "podman-compose up --build db orthanc traefik webapp backend",
 			"options": {
 				"env": {
 					"ENV": "dev"
@@ -15,14 +15,14 @@
 			"label": "[DEV] Apply database migrations",
 			"type": "shell",
 			"command": [
-				"docker exec -it labelstack-backend bash -c 'alembic upgrade head'"
+				"podman exec -it labelstack-backend bash -c 'alembic upgrade head'"
 			]
 		},
 		{
 			"label": "[DEV] Wipe and init database",
 			"type": "shell",
 			"command": [
-				"docker exec -it labelstack-backend bash -c 'cd app && python initial_data.py'"
+				"podman exec -it labelstack-backend bash -c 'cd app && python initial_data.py'"
 			]
 		},
 		{
@@ -39,7 +39,7 @@
 		{
 			"label": "[PROD] Launch production setup",
 			"type": "shell",
-			"command": "docker compose -f docker-compose.yml up"
+			"command": "podman-compose -f docker-compose.yml up"
 		},
 	]
 }

@@ -1,5 +1,5 @@
 # syntax = docker/dockerfile:experimental
-FROM python:3.10
+FROM docker.io/python:3.10
 
 WORKDIR /code
 ENV PYTHONPATH=/code
@@ -13,17 +13,9 @@ RUN curl -sSL https://install.python-poetry.org | POETRY_HOME=/opt/poetry python
 # Copy poetry.lock* in case it doesn't exist in the repo
 COPY ./pyproject.toml ./poetry.lock* /code/
 
-RUN --mount=type=cache,target=/root/.cache/pypoetry \
-    poetry install --no-root
-
-# RUN poetry install --no-root --only main
-
-COPY ./alembic.ini /code/
-COPY ./app /code/app
-COPY ./alembic /code/alembic
-
-# "${command:python.interpreterPath} -m uvicorn app.main:app ",
-# "--reload --reload-delay 1 --reload-dir ${workspaceFolder}/backend/app"
+# RUN --mount=type=cache,target=/root/.cache/pypoetry \
+#     poetry install --no-root --only main
+RUN poetry install --no-root --only main
 
 CMD [ \
   "python", "-m", "debugpy", "--listen", "0.0.0.0:5678", \
