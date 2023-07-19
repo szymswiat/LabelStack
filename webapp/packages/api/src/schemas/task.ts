@@ -15,6 +15,12 @@ export const taskTypeRepresentation = {
   [TaskType.annotationReview]: 'Review'
 };
 
+export const taskTypeShortMap = {
+  label: TaskType.labelAssignment,
+  annotation: TaskType.annotation,
+  review: TaskType.annotationReview
+};
+
 export enum TaskStatus {
   unassigned = 0,
   open = 1,

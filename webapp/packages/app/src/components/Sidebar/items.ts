@@ -1,15 +1,14 @@
-import { Role, RoleType, User } from '@labelstack/api';
+import { RoleType, User } from '@labelstack/api';
 import { IconType } from 'react-icons';
 import {
   MdAssignment,
-  MdBrush,
   MdBurstMode,
   MdCollectionsBookmark,
-  MdCompare,
   MdPhotoAlbum,
   MdAddTask,
   MdNewLabel,
-  MdRateReview
+  MdRateReview,
+  MdAdd
 } from 'react-icons/md';
 
 import { FaTasks, FaUserEdit, FaUserPlus, FaUsers } from 'react-icons/fa';
@@ -54,13 +53,13 @@ const menuItems: MenuSection[] = [
     roles: [RoleType.dataAdmin, RoleType.taskAdmin, RoleType.annotator],
     items: [
       {
-        name: 'All Users',
+        name: 'All',
         link: '/users/all',
         icon: FaUsers,
         roles: [RoleType.superuser]
       },
       {
-        name: 'Create User',
+        name: 'Create',
         link: '/users/create',
         icon: FaUserPlus,
         roles: [RoleType.superuser]
@@ -78,27 +77,9 @@ const menuItems: MenuSection[] = [
     roles: [RoleType.dataAdmin, RoleType.taskAdmin],
     items: [
       {
-        name: 'All Images',
+        name: 'All',
         link: '/images/all',
         icon: MdBurstMode,
-        roles: [RoleType.dataAdmin, RoleType.taskAdmin]
-      },
-      {
-        name: 'To Label',
-        link: '/images/to-label',
-        icon: MdPhotoAlbum,
-        roles: [RoleType.dataAdmin, RoleType.taskAdmin]
-      },
-      {
-        name: 'To Annotate',
-        link: '/images/to-annotate',
-        icon: MdBrush,
-        roles: [RoleType.dataAdmin, RoleType.taskAdmin]
-      },
-      {
-        name: 'To Review',
-        link: '/images/to-review',
-        icon: MdCompare,
         roles: [RoleType.dataAdmin, RoleType.taskAdmin]
       }
     ]
@@ -108,13 +89,13 @@ const menuItems: MenuSection[] = [
     roles: [RoleType.dataAdmin, RoleType.taskAdmin],
     items: [
       {
-        name: 'Manage Labels',
+        name: 'Manage',
         link: '/labels/manage',
         icon: BsPencilSquare,
         roles: [RoleType.dataAdmin, RoleType.taskAdmin]
       },
       {
-        name: 'Assign Labels',
+        name: 'Assign',
         link: '/labels/assign',
         icon: MdCollectionsBookmark,
         roles: [RoleType.dataAdmin, RoleType.taskAdmin]
@@ -125,6 +106,12 @@ const menuItems: MenuSection[] = [
     heading: 'Tasks',
     roles: [RoleType.dataAdmin, RoleType.taskAdmin, RoleType.annotator],
     items: [
+      {
+        name: 'Create',
+        link: '/tasks/create',
+        icon: MdAdd,
+        roles: [RoleType.taskAdmin]
+      },
       {
         name: 'Unassigned',
         link: '/tasks/unassigned',
@@ -138,20 +125,20 @@ const menuItems: MenuSection[] = [
         roles: [RoleType.dataAdmin, RoleType.taskAdmin]
       },
       {
-        name: 'To Label',
-        link: '/tasks/to-label',
+        name: 'Label',
+        link: '/tasks/label',
         icon: MdNewLabel,
         roles: [RoleType.dataAdmin, RoleType.taskAdmin, RoleType.annotator]
       },
       {
-        name: 'To Annotate',
-        link: '/tasks/to-annotate',
+        name: 'Annotate',
+        link: '/tasks/annotate',
         icon: MdAssignment,
         roles: [RoleType.dataAdmin, RoleType.taskAdmin, RoleType.annotator]
       },
       {
-        name: 'To Review',
-        link: '/tasks/to-review',
+        name: 'Review',
+        link: '/tasks/review',
         icon: MdRateReview,
         roles: [RoleType.dataAdmin, RoleType.taskAdmin, RoleType.annotator]
       }

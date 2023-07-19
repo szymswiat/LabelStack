@@ -1,5 +1,5 @@
 import React, { ExoticComponent, lazy, Suspense } from 'react';
-import { Navigate, RouteObject } from 'react-router-dom';
+import { Navigate, Outlet, RouteObject } from 'react-router-dom';
 
 import SidebarLayout from '../layouts/SidebarLayout';
 import BaseLayout from '../layouts/BaseLayout';
@@ -18,9 +18,6 @@ const Loader = (Component: ExoticComponent) => (props: any) =>
 const Login = Loader(lazy(() => import('../content/pages/Login')));
 
 // Images
-const ImagesToLabel = Loader(lazy(() => import('../content/pages/images/ImagesToLabel')));
-const ImagesToAnnotate = Loader(lazy(() => import('../content/pages/images/ImagesToAnnotate')));
-const ImagesToReview = Loader(lazy(() => import('../content/pages/images/ImagesToReview')));
 const AllImages = Loader(lazy(() => import('../content/pages/images/AllImages')));
 
 // Labels
@@ -33,6 +30,9 @@ const AllTasks = Loader(lazy(() => import('../content/pages/tasks/AllTasks')));
 const LabelTasks = Loader(lazy(() => import('../content/pages/tasks/LabelTasks')));
 const AnnotationTasks = Loader(lazy(() => import('../content/pages/tasks/AnnotationTasks')));
 const AnnotationReviewTasks = Loader(lazy(() => import('../content/pages/tasks/AnnotationReviewTasks')));
+const CreateLabelTask = Loader(lazy(() => import('../content/pages/tasks/CreateLabelTask')));
+const CreateAnnotationTask = Loader(lazy(() => import('../content/pages/tasks/CreateAnnotationTask')));
+const CreateAnnotationReviewTask = Loader(lazy(() => import('../content/pages/tasks/CreateAnnotationReviewTask')));
 
 // Users
 const AllUsers = Loader(lazy(() => import('../content/pages/users/AllUsers')));
@@ -94,31 +94,7 @@ const routes: RouteObject[] = [
     children: [
       {
         path: '',
-        element: <Navigate to="images/to-label" replace />
-      },
-      {
-        path: 'to-label',
-        element: (
-          <PrivateWrapper roles={[RoleType.taskAdmin]}>
-            <ImagesToLabel />
-          </PrivateWrapper>
-        )
-      },
-      {
-        path: 'to-annotate',
-        element: (
-          <PrivateWrapper roles={[RoleType.taskAdmin]}>
-            <ImagesToAnnotate />
-          </PrivateWrapper>
-        )
-      },
-      {
-        path: 'to-review',
-        element: (
-          <PrivateWrapper roles={[RoleType.taskAdmin]}>
-            <ImagesToReview />
-          </PrivateWrapper>
-        )
+        element: <Navigate to="images/all" replace />
       },
       {
         path: 'all',
@@ -173,15 +149,41 @@ const routes: RouteObject[] = [
         element: <Navigate to="tasks/all" replace />
       },
       {
-        path: 'to-label',
+        path: 'create',
+        element: (
+          <PrivateWrapper roles={[RoleType.taskAdmin]}>
+            <Outlet />
+          </PrivateWrapper>
+        ),
+        children: [
+          {
+            path: '',
+            element: <Navigate to="/tasks/create/label" replace />
+          },
+          {
+            path: 'label',
+            element: <CreateLabelTask />
+          },
+          {
+            path: 'annotation',
+            element: <CreateAnnotationTask />
+          },
+          {
+            path: 'review',
+            element: <CreateAnnotationReviewTask />
+          }
+        ]
+      },
+      {
+        path: 'label',
         element: <LabelTasks />
       },
       {
-        path: 'to-annotate',
+        path: 'annotate',
         element: <AnnotationTasks />
       },
       {
-        path: 'to-review',
+        path: 'review',
         element: <AnnotationReviewTasks />
       },
       {

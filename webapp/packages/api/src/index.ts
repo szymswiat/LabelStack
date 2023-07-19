@@ -19,7 +19,8 @@ import {
   TaskStatus,
   taskStatusRepresentation,
   TaskType,
-  taskTypeRepresentation
+  taskTypeRepresentation,
+  taskTypeShortMap
 } from './schemas/task';
 import { User, UserCreate, UserUpdate } from './schemas/user';
 import { ImageInstance, ImageInstancesObject, getTagValue } from './schemas/imageInstance';
@@ -38,6 +39,7 @@ export {
   taskPriorityRepresentation,
   taskStatusRepresentation,
   taskTypeRepresentation,
+  taskTypeShortMap,
   userRoleRepresentation,
   showAxiosError,
   getTagValue as getTagStringRepresentation

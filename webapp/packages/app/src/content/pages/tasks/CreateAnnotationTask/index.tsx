@@ -5,19 +5,20 @@ import { ColDef, GridApi } from 'ag-grid-community';
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine-dark.css';
 
-import { api, User, Label, LabelAssignment, RoleType } from '@labelstack/api';
+import { api, User, Label, LabelAssignment, RoleType, TaskType } from '@labelstack/api';
 
 import CreateAnnotateTaskForm from '../../../../components/Forms/Tasks/CreateAnnotateTaskForm';
 import SelectedItemsTable from '../../../../components/tables/SelectedItemsTable';
-import { labelAssignmentColumnDefs } from '../columnDefs';
+import { labelAssignmentColumnDefs } from '../../images/columnDefs';
 import { selectedLabelAssignmentsTableHeaders } from '../../../../components/tables/tableHeaders';
 import { useUserDataContext } from '../../../../contexts/UserDataContext';
 import { useEffectNonNull } from '../../../../utils/hooks';
 import TableLayoutWithBar from '../../../../layouts/TableLayoutWithBar';
 import { defaultColDef } from '../../labels/columnDefs';
 import { AnnotationTypes } from '@labelstack/api';
+import SelectCreateTaskTypeBar from '../SelectCreateTaskTypeBar';
 
-const ImagesToAnnotate = () => {
+const CreateAnnotationTask: React.FC = () => {
   const [{ token }] = useUserDataContext();
 
   const [gridApi, setGridApi] = useState<GridApi>();
@@ -128,6 +129,9 @@ const ImagesToAnnotate = () => {
   function renderRightBar(): React.ReactNode {
     return (
       <div className="flex flex-col">
+        <div className="h-20 w-full mt-3">
+          <SelectCreateTaskTypeBar taskType={TaskType.annotation} />
+        </div>
         <div className="w-full">
           <CreateAnnotateTaskForm
             annotators={annotators}
@@ -162,4 +166,4 @@ const ImagesToAnnotate = () => {
   );
 };
 
-export default ImagesToAnnotate;
+export default CreateAnnotationTask;
