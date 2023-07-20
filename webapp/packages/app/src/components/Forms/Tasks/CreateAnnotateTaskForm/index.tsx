@@ -2,12 +2,13 @@ import React from 'react';
 
 import { GridApi } from 'ag-grid-community';
 import { useUserDataContext } from '../../../../contexts/UserDataContext';
-import { api, User, LabelAssignment, Task, TaskStatus, TaskType } from '@labelstack/api';
+import { api, User, LabelAssignment, Task, TaskStatus, TaskType, ImageInstance } from '@labelstack/api';
 import { showSuccessNotification, showNotificationWithApiError } from '../../../../utils';
 import CreateTaskForm, { CreateTaskFunction } from '../CreateTaskForm';
 
 interface CreateAnnotateTaskFormProps {
   annotators: User[];
+  selectedImageInstances: ImageInstance[];
   selectedLabelAssignments: LabelAssignment[];
 
   gridApi: GridApi;
@@ -16,6 +17,7 @@ interface CreateAnnotateTaskFormProps {
 
 const CreateAnnotateTaskForm: React.FC<CreateAnnotateTaskFormProps> = ({
   annotators,
+  selectedImageInstances,
   selectedLabelAssignments,
   gridApi,
   reloadLabelAssignments
@@ -42,7 +44,9 @@ const CreateAnnotateTaskForm: React.FC<CreateAnnotateTaskFormProps> = ({
         name: taskName,
         description: description,
         priority: priority,
-        image_instance_ids: selectedLabelAssignments.map((labelAssignment) => labelAssignment.image_instance_id),
+        image_instance_ids: selectedLabelAssignments
+          .map((labelAssignment) => labelAssignment.image_instance_id)
+          .concat(selectedImageInstances.map((imageInstance) => imageInstance.id)),
         label_assignment_ids: selectedLabelAssignments.map((labelAssignment) => labelAssignment.id),
         annotation_ids: []
       };

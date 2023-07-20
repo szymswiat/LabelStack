@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { AxiosResponse } from 'axios';
 
 import { AgGridReact } from 'ag-grid-react';
-import 'ag-grid-community/dist/styles/ag-grid.css';
-import 'ag-grid-community/dist/styles/ag-theme-alpine-dark.css';
+import 'ag-grid-community/styles/ag-grid.css';
+import 'ag-grid-community/styles/ag-theme-alpine.css';
 
 import { api, ImageInstance } from '@labelstack/api';
 

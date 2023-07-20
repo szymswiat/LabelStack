@@ -1,9 +1,9 @@
 import React from 'react';
 import { User } from '@labelstack/api';
 import { AgGridReact } from 'ag-grid-react';
-import 'ag-grid-community/dist/styles/ag-grid.css';
-import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
-import 'ag-grid-community/dist/styles/ag-theme-alpine-dark.css';
+import 'ag-grid-community/styles/ag-grid.css';
+import 'ag-grid-community/styles/ag-theme-alpine.css';
+import 'ag-grid-community/styles/ag-theme-alpine.css';
 import { columnDefs } from './columnDefs';
 import { defaultColDef } from '../helpers';
 

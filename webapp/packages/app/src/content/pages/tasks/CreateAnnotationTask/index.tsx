@@ -1,22 +1,26 @@
 import React, { useEffect, useState } from 'react';
 
 import { AgGridReact } from 'ag-grid-react';
-import { ColDef, GridApi } from 'ag-grid-community';
-import 'ag-grid-community/dist/styles/ag-grid.css';
-import 'ag-grid-community/dist/styles/ag-theme-alpine-dark.css';
+import { ColDef, GridApi, GridReadyEvent, IRowNode } from 'ag-grid-community';
+import 'ag-grid-community/styles/ag-grid.css';
+import 'ag-grid-community/styles/ag-theme-alpine.css';
 
-import { api, User, Label, LabelAssignment, RoleType, TaskType } from '@labelstack/api';
+import { api, User, Label, LabelAssignment, RoleType, TaskType, ImageInstance } from '@labelstack/api';
 
 import CreateAnnotateTaskForm from '../../../../components/Forms/Tasks/CreateAnnotateTaskForm';
 import SelectedItemsTable from '../../../../components/tables/SelectedItemsTable';
-import { labelAssignmentColumnDefs } from '../../images/columnDefs';
-import { selectedLabelAssignmentsTableHeaders } from '../../../../components/tables/tableHeaders';
+import { imageInstancesColumnDefs, labelAssignmentColumnDefs } from '../../images/columnDefs';
+import {
+  selectedLabelAssignmentsTableHeaders,
+  selectedImagesTableHeaders
+} from '../../../../components/tables/tableHeaders';
 import { useUserDataContext } from '../../../../contexts/UserDataContext';
 import { useEffectNonNull } from '../../../../utils/hooks';
 import TableLayoutWithBar from '../../../../layouts/TableLayoutWithBar';
 import { defaultColDef } from '../../labels/columnDefs';
 import { AnnotationTypes } from '@labelstack/api';
 import SelectCreateTaskTypeBar from '../SelectCreateTaskTypeBar';
+import AnnotationTaskContentTypeSelector, { AnnotationTaskContentType } from './AnnotationTaskContentTypeSelector';
 
 const CreateAnnotationTask: React.FC = () => {
   const [{ token }] = useUserDataContext();
@@ -29,6 +33,11 @@ const CreateAnnotationTask: React.FC = () => {
   const [labels, setLabels] = useState<Label[]>();
   const [labelAssignments, setLabelAssignments] = useState<LabelAssignment[]>();
   const [selectedLabelAssignments, setSelectedLabelAssignments] = useState<LabelAssignment[]>([]);
+  const [images, setImages] = useState<ImageInstance[]>([]);
+  const [selectedImageInstances, setSelectedImageInstances] = useState<ImageInstance[]>([]);
+  const [selectedContentType, setSelectedContentType] = useState<AnnotationTaskContentType>(
+    AnnotationTaskContentType.labelAssignment
+  );
 
   async function loadUsers() {
     const { data: responseUsers } = await api.getUsers(token);
@@ -58,6 +67,11 @@ const CreateAnnotationTask: React.FC = () => {
     });
 
     setLabelAssignments(responseLabelAssignments);
+  }
+
+  async function loadImages() {
+    const { data: responseImages } = await api.getImageInstances(token, true, true);
+    setImages(responseImages);
   }
 
   const setColumnDefinitions = () => {
@@ -92,20 +106,48 @@ const CreateAnnotationTask: React.FC = () => {
     setColumnDefs(colDefs);
   };
 
-  const onSelectionChanged = () => {
+  const onLabelAssignmentsSelectionChanged = () => {
     if (gridApi) {
       const selectedRows = gridApi.getSelectedRows();
       setSelectedLabelAssignments(selectedRows);
     }
   };
 
-  const onGridReady = (params: any) => {
-    setGridApi(params.api);
+  const onImageInstancesSelectionChanged = () => {
+    if (gridApi) {
+      const selectedRows = gridApi.getSelectedRows();
+      setSelectedImageInstances(selectedRows);
+    }
+  };
+
+  const onImageInstancesGridReady = (event: GridReadyEvent) => {
+    setGridApi(event.api);
+
+    const selectedImageIds = selectedImageInstances.map((image) => image.id);
+
+    const nodesToSelect = event.api.getRenderedNodes().filter((node) => {
+      const image = node.data as ImageInstance;
+      return selectedImageIds.includes(image.id);
+    });
+    event.api.setNodesSelected({ nodes: nodesToSelect, newValue: true });
+  };
+
+  const onLabelAssignmentGridReady = (event: GridReadyEvent) => {
+    setGridApi(event.api);
+
+    const selectedLabelAssignmentsIds = selectedLabelAssignments.map((image) => image.id);
+
+    const nodesToSelect = event.api.getRenderedNodes().filter((node) => {
+      const labelAssignment = node.data as LabelAssignment;
+      return selectedLabelAssignmentsIds.includes(labelAssignment.id);
+    });
+    event.api.setNodesSelected({ nodes: nodesToSelect, newValue: true });
   };
 
   useEffect(() => {
     loadUsers();
     loadLabels();
+    loadImages();
   }, []);
 
   useEffectNonNull(
@@ -132,20 +174,36 @@ const CreateAnnotationTask: React.FC = () => {
         <div className="h-20 w-full mt-3">
           <SelectCreateTaskTypeBar taskType={TaskType.annotation} />
         </div>
+        <div className="h-14 w-full">
+          <AnnotationTaskContentTypeSelector
+            selectedContentType={selectedContentType}
+            setSelectedContentType={setSelectedContentType}
+          />
+        </div>
         <div className="w-full">
           <CreateAnnotateTaskForm
             annotators={annotators}
+            selectedImageInstances={selectedImageInstances}
             selectedLabelAssignments={selectedLabelAssignments}
             gridApi={gridApi}
             reloadLabelAssignments={loadLabelAssignments}
           />
         </div>
         <div className="w-full">
-          <SelectedItemsTable
-            header="Selected Label Assignments"
-            tableColumnInfo={selectedLabelAssignmentsTableHeaders}
-            data={selectedLabelAssignments}
-          />
+          {selectedContentType == AnnotationTaskContentType.imageInstance && (
+            <SelectedItemsTable
+              header="Selected Images"
+              tableColumnInfo={selectedImagesTableHeaders}
+              data={selectedImageInstances}
+            />
+          )}
+          {selectedContentType == AnnotationTaskContentType.labelAssignment && (
+            <SelectedItemsTable
+              header="Selected Label Assignments"
+              tableColumnInfo={selectedLabelAssignmentsTableHeaders}
+              data={selectedLabelAssignments}
+            />
+          )}
         </div>
       </div>
     );
@@ -153,15 +211,28 @@ const CreateAnnotationTask: React.FC = () => {
 
   return (
     <TableLayoutWithBar rightBarComponent={renderRightBar()}>
-      <AgGridReact
-        onGridReady={onGridReady}
-        onSelectionChanged={onSelectionChanged}
-        rowData={labelAssignments}
-        rowSelection="multiple"
-        defaultColDef={defaultColDef}
-        columnDefs={columnDefs}
-        className="ag-theme-alpine-dark"
-      />
+      {selectedContentType == AnnotationTaskContentType.imageInstance && (
+        <AgGridReact
+          onGridReady={onImageInstancesGridReady}
+          onSelectionChanged={onImageInstancesSelectionChanged}
+          rowData={images}
+          rowSelection="multiple"
+          defaultColDef={defaultColDef}
+          columnDefs={imageInstancesColumnDefs}
+          className="ag-theme-alpine-dark"
+        />
+      )}
+      {selectedContentType == AnnotationTaskContentType.labelAssignment && (
+        <AgGridReact
+          onGridReady={onLabelAssignmentGridReady}
+          onSelectionChanged={onLabelAssignmentsSelectionChanged}
+          rowData={labelAssignments}
+          rowSelection="multiple"
+          defaultColDef={defaultColDef}
+          columnDefs={columnDefs}
+          className="ag-theme-alpine-dark"
+        />
+      )}
     </TableLayoutWithBar>
   );
 };

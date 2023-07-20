@@ -8,10 +8,11 @@
     "@labelstack/annotator": "0.0.0",
     "@emotion/react": "^11.8.2",
     "@emotion/styled": "^11.8.1",
-    "ag-grid-community": "^27.1.0",
-    "ag-grid-react": "^27.1.0",
+    "ag-grid-community": "^30.0.5",
+    "ag-grid-react": "^30.0.5",
     "react-notifications-component": "^3.4.1",
-    "uuid": "^8.3.2"
+    "uuid": "^8.3.2",
+    "tsconfig-paths": "^4.2.0"
   },
   "peerDependencies": {
     "itk-image-io": "1.0.0-b.8",
