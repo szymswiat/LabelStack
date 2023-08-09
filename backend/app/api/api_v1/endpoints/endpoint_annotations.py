@@ -92,3 +92,55 @@ def read_annotations(
         )
 
     return annotations_out
+
+
+@router.post("/create_with_label", response_model=schemas.AnnotationApiOut)
+def create_with_label(
+    *,
+    db: Session = Depends(deps.get_db),
+    task_id: int,
+    label_id: int,
+    image_instance_id: int,
+    current_user: models.User = Depends(deps.get_current_user_with_role([schemas.RoleType.annotator])),
+) -> models.Annotation:
+
+    task = crud.task.get(db, id=task_id)
+    helpers.validate_access_to_task(task, current_user, with_one_of_statuses=[schemas.TaskStatus.in_progress])
+    assert task
+
+    label = crud.label.get(db, id=label_id)
+    if label is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"There is no label with given id={label_id}.",
+        )
+
+    if not logic.task.has_image_instance(task, image_instance_id):
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Image instance does not belong to referenced task.",
+        )
+
+    # TODO: check if there is no label assignment for given image instance and label
+
+    label_assignment_to_create = schemas.LabelAssignmentCreateCrud(
+        label_id=label_id,
+        image_instance_id=image_instance_id,
+        author_id=current_user.id,
+        parent_task_id=task.id,
+    )
+    label_assignment = crud.label_assignment.create(db, obj_in=label_assignment_to_create, commit=False)
+
+    annotation_to_create = schemas.AnnotationCreateCrud(
+        label_assignment_id=label_assignment.id,
+        parent_task_id=task.id,
+        author_id=task.assigned_user_id,
+        version=0,
+        status=schemas.AnnotationStatus.open,
+        spent_time=0,
+    )
+    annotation = crud.annotation.create(db, obj_in=annotation_to_create, commit=False)
+
+    db.commit()
+
+    return annotation

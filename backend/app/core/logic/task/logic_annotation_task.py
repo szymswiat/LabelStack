@@ -62,7 +62,6 @@ def _status_unassigned_to_cancelled(db: Session, task: models.Task, **kwargs: An
 
 
 def _status_open_to_in_progress(db: Session, task: models.Task, **kwargs: Any) -> models.Task:
-    # create annotation object for each label and dicom combination
 
     assert task.assigned_user_id is not None
 

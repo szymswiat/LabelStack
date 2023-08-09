@@ -63,6 +63,13 @@ const AnnotationTaskDataLoader: React.FC = () => {
     });
 
     let newLabelMaps: LabelMapsObject = prevImageInstanceId.current === imageInstance.id ? labelMaps : {};
+
+    for (const [id, labelMap] of Object.entries(newLabelMaps)) {
+      if (!imageInstanceAnnotations.map((annotation) => annotation.id).includes(labelMap.annotation.id)) {
+        delete newLabelMaps[id];
+      }
+    }
+
     for (const annotation of imageInstanceAnnotations) {
       if (!annotation) {
         continue;
@@ -97,7 +104,8 @@ const AnnotationTaskDataLoader: React.FC = () => {
         data: labelMapData,
         visibility: editable,
         editable: editable,
-        modificationTime: 0
+        modificationTime: 0,
+        annotation
       };
 
       newLabelMaps[labelMapToDisplay.id.uniqueId] = labelMapToDisplay;

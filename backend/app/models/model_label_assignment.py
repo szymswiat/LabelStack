@@ -36,7 +36,7 @@ class LabelAssignment(Base):
     parent_task: Mapped["models.Task | None"] = relationship("Task")
 
     annotations: Mapped[list["models.Annotation"]] = relationship(
-        "Annotation", order_by="Annotation.version"
+        "Annotation", order_by="Annotation.version", cascade='all, delete-orphan'
     )
 
     __table_args__ = (sa.UniqueConstraint("label_id", "image_instance_id"),)

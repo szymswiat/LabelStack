@@ -119,19 +119,19 @@ const ImageList: React.FC<ImageListProps> = ({ imageInstances, onImageInstanceCh
         <div className={'flex-grow'} />
       </div>
       <div className={'h-100 overflow-y-scroll no-scrollbar'}>
-        <div className={'w-full h-fit flex flex-col text-dark-text gap-y-2'}>
+        <div className={'w-full h-fit flex flex-col text-dark-text gap-y-[0.3rem]'}>
           {imageInstanceList.map((imageInstanceIter, index) => {
             return (
               <div
                 key={imageInstanceIter.id}
                 className={classNames(
-                  'flex flex-row w-full h-10 px-2 cursor-pointer bg-dark-bg rounded-md',
+                  'flex flex-row w-full h-7 px-2 cursor-pointer bg-dark-bg rounded-sm',
                   imageInstance != null && imageInstanceIter.id === imageInstance.id ? 'opacity-100' : 'opacity-50'
                 )}
                 onClick={() => onImageInstanceChange(imageInstanceIter)}
               >
                 <div className={'flex flex-col w-4/5 justify-center pl-2'}>
-                  <div className={'text-base grid grid-cols-3 gap-x-2'}>
+                  <div className={'text-sm grid grid-cols-3 gap-x-2'}>
                     <span className="place-self-start">{imageInstanceIter.id}</span>
                     <span className="place-self-start">
                       {getTagStringRepresentation(imageInstanceIter, 'PatientID')}

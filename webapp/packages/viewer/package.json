@@ -32,6 +32,7 @@
     "react-new-window": "^1.0.1",
     "react-rnd": "^10.4.1",
     "react-vtk-js": "1.11.2",
+    "react-dropdown-select": "^4.10.0",
     "wslink": "^1.10.0"
   },
   "devDependencies": {

@@ -120,7 +120,8 @@ const AnnotationReviewTaskDataLoader: React.FC = () => {
         data: labelMapData,
         visibility: editable,
         editable: editable,
-        modificationTime: 0
+        modificationTime: 0,
+        annotation
       };
 
       newLabelMaps[labelMapToDisplay.id.uniqueId] = labelMapToDisplay;

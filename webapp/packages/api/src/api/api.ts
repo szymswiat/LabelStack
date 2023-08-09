@@ -14,7 +14,7 @@ if (!['prod', 'dev'].includes(process.env.ENV)) {
   throw Error(`Invalid value of ENV var: ${process.env.ENV}`);
 }
 
-const protocol = 'https'
+const protocol = 'https';
 export const apiUrl = `${protocol}://${process.env.API_HOST_ORIGIN}`;
 export const apiV1 = '/api/v1';
 
@@ -215,6 +215,17 @@ export const api = {
     return axios.get<Annotation[]>(`${apiUrl}${apiV1}/annotations/`, {
       ...authHeaders(token),
       params: params
+    });
+  },
+
+  async createAnnotationWithLabel(token: string, task: Task, imageInstance: ImageInstance, label: Label) {
+    return axios.post<Annotation>(`${apiUrl}${apiV1}/annotations/create_with_label`, undefined, {
+      ...authHeaders(token),
+      params: {
+        task_id: task.id,
+        image_instance_id: imageInstance.id,
+        label_id: label.id
+      }
     });
   },
 

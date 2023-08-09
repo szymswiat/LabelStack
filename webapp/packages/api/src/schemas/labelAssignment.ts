@@ -6,7 +6,7 @@ export interface LabelAssignment {
   label_id: number;
   image_instance_id: number;
   author_id: number;
-  parent_task_id: number;
+  parent_task_id: number | null;
   annotations: Annotation[];
 
   // not present in api response

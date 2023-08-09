@@ -1,5 +1,6 @@
 import { RGBColor } from '@kitware/vtk.js/types';
 import vtkImageData from '@kitware/vtk.js/Common/DataModel/ImageData';
+import { Annotation, LabelAssignment } from '@labelstack/api';
 
 export class LabelMapId {
   annotationId: number;
@@ -48,4 +49,6 @@ export interface LabelMap {
   visibility: boolean;
   editable: boolean;
   modificationTime: number;
+
+  annotation: Annotation;
 }

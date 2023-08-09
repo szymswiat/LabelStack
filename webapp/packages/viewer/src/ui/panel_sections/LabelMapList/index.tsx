@@ -12,8 +12,10 @@ interface LabelMapListProps {
   editedLabelMapId?: string;
   setEditedLabelMapId?: (id: string) => void;
   onLabelMapSaved?: () => void;
+  onLabelMapRemoved?: (labelMap: LabelMap) => void;
   triggerAnnotationsUpload?: (callback: () => void) => void;
   disableTools?: boolean;
+  canDropLabelMap?: (labelMap: LabelMap) => boolean;
 }
 
 export const LabelMapList: React.FC<LabelMapListProps> = ({
@@ -22,7 +24,9 @@ export const LabelMapList: React.FC<LabelMapListProps> = ({
   editedLabelMapId,
   setEditedLabelMapId,
   onLabelMapSaved,
-  disableTools = false
+  onLabelMapRemoved,
+  disableTools = false,
+  canDropLabelMap
 }) => {
   const [, { updateLabelMap }] = useAnnotationDataContext();
   const [{ saveHotkeys }] = useViewerSettingsContext();
@@ -74,6 +78,8 @@ export const LabelMapList: React.FC<LabelMapListProps> = ({
             editedLabelMapId={editedLabelMapId}
             labelMap={labelMap}
             reverseLabelMapVisibility={reverseLabelMapVisibility}
+            onLabelMapRemoved={onLabelMapRemoved}
+            canDropLabelMap={canDropLabelMap}
           />
         ))}
       </div>

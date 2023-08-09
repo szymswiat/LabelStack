@@ -1,19 +1,21 @@
 import React, { useCallback } from 'react';
 import { useImageDataContext } from '@labelstack/viewer/src/contexts/ImageDataContext';
 import { useAnnotationDataContext } from '@labelstack/viewer/src/contexts/AnnotationDataContext';
-import { LabelMapsObject } from '@labelstack/viewer/src/contexts/AnnotationDataContext/LabelMap';
+import { LabelMap, LabelMapsObject } from '@labelstack/viewer/src/contexts/AnnotationDataContext/LabelMap';
 import {
   shouldShowTaskInProgressAlert,
   TaskInProgressAlert
 } from '@labelstack/viewer/src/ui/panel_sections/LabelMapList/Alerts';
 import { LabelAssignmentList } from './LabelAssignmentList';
 import { useAnnotatorDataContext } from '../../../contexts/AnnotatorDataContext';
-import { AnnotationsObject } from '@labelstack/api';
+import { AnnotationsObject, api, LabelAssignment } from '@labelstack/api';
 import { getAnnotationsFromImageInstance } from '../../../utils';
 import LabelMapList from '@labelstack/viewer/src/ui/panel_sections/LabelMapList';
 import { useEditedAnnotationDataContext } from '../../../contexts/EditedAnnotationDataContext';
 import AnnotationUploader from '../../../components/AnnotationUploader';
 import { useAnnotatorLayoutContext } from '../../../contexts/AnnotatorLayoutContext';
+import CreateLabelAssignmentBar from './CreateLabelAssignmentBar';
+import { useUserDataContext } from '@labelstack/app/src/contexts/UserDataContext';
 
 export enum LabelMapsDisplayMode {
   readonly,
@@ -33,8 +35,23 @@ const AnnotationTaskLabelMapList: React.FC<AnnotationTaskLabelMapListProps> = ({
     {
       task,
       taskObjects: { taskLabelAssignments, taskAnnotations }
-    }
+    },
+    { refreshTaskObjects }
   ] = useAnnotatorDataContext();
+  const [{ token }] = useUserDataContext();
+
+  async function dropLabelAssignment(labelMap: LabelMap) {
+    await api.modifyLabelAssignments(token, [], [labelMap.annotation.labelAssignment.label_id], imageInstance, task);
+    if (editedLabelMapId == labelMap.id.uniqueId) {
+      setEditedLabelMapId(null);
+    }
+    refreshTaskObjects();
+  }
+
+  function canDropLabelMap(labelMap: LabelMap) {
+    const labelAssignmentParentTaskId = labelMap.annotation.labelAssignment.parent_task_id;
+    return labelAssignmentParentTaskId === task.id;
+  }
 
   const getDisplayDataForMode: () => [AnnotationsObject, LabelMapsObject] = useCallback(() => {
     const displayModeAnnotationIds = Object.keys(imageInstanceAnnotations)
@@ -87,14 +104,19 @@ const AnnotationTaskLabelMapList: React.FC<AnnotationTaskLabelMapListProps> = ({
           );
         }
         return (
-          <LabelMapList
-            editable={true}
-            labelMaps={displayModeLabelMaps}
-            editedLabelMapId={editedLabelMapId}
-            onLabelMapSaved={triggerAnnotationsUpload}
-            setEditedLabelMapId={setEditedLabelMapId}
-            disableTools={editModeLocked}
-          />
+          <div className="flex flex-col gap-y-4">
+            <LabelMapList
+              editable={true}
+              labelMaps={displayModeLabelMaps}
+              editedLabelMapId={editedLabelMapId}
+              onLabelMapSaved={triggerAnnotationsUpload}
+              setEditedLabelMapId={setEditedLabelMapId}
+              disableTools={editModeLocked}
+              onLabelMapRemoved={dropLabelAssignment}
+              canDropLabelMap={canDropLabelMap}
+            />
+            <CreateLabelAssignmentBar disableTools={editModeLocked} />
+          </div>
         );
       case LabelMapsDisplayMode.readonly:
         return <LabelMapList editable={false} labelMaps={displayModeLabelMaps} />;

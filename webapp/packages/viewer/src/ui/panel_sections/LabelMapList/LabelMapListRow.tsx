@@ -1,6 +1,6 @@
 import classNames from 'classnames';
 import React, { useEffect, useState } from 'react';
-import { BsBrush, BsBrushFill, BsEye, BsEyeFill } from 'react-icons/bs';
+import { BsBrush, BsBrushFill, BsEye, BsEyeFill, BsX, BsXLg } from 'react-icons/bs';
 import { useViewerLayoutContext } from '../../../contexts/ViewerLayoutContext';
 import { LabelMap, useAnnotationDataContext } from '../../../contexts/AnnotationDataContext';
 import FloatingWindow from '../../components/FloatingWindow';
@@ -16,6 +16,8 @@ export interface LabelMapListRowProps {
   disableTools: boolean;
   activateLabelMap: (labelMap: LabelMap) => () => void;
   reverseLabelMapVisibility: (labelMap: LabelMap) => () => void;
+  onLabelMapRemoved?: (labelMap: LabelMap) => void;
+  canDropLabelMap?: (labelMap: LabelMap) => boolean;
 }
 
 const LabelMapListRow: React.FC<LabelMapListRowProps> = ({
@@ -24,7 +26,9 @@ const LabelMapListRow: React.FC<LabelMapListRowProps> = ({
   editedLabelMapId,
   disableTools,
   activateLabelMap,
-  reverseLabelMapVisibility
+  reverseLabelMapVisibility,
+  onLabelMapRemoved,
+  canDropLabelMap = () => false
 }) => {
   const [, { updateLabelMap }] = useAnnotationDataContext();
   const [, { showFloatingWindow }] = useViewerLayoutContext();
@@ -80,7 +84,7 @@ const LabelMapListRow: React.FC<LabelMapListRowProps> = ({
         <div
           className={classNames('col-start-2 col-span-1 place-self-center cursor-pointer', {
             'text-red-700': labelMap.modificationTime > 0,
-            'text-green-600': labelMap.modificationTime <=0 && labelMap.data
+            'text-green-600': labelMap.modificationTime <= 0 && labelMap.data
           })}
         >
           {renderPaintToolsBrush(labelMap)}
@@ -91,7 +95,13 @@ const LabelMapListRow: React.FC<LabelMapListRowProps> = ({
         className={`col-start-3 col-span-1 w-4 h-4 place-self-center opacity-70 cursor-pointer rounded`}
         onClick={() => setColorPickerVisible(true)}
       />
-      <div className={'col-start-4 col-span-9'}>{capitalize(labelMap.name)}</div>
+      <div className={'col-start-4 col-span-8'}>{capitalize(labelMap.name)}</div>
+      {editable && canDropLabelMap(labelMap) && (
+        <BsXLg
+          className={'col-start-12 place-self-center w-2.5 text-red-500 cursor-pointer'}
+          onClick={() => onLabelMapRemoved(labelMap)}
+        />
+      )}
     </>
   );
 };

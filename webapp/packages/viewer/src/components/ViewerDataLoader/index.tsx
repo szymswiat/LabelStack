@@ -89,7 +89,8 @@ const ViewerDataLoader: React.FC<ViewerDataLoaderProps> = ({ imageInstanceIds, i
         data: labelMapData,
         visibility: true,
         editable: false,
-        modificationTime: 0
+        modificationTime: 0,
+        annotation
       };
 
       newLabelMaps[labelMapToDisplay.id.uniqueId] = labelMapToDisplay;
