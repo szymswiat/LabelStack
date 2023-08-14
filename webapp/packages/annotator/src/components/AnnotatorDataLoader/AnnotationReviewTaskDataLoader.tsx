@@ -16,8 +16,7 @@ const AnnotationReviewTaskDataLoader: React.FC = () => {
     {
       task,
       allLabels,
-      taskObjects: { taskReviews, taskAnnotations },
-      updateTriggers: { taskObjectsTrigger }
+      taskObjects: { taskReviews, taskAnnotations }
     },
     { setTaskLabelAssignments, setTaskAnnotations, setTaskReviews }
   ] = useAnnotatorDataContext();
@@ -137,7 +136,11 @@ const AnnotationReviewTaskDataLoader: React.FC = () => {
           review.annotation.data_list.length - 1
         ).uniqueId;
 
-        newLabelMaps[resultingLabelMapId].data = newLabelMaps[reviewedLabelMapId].data;
+        newLabelMaps[resultingLabelMapId].data.shallowCopy(newLabelMaps[reviewedLabelMapId].data);
+        newLabelMaps[resultingLabelMapId].data
+          .getPointData()
+          .getScalars()
+          .deepCopy(newLabelMaps[reviewedLabelMapId].data.getPointData().getScalars());
       });
 
     setLabelMaps(Object.values(newLabelMaps));
@@ -156,7 +159,7 @@ const AnnotationReviewTaskDataLoader: React.FC = () => {
     () => {
       buildTaskObjects();
     },
-    [taskObjectsTrigger],
+    [],
     [imageInstance]
   );
 

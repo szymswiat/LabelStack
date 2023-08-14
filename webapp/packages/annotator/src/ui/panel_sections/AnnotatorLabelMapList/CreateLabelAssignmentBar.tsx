@@ -6,6 +6,7 @@ import Select from 'react-dropdown-select';
 import { useImageDataContext } from '@labelstack/viewer/src/contexts/ImageDataContext';
 import { Label, api } from '@labelstack/api';
 import { useUserDataContext } from '@labelstack/app/src/contexts/UserDataContext';
+import { capitalize } from '@labelstack/viewer/src/utils';
 
 export interface CreateLabelAssignmentBarProps {
   disableTools: boolean;
@@ -52,7 +53,7 @@ const CreateLabelAssignmentBar: React.FC<CreateLabelAssignmentBarProps> = ({ dis
           className="bg-primary-dark"
           itemRenderer={({ item, methods }) => (
             <div className="bg-primary-dark pl-2 py-1" onClick={() => methods.addItem(item)}>
-              {item.name}
+              {capitalize(item.name)}
             </div>
           )}
           clearOnSelect={true}

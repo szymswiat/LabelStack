@@ -68,6 +68,7 @@ class LabelMapSliceRepresentationCompanion extends HookCompanion<LabelMapSliceRe
     }
     this.actor.delete();
     this.mapper.delete();
+    view.renderView();
   }
 
   async setVisibility(visibility: boolean) {

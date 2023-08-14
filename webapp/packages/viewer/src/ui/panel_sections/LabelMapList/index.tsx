@@ -13,7 +13,6 @@ interface LabelMapListProps {
   setEditedLabelMapId?: (id: string) => void;
   onLabelMapSaved?: () => void;
   onLabelMapRemoved?: (labelMap: LabelMap) => void;
-  triggerAnnotationsUpload?: (callback: () => void) => void;
   disableTools?: boolean;
   canDropLabelMap?: (labelMap: LabelMap) => boolean;
 }
@@ -53,6 +52,7 @@ export const LabelMapList: React.FC<LabelMapListProps> = ({
       }
       labelMap.visibility = !labelMap.visibility;
       updateLabelMap(labelMap);
+      console.log(`Reversing visibility of ${labelMap.id.uniqueId}`);
     };
   }
 

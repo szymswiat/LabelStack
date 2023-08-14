@@ -10,6 +10,8 @@ import {
   shouldShowTaskInProgressAlert,
   TaskInProgressAlert
 } from '@labelstack/viewer/src/ui/panel_sections/LabelMapList/Alerts';
+import { capitalize } from '@labelstack/viewer/src/utils';
+import { useEditedAnnotationDataContext } from '../../../contexts/EditedAnnotationDataContext';
 
 interface ReviewPanelProps {}
 
@@ -24,6 +26,8 @@ const ReviewPanel: React.FC<ReviewPanelProps> = () => {
     { refreshTaskObjects }
   ] = useAnnotatorDataContext();
 
+  const [, { setEditedLabelMapId }] = useEditedAnnotationDataContext();
+
   if (!taskReviews || !allLabels) {
     return <></>;
   }
@@ -32,14 +36,13 @@ const ReviewPanel: React.FC<ReviewPanelProps> = () => {
     name: string,
     icon: IconType,
     review: AnnotationReview,
-    boundResult: AnnotationReviewResult,
-    colorClassName?: string,
+    boundResult: AnnotationReviewResult
   ) {
-
     async function updateReviewResult() {
       try {
         await api.updateAnnotationReview(token, review, boundResult, '');
         refreshTaskObjects();
+        setEditedLabelMapId(null);
       } catch (reason) {
         showWarningNotification('Warning', reason.response.data.detail);
       }
@@ -53,8 +56,8 @@ const ReviewPanel: React.FC<ReviewPanelProps> = () => {
         icon={icon}
         containerClassName={'w-5 h-5'}
         iconClassName={'w-[0.9rem] h-[0.9rem]'}
-        activeClassName={`bg-${colorClassName} text-dark-dark-text`}
-        inactiveClassName={`text-${colorClassName}`}
+        activeClassName={`text-dark-text bg-green-700`}
+        inactiveClassName={`opacity-70`}
         onClick={updateReviewResult}
       />
     );
@@ -74,15 +77,15 @@ const ReviewPanel: React.FC<ReviewPanelProps> = () => {
           return (
             <React.Fragment key={review.id}>
               <div className={'col-start-1 place-self-center'}>
-                {renderReviewActionButton('Accept', BsCheckLg, review, AnnotationReviewResult.accepted, 'green-700')}
+                {renderReviewActionButton('Accept', BsCheckLg, review, AnnotationReviewResult.accepted)}
               </div>
               <div className={'col-start-2 place-self-center'}>
-                {renderReviewActionButton('Deny', BsXLg, review, AnnotationReviewResult.denied, 'red-700')}
+                {renderReviewActionButton('Deny', BsXLg, review, AnnotationReviewResult.denied)}
               </div>
               <div className={'col-start-3 place-self-center'}>
-                {renderReviewActionButton('Deny and correct', BsBrush, review, AnnotationReviewResult.deniedCorrected, null)}
+                {renderReviewActionButton('Deny and correct', BsBrush, review, AnnotationReviewResult.deniedCorrected)}
               </div>
-              <div className={'col-start-4 col-span-7'}>{label.name}</div>
+              <div className={'col-start-4 col-span-7'}>{capitalize(label.name)}</div>
             </React.Fragment>
           );
         })}

@@ -94,8 +94,7 @@ const AnnotationReviewTaskLabelMapList: React.FC<AnnotationReviewTaskLabelMapLis
             editedLabelMapId={editedLabelMapId}
             labelMaps={displayModeLabelMaps}
             setEditedLabelMapId={setEditedLabelMapId}
-            triggerAnnotationsUpload={triggerAnnotationsUpload}
-            onLabelMapSaved={refreshTaskObjects}
+            onLabelMapSaved={triggerAnnotationsUpload}
           />
         );
       case LabelMapsDisplayMode.toReview:
@@ -107,7 +106,9 @@ const AnnotationReviewTaskLabelMapList: React.FC<AnnotationReviewTaskLabelMapLis
 
   return (
     <>
-      <AnnotationUploader annotations={displayModeAnnotations} />
+      {labelMapsDisplayMode === LabelMapsDisplayMode.toCorrect && (
+        <AnnotationUploader annotations={displayModeAnnotations} />
+      )}
       {getLabelMapListComponent()}
     </>
   );

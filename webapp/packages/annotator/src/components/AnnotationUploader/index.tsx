@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { useEffectNonNullAsync } from '@labelstack/app/src/utils/hooks';
-import { LabelMap, useAnnotationDataContext } from '@labelstack/viewer/src/contexts/AnnotationDataContext';
+import { LabelMap, LabelMapId, useAnnotationDataContext } from '@labelstack/viewer/src/contexts/AnnotationDataContext';
 import { useEditedAnnotationDataContext } from '../../contexts/EditedAnnotationDataContext';
 import { AnnotationsObject, api } from '@labelstack/api';
 import { encodeLabelMap } from '@labelstack/viewer/src/utils/labelMapUtils';
@@ -23,16 +23,23 @@ const AnnotationUploader: React.FC<AnnotationUploaderProps> = ({ annotations }) 
   const uploadAllEligibleLabelMapsRef = useRef(uploadAllEligibleLabelMaps);
   const refreshTaskObjectsRef = useRef(refreshTaskObjects);
 
+  const processedLabelMapUidsRef = useRef<string[]>([]);
+
   uploadAllEligibleLabelMapsRef.current = uploadAllEligibleLabelMaps;
   refreshTaskObjectsRef.current = refreshTaskObjects;
 
   async function uploadLabelMap(labelMap: LabelMap) {
+
+    if (processedLabelMapUidsRef.current.includes(labelMap.id.uniqueId)) {
+      return;
+    }
+    processedLabelMapUidsRef.current.push(labelMap.id.uniqueId);
+
     const annotationToUpdate = annotations[labelMap.id.annotationId];
 
     const compressedData = await encodeLabelMap(labelMap.data);
 
     try {
-      console.log(`Uploading label map ${labelMap.name}`);
       await api.createAnnotationData(token, annotationToUpdate, compressedData.buffer);
       updateLabelMap({ ...labelMap, modificationTime: 0 });
     } catch (reason) {
@@ -44,6 +51,8 @@ const AnnotationUploader: React.FC<AnnotationUploaderProps> = ({ annotations }) 
       } else {
         showDangerNotification('Error', reason.response.data.detail);
       }
+    } finally {
+      processedLabelMapUidsRef.current = processedLabelMapUidsRef.current.filter((uid) => uid !== labelMap.id.uniqueId);
     }
   }
 
@@ -76,7 +85,6 @@ const AnnotationUploader: React.FC<AnnotationUploaderProps> = ({ annotations }) 
   );
 
   useEffect(() => {
-    console.log('Starting uploader');
     setInterval(async () => {
       const labelMaps = await uploadAllEligibleLabelMapsRef.current();
       if (labelMaps.length > 0) {

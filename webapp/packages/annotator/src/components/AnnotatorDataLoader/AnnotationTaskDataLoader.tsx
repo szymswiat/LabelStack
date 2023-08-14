@@ -125,7 +125,6 @@ const AnnotationTaskDataLoader: React.FC = () => {
   useEffectNonNull(
     () => {
       buildTaskObjects();
-      // TODO: called twice on review option change
     },
     [],
     [taskObjectsTrigger, imageInstance]
