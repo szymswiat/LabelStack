@@ -12,6 +12,7 @@ import {
 } from '@labelstack/viewer/src/ui/panel_sections/LabelMapList/Alerts';
 import { capitalize } from '@labelstack/viewer/src/utils';
 import { useEditedAnnotationDataContext } from '../../../contexts/EditedAnnotationDataContext';
+import { useAnnotatorLayoutContext } from '../../../contexts/AnnotatorLayoutContext';
 
 interface ReviewPanelProps {}
 
@@ -27,6 +28,7 @@ const ReviewPanel: React.FC<ReviewPanelProps> = () => {
   ] = useAnnotatorDataContext();
 
   const [, { setEditedLabelMapId }] = useEditedAnnotationDataContext();
+  const [{ editModeLocked }] = useAnnotatorLayoutContext();
 
   if (!taskReviews || !allLabels) {
     return <></>;
@@ -59,6 +61,7 @@ const ReviewPanel: React.FC<ReviewPanelProps> = () => {
         activeClassName={`text-dark-text bg-green-700`}
         inactiveClassName={`opacity-70`}
         onClick={updateReviewResult}
+        disabled={editModeLocked}
       />
     );
   }

@@ -95,7 +95,6 @@ const AnnotationTaskLabelMapList: React.FC<AnnotationTaskLabelMapListProps> = ({
     switch (labelMapsDisplayMode) {
       case LabelMapsDisplayMode.toCreate:
         if (shouldShowTaskInProgressAlert(task)) {
-          // TODO: show label assignments bound to task
           return (
             <div className={'flex flex-col gap-y-8'}>
               <TaskInProgressAlert />
@@ -115,7 +114,7 @@ const AnnotationTaskLabelMapList: React.FC<AnnotationTaskLabelMapListProps> = ({
               onLabelMapRemoved={dropLabelAssignment}
               canDropLabelMap={canDropLabelMap}
             />
-            <CreateLabelAssignmentBar disableTools={editModeLocked} />
+            {!editModeLocked && <CreateLabelAssignmentBar />}
           </div>
         );
       case LabelMapsDisplayMode.readonly:

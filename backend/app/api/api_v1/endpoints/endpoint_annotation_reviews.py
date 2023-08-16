@@ -51,7 +51,7 @@ def update_annotation_review(
             detail=f"There is no review with specified id={annotation_review_id}.",
         )
     task = crud.task.get(db, id=review.parent_task_id)
-    helpers.validate_access_to_task(task, current_user)
+    helpers.validate_access_to_task(task, current_user, with_one_of_statuses=[schemas.TaskStatus.in_progress])
 
     review = logic.annotation.change_annotation_review_result(
         db, review, new_result=annotation_review_in.result, commit_changes=False

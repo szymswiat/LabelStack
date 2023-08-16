@@ -12,6 +12,7 @@ import { getAnnotationsFromImageInstance } from '../../../utils';
 import LabelMapList from '@labelstack/viewer/src/ui/panel_sections/LabelMapList';
 import { useEditedAnnotationDataContext } from '../../../contexts/EditedAnnotationDataContext';
 import AnnotationUploader from '../../../components/AnnotationUploader';
+import { useAnnotatorLayoutContext } from '../../../contexts/AnnotatorLayoutContext';
 
 export enum LabelMapsDisplayMode {
   toCorrect,
@@ -31,11 +32,11 @@ const AnnotationReviewTaskLabelMapList: React.FC<AnnotationReviewTaskLabelMapLis
     {
       task,
       taskObjects: { taskReviews, taskAnnotations }
-    },
-    { refreshTaskObjects }
+    }
   ] = useAnnotatorDataContext();
   const [{ labelMaps }] = useAnnotationDataContext();
   const [{ editedLabelMapId }, { setEditedLabelMapId, triggerAnnotationsUpload }] = useEditedAnnotationDataContext();
+  const [{ editModeLocked }] = useAnnotatorLayoutContext();
 
   const getDisplayDataForMode: () => [AnnotationsObject, LabelMapsObject] = useCallback(() => {
     const annotationIdsInTask = Object.values(taskAnnotations).map((annotation) => annotation.id);
@@ -85,7 +86,6 @@ const AnnotationReviewTaskLabelMapList: React.FC<AnnotationReviewTaskLabelMapLis
     switch (labelMapsDisplayMode) {
       case LabelMapsDisplayMode.toCorrect:
         if (shouldShowTaskInProgressAlert(task)) {
-          // TODO: show label assignments bound to task
           return <TaskInProgressAlert />;
         }
         return (
@@ -95,6 +95,7 @@ const AnnotationReviewTaskLabelMapList: React.FC<AnnotationReviewTaskLabelMapLis
             labelMaps={displayModeLabelMaps}
             setEditedLabelMapId={setEditedLabelMapId}
             onLabelMapSaved={triggerAnnotationsUpload}
+            disableTools={editModeLocked}
           />
         );
       case LabelMapsDisplayMode.toReview:

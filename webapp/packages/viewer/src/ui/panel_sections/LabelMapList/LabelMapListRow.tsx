@@ -96,7 +96,7 @@ const LabelMapListRow: React.FC<LabelMapListRowProps> = ({
         onClick={() => setColorPickerVisible(true)}
       />
       <div className={'col-start-4 col-span-8'}>{capitalize(labelMap.name)}</div>
-      {editable && canDropLabelMap(labelMap) && (
+      {!disableTools && editable && canDropLabelMap(labelMap) && (
         <BsXLg
           className={'col-start-12 place-self-center w-2.5 text-red-500 cursor-pointer'}
           onClick={() => onLabelMapRemoved(labelMap)}

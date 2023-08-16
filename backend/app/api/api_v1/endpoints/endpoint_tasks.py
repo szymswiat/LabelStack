@@ -202,6 +202,11 @@ def change_task_status(
                 status_code=status.HTTP_406_NOT_ACCEPTABLE,
                 detail=f"Annotation with id={error.extra['id']} does not have data.",
             ) from error
+        if error.error_code == core.LogicErrorCode.review_not_finished:
+            raise HTTPException(
+                status_code=status.HTTP_406_NOT_ACCEPTABLE,
+                detail=f"Some of reviewed annotations do not have assigned result.",
+            ) from error
 
     assert isinstance(task, models.Task)
     return helpers.convert_task_nested_to_ids(task)

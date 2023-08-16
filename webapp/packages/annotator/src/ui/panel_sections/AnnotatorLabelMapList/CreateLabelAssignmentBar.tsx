@@ -8,11 +8,9 @@ import { Label, api } from '@labelstack/api';
 import { useUserDataContext } from '@labelstack/app/src/contexts/UserDataContext';
 import { capitalize } from '@labelstack/viewer/src/utils';
 
-export interface CreateLabelAssignmentBarProps {
-  disableTools: boolean;
-}
+export interface CreateLabelAssignmentBarProps {}
 
-const CreateLabelAssignmentBar: React.FC<CreateLabelAssignmentBarProps> = ({ disableTools }) => {
+const CreateLabelAssignmentBar: React.FC<CreateLabelAssignmentBarProps> = () => {
   const [{ allLabels, task }, { refreshTaskObjects }] = useAnnotatorDataContext();
   const [{ imageInstance }] = useImageDataContext();
   const [{ token }] = useUserDataContext();
@@ -37,10 +35,7 @@ const CreateLabelAssignmentBar: React.FC<CreateLabelAssignmentBarProps> = ({ dis
   });
 
   return (
-    <div
-      className={classNames('grid grid-cols-12 gap-y-2 gap-x-1 w-full place-items-center')}
-      onClick={disableTools ? undefined : null}
-    >
+    <div className={classNames('grid grid-cols-12 gap-y-2 gap-x-1 w-full place-items-center')}>
       <div className={classNames('w-4 h-4 col-span-2')} />
       <div className={classNames('col-span-10 w-full')}>
         <Select

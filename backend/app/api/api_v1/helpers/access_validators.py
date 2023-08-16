@@ -15,9 +15,6 @@ def validate_access_to_task(
         roles_bypassing_access = []
     roles_bypassing_access.append(schemas.RoleType.superuser)
 
-    if with_one_of_statuses is None:
-        with_one_of_statuses = schemas.TaskStatus.active_statuses()
-
     if task is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -35,6 +32,12 @@ def validate_access_to_task(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="User is not permitted to access selected task.",
             )
+
+    if with_one_of_statuses is not None and task.status not in with_one_of_statuses:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail=f"Task is not in one of required statuses {with_one_of_statuses}.",
+        )
 
 
 def validate_access_by_role(

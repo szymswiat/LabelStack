@@ -52,7 +52,6 @@ export const LabelMapList: React.FC<LabelMapListProps> = ({
       }
       labelMap.visibility = !labelMap.visibility;
       updateLabelMap(labelMap);
-      console.log(`Reversing visibility of ${labelMap.id.uniqueId}`);
     };
   }
 
