@@ -66,7 +66,10 @@ const CreateAnnotateTaskForm: React.FC<CreateAnnotateTaskFormProps> = ({
   };
 
   function isFormValidTaskSpecific() {
-    return !(selectedLabelAssignments === undefined || selectedLabelAssignments.length <= 0);
+    return (
+      (selectedLabelAssignments != null && selectedLabelAssignments.length > 0) ||
+      (selectedImageInstances != null && selectedImageInstances.length > 0)
+    );
   }
 
   return <CreateTaskForm annotators={annotators} createTask={createTask} />;
