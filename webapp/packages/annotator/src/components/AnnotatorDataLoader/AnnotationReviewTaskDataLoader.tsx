@@ -106,7 +106,12 @@ const AnnotationReviewTaskDataLoader: React.FC = () => {
 
       let labelMapData: vtkImageData;
       if (annotationData) {
-        const { data: encodedLabelMap } = await api.readAnnotationData(token, annotation, annotationData.sequence);
+        const { data: encodedLabelMap } = await api.readAnnotationData(
+          token,
+          annotation,
+          annotationData.sequence,
+          task.id
+        );
         labelMapData = await decodeLabelMap(imageData.vtkImage, encodedLabelMap);
       } else {
         labelMapData = await buildLabelMap(imageData.vtkImage);

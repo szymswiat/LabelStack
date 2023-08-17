@@ -100,7 +100,7 @@ def read_annotation_data(
         if annotation_id not in {annotation.id for annotation in all_allowed_annotations}:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
-                detail="User does not have access to requested image instance.",
+                detail="User does not have access to requested annotation.",
             )
     else:
         helpers.validate_access_by_role(current_user, [schemas.RoleType.task_admin])

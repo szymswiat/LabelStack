@@ -84,7 +84,7 @@ def read_image_instances_for_task(
 
     image_instances = logic.image_instance.get_all_image_instances_for_task(task)
     image_instances = logic.image_instance.filter_image_instances_for_user(
-        image_instances, current_user
+        image_instances, current_user, task
     )
 
     return image_instances

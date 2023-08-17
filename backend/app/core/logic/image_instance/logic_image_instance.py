@@ -95,6 +95,7 @@ def get_all_image_instances_for_task(task: models.Task) -> list[models.ImageInst
 def filter_image_instances_for_user(
     image_instance_list: list[models.ImageInstance],
     user: models.User,
+    task: models.Task,
 ) -> list[schemas.ImageInstance]:
 
     image_instance_list_new: list[schemas.ImageInstance] = []
@@ -106,7 +107,7 @@ def filter_image_instances_for_user(
             user, [schemas.RoleType.superuser, schemas.RoleType.task_admin]
         ):
             image_instance_new.label_assignments = filter_label_assignments_for_user(
-                image_instance.label_assignments, user
+                image_instance.label_assignments, user, task
             )
 
         image_instance_list_new.append(image_instance_new)
@@ -117,6 +118,7 @@ def filter_image_instances_for_user(
 def filter_label_assignments_for_user(
     label_assignment_list: list[models.LabelAssignment],
     user: models.User,
+    task: models.Task,
 ) -> list[schemas.LabelAssignment]:
 
     label_assignment_list_new: list[schemas.LabelAssignment] = []
@@ -132,7 +134,7 @@ def filter_label_assignments_for_user(
 
         label_assignment_new = schemas.LabelAssignment.from_orm(label_assignment)
         label_assignment_new.annotations = filter_annotations_for_user(
-            label_assignment.annotations, user
+            label_assignment.annotations, user, task
         )
 
         label_assignment_list_new.append(label_assignment_new)
@@ -143,6 +145,7 @@ def filter_label_assignments_for_user(
 def filter_annotations_for_user(
     annotation_list: list[models.Annotation],
     user: models.User,
+    task: models.Task,
 ) -> list[schemas.Annotation]:
 
     annotation_list_new: list[schemas.Annotation] = []
@@ -152,10 +155,20 @@ def filter_annotations_for_user(
         if annotation.parent_task.status != schemas.TaskStatus.done and annotation.author_id != user.id:
             continue
 
+        if annotation.author_id != user.id and (
+            len(annotation.reviews) == 0
+            or annotation.reviews[-1].result != schemas.AnnotationReviewResult.accepted
+        ):
+            if task.task_type != schemas.TaskType.annotation_review:
+                continue
+            
+            if task.task_type == schemas.TaskType.annotation_review and annotation.id not in [
+                annotation.id for annotation in task.annotations
+            ]:
+                continue
+
         annotation_new = schemas.Annotation.from_orm(annotation)
         annotation_list_new.append(annotation_new)
-
-        pass
 
     return annotation_list_new
 

@@ -11,7 +11,7 @@ router = APIRouter()
 def authenticate(
     *,
     db: Session = Depends(deps.get_db),
-    user: models.User = Depends(deps.get_current_user_with_role(deps.RoleType.all_roles())),
+    user: models.User = Depends(deps.get_current_user_with_role([deps.RoleType.data_admin])),
     request: Request,
 ):
     # url_to_auth = request.headers['requested-url']

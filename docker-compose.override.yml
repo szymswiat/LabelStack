@@ -36,6 +36,8 @@ services:
       - "5678:5678"
     volumes:
       - ./backend:/code
+    environment:
+      - ENV=dev
     labels:
       - traefik.http.services.backend.loadbalancer.server.port=8000
     tty: true
