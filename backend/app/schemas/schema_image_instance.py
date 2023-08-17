@@ -23,8 +23,6 @@ class ImageInstanceBase(BaseModel):
     id: int
     id_ref: str
 
-    visited: bool
-
     class Config:
         orm_mode = True
 

@@ -27,7 +27,7 @@ const AllImages: React.FC = () => {
   useEffectAsync(async () => {
 
     try {
-      const { data: responseImages } = await api.getImageInstances(token, false, false);
+      const { data: responseImages } = await api.getImageInstances(token, false);
       setImages(responseImages);
     } catch (error) {
       showNotificationWithApiError(error);

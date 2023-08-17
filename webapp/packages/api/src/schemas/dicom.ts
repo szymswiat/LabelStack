@@ -9,7 +9,6 @@ export interface Dicom {
   series_id: string;
   description: string;
   instance_id: string;
-  visited: boolean;
   label_assignments: LabelAssignment[];
   annotations: Annotation[];
 

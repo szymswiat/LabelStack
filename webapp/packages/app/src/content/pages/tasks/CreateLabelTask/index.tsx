@@ -36,7 +36,7 @@ const CreateLabelTask: React.FC = () => {
   }
 
   async function loadImages() {
-    const { data: responseImages } = await api.getImageInstances(token, true, true);
+    const { data: responseImages } = await api.getImageInstances(token, true);
     setImages(responseImages);
   }
 

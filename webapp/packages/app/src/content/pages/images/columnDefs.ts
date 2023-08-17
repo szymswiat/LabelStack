@@ -21,15 +21,6 @@ export const imageInstancesColumnDefs: ColDef[] = [
   },
   { field: 'id', headerName: 'ID', width: 100, minWidth: 100, resizable: true },
   {
-    field: 'visited',
-    headerName: 'Visited',
-    cellRenderer: DicomIsLabeledCellRenderer,
-    filter: BooleanFilter,
-    width: 100,
-    minWidth: 100,
-    resizable: true
-  },
-  {
     field: 'tags',
     headerName: 'Patient ID',
     cellRenderer: imageInstanceTagRenderer('PatientID'),

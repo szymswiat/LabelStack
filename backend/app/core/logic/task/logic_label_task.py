@@ -57,8 +57,7 @@ def _status_in_progress_to_cancelled(db: Session, task: models.Task, **kwargs: A
 
 
 def _status_in_progress_to_done(db: Session, task: models.Task, **kwargs: Any) -> models.Task:
-    for image_instance in task.image_instances:
-        image_instance.visited = True
+    # just change status
 
     return task
 

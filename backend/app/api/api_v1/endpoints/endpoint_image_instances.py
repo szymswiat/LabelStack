@@ -35,7 +35,6 @@ def read_image_instances(
     *,
     db: Session = Depends(deps.get_db),
     by_ids: str | None = None,
-    unvisited: bool | None = False,
     without_active_task: bool | None = False,
     current_user: models.User = Depends(
         deps.get_current_user_with_role([schemas.RoleType.data_admin, schemas.RoleType.task_admin])
@@ -44,7 +43,6 @@ def read_image_instances(
     """
     Read list of image_instance metadata filtered by following options:
       - **by_ids** - returns image instances specified in id list e.g. by_ids=1,2,3,4 ...
-      - **unvisited** - returns image_instances that have never been visited by any user (labeled or annotated)
       - **without_active_task** - filters image_instance list and returns items that do not have active label assignment task
     """
 
@@ -58,9 +56,6 @@ def read_image_instances(
 
     if without_active_task:
         query_out = query.image_instance.query_without_active_task(db=db, query_in=query_out)
-
-    if unvisited:
-        query_out = query.image_instance.query_for_visited(db, query_in=query_out, visited=False)
 
     return query_out.all()
 
@@ -86,30 +81,5 @@ def read_image_instances_for_task(
     image_instances = logic.image_instance.filter_image_instances_for_user(
         image_instances, current_user, task
     )
-
-    return image_instances
-
-
-@router.post("/mark_as_labeled", response_model=list[schemas.ImageInstance])
-def mark_image_instances_as_labeled(
-    *,
-    db: Session = Depends(deps.get_db),
-    image_instance_ids: list[int] = Query(),
-    current_user: models.User = Depends(
-        deps.get_current_user_with_role(
-            [
-                schemas.RoleType.data_admin,
-                schemas.RoleType.task_admin,
-            ]
-        )
-    ),
-) -> list[models.ImageInstance]:
-
-    image_instances = crud.image_instance.get_multi_by_ids(db, ids=image_instance_ids)
-
-    for image_instance in image_instances:
-        image_instance.visited = True
-
-    db.commit()
 
     return image_instances

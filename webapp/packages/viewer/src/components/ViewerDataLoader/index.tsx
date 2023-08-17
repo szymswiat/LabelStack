@@ -103,7 +103,7 @@ const ViewerDataLoader: React.FC<ViewerDataLoaderProps> = ({ imageInstanceIds, i
     if (String(prevImageInstanceIds.current) == String(imageInstanceIds)) {
       return;
     }
-    const { data: imageInstances } = await api.getImageInstances(token, false, false, imageInstanceIds);
+    const { data: imageInstances } = await api.getImageInstances(token, false, imageInstanceIds);
     const imageInstancesObject = Object.fromEntries(
       imageInstances.map((imageInstance) => [imageInstance.id, imageInstance])
     );

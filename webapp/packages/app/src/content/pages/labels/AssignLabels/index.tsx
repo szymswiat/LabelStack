@@ -30,7 +30,7 @@ const AssignLabels: React.FC<AssignLabelsProps> = ({}) => {
 
   useEffectAsync(async () => {
     try {
-      const { data: responseImages } = await api.getImageInstances(token, false, false);
+      const { data: responseImages } = await api.getImageInstances(token, false);
       setImages(responseImages);
 
       const { data: responseLabels } = await api.getLabels(token);

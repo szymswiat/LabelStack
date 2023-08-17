@@ -15,8 +15,6 @@ class ImageInstance(Base):
     id: Mapped[int] = mapped_column(sa.Integer, Identity(always=True), primary_key=True)
     id_ref: Mapped[str] = mapped_column(sa.String, nullable=False, unique=True)
 
-    visited: Mapped[bool] = mapped_column(sa.Boolean, nullable=False, default=False)
-
     label_assignments: Mapped[list["models.LabelAssignment"]] = relationship(
         "LabelAssignment",
         back_populates="image_instance",
