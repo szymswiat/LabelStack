@@ -121,6 +121,12 @@ def create_with_label(
             detail="Image instance does not belong to referenced task.",
         )
 
+    if task.assigned_user_id is None:
+        raise HTTPException(
+            status_code=status.HTTP_406_NOT_ACCEPTABLE,
+            detail="Task is not assigned to any user.",
+        )
+
     # TODO: check if there is no label assignment for given image instance and label
 
     label_assignment_to_create = schemas.LabelAssignmentCreateCrud(

@@ -61,10 +61,12 @@ def labels_create_data(db: Session) -> list[schemas.LabelCreateCrud]:
             create_attrs["allowed_annotation_type_id"] = segment_annotation_type.id
 
         label = schemas.LabelCreateCrud(
-            **create_attrs,
-            name=row['eng_name'],
+            name=row["eng_name"],
             # name=row["pl_name"],
-            type_ids=type_ids
+            type_ids=type_ids,
+            allowed_annotation_type_id=segment_annotation_type.id
+            if "segmentable" in row and row["segmentable"] is True
+            else None,
         )
         data.append(label)
     return data

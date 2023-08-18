@@ -23,7 +23,7 @@ services:
 
   db:
     volumes:
-      - app-db-data-dev:${PGDATA}
+      - ./data/app:${PGDATA}
       - ./database/pg-init-scripts:/docker-entrypoint-initdb.d
     ports:
       - "5432:5432"
@@ -57,7 +57,9 @@ services:
   orthanc:
     labels:
       - traefik.http.middlewares.cors-allow.headers.accesscontrolalloworiginlist=*
-
-volumes:
-  app-db-data-dev:
-  pacs-data-dev:
+    volumes:
+      # configuration file
+      - ${ORTHANC_CONFIG}:${ORTHANC_CONFIG_INTERNAL}:ro
+      # storage volume for raw dicoms
+      - ./data/pacs:${ORTHANC_DICOM_DATA_INTERNAL}
+      - ./pacs/extensions.py:/etc/orthanc/extensions.py:ro

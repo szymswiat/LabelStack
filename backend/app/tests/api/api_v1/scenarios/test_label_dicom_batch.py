@@ -1,4 +1,5 @@
 import random
+from typing import Any
 
 import pytest
 from sqlalchemy.orm import Session
@@ -13,7 +14,7 @@ ANNOTATOR_1_LABEL_TASK_DICOM_COUNT = 5
 
 random.seed(0)
 
-TEST_OUTPUTS = {}
+TEST_OUTPUTS: dict[str, Any] = {}
 
 
 def test_step0_create_label_task(client: TestClient, db: Session):

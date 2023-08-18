@@ -1,5 +1,6 @@
 import random
 from random import randbytes
+from typing import Any
 
 import pytest
 from sqlalchemy.orm import Session
@@ -11,7 +12,7 @@ from app.tests.utils.user import auth_data_for_test_user
 
 random.seed(0)
 
-TEST_OUTPUTS = {}
+TEST_OUTPUTS: dict[str, Any] = {}
 
 
 @pytest.mark.order(after="test_label_dicom_batch.py::test_step2_finish_label_task")
