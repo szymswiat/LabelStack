@@ -65,7 +65,8 @@ const config: Configuration = {
   plugins: [
     new EnvironmentPlugin(envVars),
     new HtmlWebpackPlugin({
-      template: 'src/index.html'
+      template: 'src/index.html',
+      favicon: 'resources/favicon.ico'
     }),
     new ReactRefreshWebpackPlugin(),
     new ForkTsCheckerWebpackPlugin({
