@@ -6,4 +6,4 @@ RUN apk add --no-cache yarn
 
 WORKDIR /code/packages/app
 
-CMD ["yarn", "app:dev"]
+CMD ["sh", "-c", "yarn --cwd /code install && yarn app:dev"]
