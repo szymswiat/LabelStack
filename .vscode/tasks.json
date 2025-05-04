@@ -12,7 +12,7 @@
 			}
 		},
 		{
-			"label": "[DEV] Apply database migrations",
+			"label": "[DEV] Migrate database",
 			"type": "shell",
 			"command": [
 				"docker exec -it labelstack-backend bash -c 'alembic upgrade head'"
@@ -37,7 +37,7 @@
 			}
 		},
 		{
-			"label": "[PROD] Launch production setup",
+			"label": "[PROD] Launch prod containers",
 			"type": "shell",
 			"command": "docker compose -f docker-compose.yml up"
 		},
